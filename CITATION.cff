@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If AevoraSEO supports your work, please cite this repository."
+title: "AevoraSEO: Your complete SEO house"
+type: software
+version: 3.0.0
+authors:
+  - family-names: Nikhilkumar
+    given-names: Bheda
+    website: https://github.com/bhedanikhilkumar-code/Bheda-Nikhilkumar-portfolio
+repository-code: https://github.com/bhedanikhilkumar-code/aevoraseo
+url: https://github.com/bhedanikhilkumar-code/aevoraseo
+license: MIT
+keywords:
+  - SEO
+  - answer engine optimization
+  - web crawling
+  - reputation
+  - backlinks

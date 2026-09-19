@@ -1,0 +1,32 @@
+name: Bug report
+description: Report an unexpected crawl, extraction or setup result.
+labels: [bug]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include the expected behavior and what you observed.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: Give a minimal command using example.com and a fictional local fixture. Do not include client domains, names, captured content, tokens or cookies.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Summarize your operating system, Python/AevoraSEO versions and the failing capability. Do not paste raw doctor output; remove usernames, home paths, device details and account identifiers.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Relevant evidence
+      description: Describe the failure using fictional input and a minimal sanitized error. Do not attach live-site reports, screenshots, recordings, browser transcripts or client page records.

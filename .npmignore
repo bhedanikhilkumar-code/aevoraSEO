@@ -1,0 +1,21 @@
+# NPM Ignore — Only bin, README, LICENSE, package.json are published to NPM
+src/
+scripts/
+tests/
+api/
+docs/
+references/
+playbooks/
+assets/
+examples/
+.github/
+pyproject.toml
+CHANGELOG.md
+CITATION.cff
+SECURITY.md
+SKILL.md
+THIRD_PARTY_NOTICES.md
+*.py
+*.pyc
+*.env*
+.venv/

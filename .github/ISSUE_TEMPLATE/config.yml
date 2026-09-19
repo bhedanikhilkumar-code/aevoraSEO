@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Installation and usage guides
+    url: https://github.com/bhedanikhilkumar-code/aevoraseo/blob/main/docs/README.md
+    about: Start with setup, commands, workflows and example questions.
+  - name: Report a security issue privately
+    url: https://github.com/bhedanikhilkumar-code/aevoraseo/security/advisories/new
+    about: Use private vulnerability reporting for sensitive security findings.
+  - name: Maintainer — Bheda Nikhilkumar
+    url: https://github.com/bhedanikhilkumar-code/Bheda-Nikhilkumar-portfolio
+    about: Consulting, training and private business enquiries.

@@ -1,0 +1,8 @@
+{
+  "type": "ftps",
+  "host": "hosting.example.com",
+  "port": 21,
+  "root": "/public_html",
+  "username_env": "AEVORASEO_USERNAME",
+  "password_env": "AEVORASEO_PASSWORD"
+}

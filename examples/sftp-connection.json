@@ -1,0 +1,9 @@
+{
+  "type": "sftp",
+  "host": "hosting.example.com",
+  "port": 22,
+  "root": "/var/www/example/public",
+  "username_env": "AEVORASEO_USERNAME",
+  "key_file": "/replace-with-private-folder/website_ed25519",
+  "known_hosts": "/replace-with-private-folder/known_hosts"
+}
