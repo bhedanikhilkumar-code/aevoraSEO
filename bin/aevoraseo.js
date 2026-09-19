@@ -13,6 +13,8 @@ const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
+const pkg = require('../package.json');
+
 const c = {
   reset: "\x1b[0m",
   bold: "\x1b[1m",
@@ -32,7 +34,7 @@ ${c.cyan}${c.bold}  █████╗ ███████╗██╗   █�
  ██╔══██║██╔══╝  ╚██╗ ██╔╝██║   ██║██╔══██╗██╔══██║╚════██║██╔══╝  ██║   ██║
  ██║  ██║███████╗ ╚████╔╝ ╚██████╔╝██║  ██║██║  ██║███████║███████╗╚██████╔╝
  ╚═╝  ╚═╝╚══════╝  ╚═══╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ ${c.reset}
-  ${c.bold}Autonomous SEO & AEO Intelligence Engine${c.reset} ${c.dim}| Native Runner v1.0.0${c.reset}
+  ${c.bold}Autonomous SEO & AEO Intelligence Engine${c.reset} ${c.dim}| Native Runner v${pkg.version}${c.reset}
   ${c.dim}https://github.com/bhedanikhilkumar-code/aevoraSEO${c.reset}
 `);
 }
@@ -65,7 +67,7 @@ const args = process.argv.slice(2);
 
 // Handle version flag
 if (args.includes('-v') || args.includes('--version') || args[0] === 'version') {
-  console.log("aevoraseo v1.0.0");
+  console.log(`aevoraseo v${pkg.version}`);
   process.exit(0);
 }
 
