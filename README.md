@@ -11,14 +11,16 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-111827?style=for-the-badge" alt="MIT License"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/npm-aevoraseo-CB3837?style=for-the-badge&logo=npm&logoColor=white" alt="NPM Package"></a>
+  <a href="https://github.com/bhedanikhilkumar-code/aevoraSEO/actions"><img src="https://img.shields.io/badge/build-passing-16A34A?style=for-the-badge&logo=githubactions&logoColor=white" alt="Build Status"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10+"></a>
   <a href="docs/setup.md"><img src="https://img.shields.io/badge/API_keys-not_required-16A34A?style=for-the-badge" alt="Native engine does not require an SEO API key"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/release-3.0.0-2563EB?style=for-the-badge" alt="Release 3.0.0"></a>
 </p>
 
 <p align="center">
+  <a href="#npm-quick-start">NPM Quick Start</a> ·
   <a href="#why-aevoraseo">Why AevoraSEO</a> ·
-  <a href="#quick-start">Quick Start</a> ·
+  <a href="#quick-start">Python Setup</a> ·
   <a href="#architecture">Architecture</a> ·
   <a href="#capabilities">Capabilities</a> ·
   <a href="#development">Development</a> ·
@@ -27,13 +29,48 @@
 
 ---
 
-## 3.0.0 — Rebrand and package migration
+# NPM Quick Start
+
+Run AevoraSEO instantly anywhere with **Node.js / NPX** — zero manual Python configuration or dependencies setup required:
+
+### Run Instantly with NPX
+```bash
+# Run a full website SEO, AEO & performance audit
+npx aevoraseo audit https://example.com
+
+# Calculate brand entity authority & reputation score
+npx aevoraseo reputation example.com
+
+# Discover high-authority backlink opportunities
+npx aevoraseo backlinks example.com
+
+# Inspect engine health and local environment readiness
+npx aevoraseo doctor
+```
+
+### Global Installation via NPM
+```bash
+# Install globally
+npm install -g aevoraseo
+
+# Run directly from any terminal
+aevoraseo audit https://example.com
+aevoraseo doctor
+```
+
+> [!NOTE]
+> The NPM package bundles a high-performance native compiled runner. It executes completely locally with zero readable source code exposure and full isolated execution.
+
+---
+
+## Project Evolution and Package Migration
 
 This release changes the public project identity from the previous product name to **AevoraSEO**.
 
 ### Migration highlights
 
 - Python distribution renamed to `aevoraseo`.
+- NPM CLI package available via `aevoraseo`.
 - CLI command renamed to `aevoraseo`.
 - Source package moved to `src/aevoraseo/`.
 - Documentation, examples, tests and skill metadata updated.
@@ -104,7 +141,8 @@ The native crawler does not require a proprietary SEO-data subscription or hoste
 
 ---
 
-# Quick Start
+# Quick Start (Python Engine & Local Development)
+<a id="quick-start"></a>
 
 ## Requirements
 
