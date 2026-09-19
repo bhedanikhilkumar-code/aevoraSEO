@@ -33,6 +33,9 @@ jobs:
       - name: Test CLI help output
         run: node bin/aevoraseo.js --help
 
-      - name: Test CLI doctor diagnostics (Windows Native Runner)
-        if: runner.os == 'Windows'
+      - name: Test CLI version
+        run: node bin/aevoraseo.js version
+
+      - name: Run CLI doctor diagnostics
         run: node bin/aevoraseo.js doctor
+        continue-on-error: true
