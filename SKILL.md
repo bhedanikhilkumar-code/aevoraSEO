@@ -2,7 +2,7 @@
 name: aevoraseo
 description: Audit websites and plan SEO, AI-search visibility, content, competitors and backlinks using AevoraSEO's crawler, reputation evidence and specialist playbooks.
 metadata:
-  version: 2.7.1
+  version: 3.0.0
   author: Bheda Nikhilkumar
 ---
 

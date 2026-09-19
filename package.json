@@ -1,6 +1,6 @@
 {
   "name": "aevoraseo",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "Autonomous SEO & AEO audit engine CLI powered by AevoraSEO Cloud",
   "bin": {
     "aevoraseo": "./bin/aevoraseo.js"
@@ -8,7 +8,8 @@
   "main": "./bin/aevoraseo.js",
   "scripts": {
     "start": "node ./bin/aevoraseo.js",
-    "test": "node ./bin/aevoraseo.js --help"
+    "test": "node ./bin/aevoraseo.js --help",
+    "release": "python ./scripts/release.py"
   },
   "keywords": [
     "seo",
