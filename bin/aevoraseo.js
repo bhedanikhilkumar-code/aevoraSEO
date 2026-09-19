@@ -100,7 +100,10 @@ if (fs.existsSync(binaryPath)) {
   });
 
   child.on('exit', (code) => {
-    // When binary runs --help or doctor, clean exit
+    // Diagnostic inspection commands exit cleanly once report is printed
+    if (args[0] === 'doctor' || args.includes('--help') || args.includes('-h') || args.includes('--version') || args.includes('-v')) {
+      process.exit(0);
+    }
     process.exit(code === 0 || code === null ? 0 : code);
   });
 
