@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Publish Release Assets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate skill bundle
+        run: python scripts/validate_skill.py
+
+      - name: Build release archive and checksum
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          mkdir -p ../artifacts
+          python scripts/build_skill.py --out "../artifacts/aevoraseo-${VERSION}-skill.zip"
+          ls -la ../artifacts/
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ../artifacts/aevoraseo-*-skill.zip
+            ../artifacts/aevoraseo-*-skill.zip.sha256
+          generate_release_notes: true
