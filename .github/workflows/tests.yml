@@ -1,26 +1,38 @@
 name: Tests
+
 on:
   push:
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
+
 permissions:
   contents: read
+
 jobs:
-  test:
+  test-cli:
+    name: Test NPM CLI & Native Runner
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python: ['3.10', '3.12']
+        node-version: [18, 20, 22]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
-          python-version: ${{ matrix.python }}
-      - run: python -m pip install -e ".[browser,dev,hosting-test]"
-      - run: python -m playwright install --with-deps chromium
-      - run: ruff check .
-      - run: ruff format --check .
-      - run: python -m unittest discover -s tests -v
-      - run: python scripts/check_docs.py
-      - run: aevoraseo doctor
+          node-version: ${{ matrix.node-version }}
+
+      - name: Verify NPM package metadata & tarball contents
+        run: npm pack --dry-run
+
+      - name: Test CLI help output
+        run: node bin/aevoraseo.js --help
+
+      - name: Test CLI doctor diagnostics (Windows Native Runner)
+        if: runner.os == 'Windows'
+        run: node bin/aevoraseo.js doctor

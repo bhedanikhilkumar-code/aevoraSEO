@@ -10,7 +10,7 @@ readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 requires-python = ">=3.10"
-authors = [{name = "Bheda Nikhilkumar"}]
+authors = [{name = "Bheda Nikhilkumar", email = "bhedanikhilkumarpro@gmail.com"}]
 dependencies = ["beautifulsoup4>=4.12,<5", "colorama>=0.4.6,<0.5"]
 keywords = ["crawler", "scraper", "seo", "javascript", "markdown"]
 classifiers = [
@@ -38,7 +38,7 @@ Documentation = "https://github.com/bhedanikhilkumar-code/aevoraSEO/blob/main/do
 Issues = "https://github.com/bhedanikhilkumar-code/aevoraSEO/issues"
 Changelog = "https://github.com/bhedanikhilkumar-code/aevoraSEO/blob/main/CHANGELOG.md"
 LinkedIn = "https://www.linkedin.com/in/bhedanikhilkumar"
-Contact = "mailto:bhedanikhilkumarpro@gmail.com"
+Contact = "https://github.com/bhedanikhilkumar-code"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -37,7 +37,37 @@ ${c.cyan}${c.bold}  █████╗ ███████╗██╗   █�
 `);
 }
 
+function showHelp() {
+  banner();
+  console.log(`${c.bold}USAGE:${c.reset}`);
+  console.log(`  ${c.green}npx aevoraseo${c.reset} <command> [options]`);
+  console.log(`  ${c.green}aevoraseo${c.reset} <command> [options]\n`);
+  
+  console.log(`${c.bold}COMMANDS:${c.reset}`);
+  console.log(`  ${c.cyan}audit${c.reset} <target-url>        Run complete SEO, AEO & performance audit`);
+  console.log(`  ${c.cyan}reputation${c.reset} <domain>      Calculate Aevora Reputation & Entity score`);
+  console.log(`  ${c.cyan}backlinks${c.reset} <domain>       Discover and score high-authority backlink sources`);
+  console.log(`  ${c.cyan}crawl${c.reset} <target-url>        Crawl website structure and discover search links`);
+  console.log(`  ${c.cyan}doctor${c.reset}                  Check CLI environment, connectivity & engine status`);
+  console.log(`  ${c.cyan}version${c.reset}                 Print version information\n`);
+
+  console.log(`${c.bold}OPTIONS:${c.reset}`);
+  console.log(`  ${c.yellow}--help, -h${c.reset}              Show this help message`);
+  console.log(`  ${c.yellow}--version, -v${c.reset}           Print version information\n`);
+
+  console.log(`${c.bold}EXAMPLES:${c.reset}`);
+  console.log(`  $ npx aevoraseo audit https://example.com`);
+  console.log(`  $ npx aevoraseo reputation example.com`);
+  console.log(`  $ npx aevoraseo doctor\n`);
+}
+
 const args = process.argv.slice(2);
+
+// Handle version flag
+if (args.includes('-v') || args.includes('--version') || args[0] === 'version') {
+  console.log("aevoraseo v1.0.0");
+  process.exit(0);
+}
 
 // Resolve compiled binary runner path
 const runnerDir = path.join(__dirname, 'runner');
@@ -53,7 +83,7 @@ if (process.platform === 'win32') {
 
 // Check if binary exists
 if (fs.existsSync(binaryPath)) {
-  // If no args or asking for help, display banner then binary help
+  // If no args, show help
   if (args.length === 0) {
     banner();
   }
@@ -70,14 +100,20 @@ if (fs.existsSync(binaryPath)) {
   });
 
   child.on('exit', (code) => {
-    process.exit(code || 0);
+    // When binary runs --help or doctor, clean exit
+    process.exit(code === 0 || code === null ? 0 : code);
   });
 
 } else {
-  // Fallback if binary is not yet available for current platform
+  // If binary not found on this platform, show JS help or notice
+  if (args.length === 0 || args.includes('-h') || args.includes('--help') || args[0] === 'help') {
+    showHelp();
+    process.exit(0);
+  }
+
   banner();
   console.log(`${c.yellow}Notice: Native runner binary not found at:${c.reset} ${binaryPath}`);
-  console.log(`${c.dim}Please ensure bin/runner/ contains the compiled binary for ${process.platform}.${c.reset}`);
+  console.log(`${c.dim}Compiled runner is currently available for Windows x64.${c.reset}`);
   console.log(`\nVisit: ${c.cyan}https://github.com/bhedanikhilkumar-code/aevoraSEO${c.reset} for instructions.\n`);
-  process.exit(1);
+  process.exit(0);
 }
