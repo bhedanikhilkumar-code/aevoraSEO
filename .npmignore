@@ -19,3 +19,4 @@ THIRD_PARTY_NOTICES.md
 *.pyc
 *.env*
 .venv/
+.pyinstaller_build/

@@ -9,6 +9,7 @@ __pycache__/
 htmlcov/
 build/
 dist/
+.pyinstaller_build/
 .env
 .env.*
 !.env.example
