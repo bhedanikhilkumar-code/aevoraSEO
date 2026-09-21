@@ -1,7 +1,7 @@
 {
   "name": "aevoraseo",
   "version": "1.0.0",
-  "description": "Autonomous SEO & AEO audit engine CLI powered by AevoraSEO Cloud",
+  "description": "Autonomous SEO & AEO intelligence engine CLI — local crawler, Generative Engine Optimization (GEO), entity reputation scoring, and backlink audit.",
   "bin": {
     "aevoraseo": "./bin/aevoraseo.js"
   },
@@ -15,10 +15,16 @@
     "seo",
     "aeo",
     "geo",
-    "audit",
+    "generative-engine-optimization",
+    "ai-search",
     "crawler",
-    "reputation",
+    "web-crawler",
+    "seo-audit",
+    "site-audit",
+    "technical-seo",
     "backlinks",
+    "reputation",
+    "agent-skill",
     "cli"
   ],
   "author": "Bheda Nikhilkumar <bhedanikhilkumarpro@gmail.com>",
