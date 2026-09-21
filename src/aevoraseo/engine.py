@@ -61,8 +61,16 @@ def parse_sitemap(body):
     return kind, records
 
 
+def generate_snapshot_id(seed_url: str, dt=None) -> str:
+    from datetime import datetime, timezone
+    now = dt or datetime.now(timezone.utc)
+    ts = now.strftime("%Y%m%dT%H%M%SZ")
+    h = hashlib.sha256(seed_url.encode()).hexdigest()[:6]
+    return f"{ts}_{h}"
+
+
 class Crawler:
-    def __init__(self, config, out, resume=False, selectors=None):
+    def __init__(self, config, out, resume=False, selectors=None, incremental_from=None):
         self.config = config
         self.out = Path(out)
         self.out.mkdir(parents=True, exist_ok=True)
@@ -76,7 +84,8 @@ class Crawler:
             self.db.executescript("""CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY,value TEXT);
             CREATE TABLE IF NOT EXISTS urls (url TEXT PRIMARY KEY,depth INTEGER,source TEXT,state TEXT DEFAULT 'pending',reason TEXT DEFAULT '');
             CREATE TABLE IF NOT EXISTS pages (url TEXT PRIMARY KEY,payload TEXT);
-            CREATE TABLE IF NOT EXISTS sitemap_urls (url TEXT,sitemap TEXT,lastmod TEXT,PRIMARY KEY(url,sitemap));""")
+            CREATE TABLE IF NOT EXISTS sitemap_urls (url TEXT,sitemap TEXT,lastmod TEXT,PRIMARY KEY(url,sitemap));
+            CREATE TABLE IF NOT EXISTS snapshots (snapshot_id TEXT PRIMARY KEY,seed TEXT,started_at TEXT,exported_at TEXT,profile TEXT,engine_version TEXT,page_count INTEGER,status TEXT,configuration TEXT);""")
             old = self.meta("config")
             if old and not resume:
                 raise ValueError(
@@ -90,9 +99,15 @@ class Crawler:
                 raise ValueError(
                     "Resume configuration differs. Only page budget, workers, delay, timeout and retries may change."
                 )
+            self.snapshot_id = self.meta("snapshot_id") or generate_snapshot_id(self.config.url)
             if not old:
                 self.setmeta("config", signature)
                 self.setmeta("started_at", utcnow())
+                self.setmeta("snapshot_id", self.snapshot_id)
+            self.incremental_from = Path(incremental_from) if incremental_from else None
+            self.previous_cache = {}
+            if self.incremental_from:
+                self._load_incremental_cache(self.incremental_from)
             self.transport = Transport(config)
             self.robots = RobotsCache(self.transport)
             self.db.execute("UPDATE urls SET state='pending' WHERE state='fetching'")
@@ -100,6 +115,47 @@ class Crawler:
         except BaseException:
             self.db.close()
             raise
+
+    def _load_incremental_cache(self, prev_dir: Path):
+        prev_db_path = prev_dir / "crawl.sqlite3"
+        prev_pages_path = prev_dir / "pages.jsonl"
+        if prev_db_path.exists():
+            try:
+                conn = sqlite3.connect(str(prev_db_path))
+                cursor = conn.cursor()
+                for row in cursor.execute("SELECT payload FROM pages"):
+                    page = json.loads(row[0])
+                    url = page.get("url")
+                    if url:
+                        headers = page.get("headers") or {}
+                        self.previous_cache[url] = {
+                            "etag": str(headers.get("etag", "")).strip(),
+                            "last_modified": str(headers.get("last-modified", "")).strip(),
+                            "body_sha256": page.get("body_sha256", ""),
+                            "payload": page,
+                        }
+                conn.close()
+            except Exception as e:
+                self.log(f"Notice: could not read previous SQLite cache from {prev_db_path}: {e}")
+        elif prev_pages_path.exists():
+            try:
+                with prev_pages_path.open("r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        page = json.loads(line)
+                        url = page.get("url")
+                        if url:
+                            headers = page.get("headers") or {}
+                            self.previous_cache[url] = {
+                                "etag": str(headers.get("etag", "")).strip(),
+                                "last_modified": str(headers.get("last-modified", "")).strip(),
+                                "body_sha256": page.get("body_sha256", ""),
+                                "payload": page,
+                            }
+            except Exception as e:
+                self.log(f"Notice: could not read previous pages.jsonl from {prev_pages_path}: {e}")
 
     def meta(self, key):
         row = self.db.execute("SELECT value FROM meta WHERE key=?", (key,)).fetchone()
@@ -204,7 +260,34 @@ class Crawler:
         self.db.commit()
 
     def fetch_page(self, url, depth):
-        r = self.transport.fetch(url, self.robots.allowed, self.robots.delay)
+        conditional_headers = {}
+        prior_info = self.previous_cache.get(url) if self.previous_cache else None
+        if prior_info:
+            if prior_info.get("etag"):
+                conditional_headers["if-none-match"] = prior_info["etag"]
+            if prior_info.get("last_modified"):
+                conditional_headers["if-modified-since"] = prior_info["last_modified"]
+
+        r = self.transport.fetch(
+            url,
+            self.robots.allowed,
+            self.robots.delay,
+            request_headers=conditional_headers if conditional_headers else None,
+        )
+
+        # Handle HTTP 304 Not Modified: reuse prior extraction data
+        if r.status == 304 and prior_info and prior_info.get("payload"):
+            prior_page = prior_info["payload"]
+            page = dict(prior_page)
+            page["depth"] = depth
+            page["fetched_at"] = r.fetched_at
+            page["elapsed_ms"] = r.elapsed_ms
+            page["http_events"] = r.http_events
+            page["attempts"] = r.attempts
+            page["conditional_status"] = 304
+            page["incremental_state"] = "unchanged"
+            return page
+
         page = {
             "url": url,
             "depth": depth,
@@ -224,6 +307,10 @@ class Crawler:
             "access": classify_access(r.status, r.headers, r.body, r.error),
             "withheld_url": r.withheld_url,
             "robots_decision": self.robots.decision(r.withheld_url) if r.withheld_url else None,
+            "conditional_status": r.status,
+            "incremental_state": "unchanged"
+            if prior_info and hashlib.sha256(r.body).hexdigest() == prior_info.get("body_sha256")
+            else ("changed" if prior_info else "added"),
         }
         ctype = r.headers.get("content-type", "").lower().split(";")[0].strip()
         html = ctype in ("text/html", "application/xhtml+xml") or (
@@ -268,8 +355,10 @@ class Crawler:
                         page = future.result()
                         from .render import needs_browser
 
-                        browser_needed = self.config.render_mode == "browser" or (
-                            self.config.render_mode == "auto" and needs_browser(page.get("data"))
+                        browser_needed = (page.get("conditional_status") != 304) and (
+                            self.config.render_mode == "browser" or (
+                                self.config.render_mode == "auto" and needs_browser(page.get("data"))
+                            )
                         )
                         if browser_needed and page.get("data") and not page["error"]:
                             from .render import render_page
@@ -348,7 +437,7 @@ class Crawler:
             if data:
                 documents.setdefault(p["final_url"], p)
             issues.extend(page_findings(p))
-            if p.get("rendered", {}).get("error"):
+            if (p.get("rendered") or {}).get("error"):
                 issues.append(
                     {
                         "url": p["url"],
@@ -370,7 +459,7 @@ class Crawler:
                     groups[key][d[key]].append(final)
             all_links = [(item, "raw") for item in (p.get("data") or {}).get("links", [])] + [
                 (item, "rendered")
-                for item in (p.get("rendered", {}).get("data") or {}).get("links", [])
+                for item in ((p.get("rendered") or {}).get("data") or {}).get("links", [])
             ]
             for link, representation in all_links:
                 target = normalize_url(link["url"], drop_tracking=self.config.drop_tracking)
@@ -512,6 +601,7 @@ class Crawler:
                     "indexability_candidate": p.get("selected_index_signals", {}).get(
                         "indexability_candidate"
                     ),
+                    "incremental_state": p.get("incremental_state", "added"),
                 }
             )
             inventory.append(row)
@@ -547,16 +637,16 @@ class Crawler:
             )
         )
         issues = list({(i["url"], i["code"], i["evidence"]): i for i in issues}.values())
-        render_errors = sum(bool(p.get("rendered", {}).get("error")) for p in pages)
+        render_errors = sum(bool((p.get("rendered") or {}).get("error")) for p in pages)
         render_content_warnings = sum(
-            bool(p.get("rendered", {}).get("content_warning")) for p in pages
+            bool((p.get("rendered") or {}).get("content_warning")) for p in pages
         )
         render_javascript_error_pages = sum(
-            bool(p.get("rendered", {}).get("javascript_errors")) for p in pages
+            bool((p.get("rendered") or {}).get("javascript_errors")) for p in pages
         )
         render_readiness_warnings = sum(
-            bool(p.get("rendered", {}).get("readiness", {}).get("selector_error"))
-            or bool(p.get("rendered", {}).get("readiness", {}).get("deadline_reached"))
+            bool(((p.get("rendered") or {}).get("readiness") or {}).get("selector_error"))
+            or bool(((p.get("rendered") or {}).get("readiness") or {}).get("deadline_reached"))
             for p in pages
         )
         sitemap_failures = [
@@ -567,9 +657,14 @@ class Crawler:
         summary = {
             "schema_version": 1,
             "engine_version": __version__,
+            "snapshot_id": getattr(self, "snapshot_id", generate_snapshot_id(self.config.url)),
+            "profile": getattr(self.config, "profile", "standard"),
             "seed": self.config.url,
             "started_at": self.meta("started_at"),
             "exported_at": utcnow(),
+            "incremental": bool(getattr(self, "incremental_from", None)),
+            "incremental_from": str(self.incremental_from) if getattr(self, "incremental_from", None) else None,
+            "incremental_stats": dict(Counter(p.get("incremental_state", "added") for p in pages)),
             "configuration": self.meta("last_configuration") or asdict(self.config),
             "attempted_urls": len(pages),
             "html_documents": len(documents),
@@ -590,7 +685,7 @@ class Crawler:
                 or render_readiness_warnings
                 or sitemap_failures
             ),
-            "rendered_documents": sum(bool(p.get("rendered", {}).get("data")) for p in pages),
+            "rendered_documents": sum(bool((p.get("rendered") or {}).get("data")) for p in pages),
             "render_errors": render_errors,
             "render_content_warnings": render_content_warnings,
             "render_javascript_error_pages": render_javascript_error_pages,
@@ -631,6 +726,24 @@ class Crawler:
             },
         )
         write_json(self.out / "summary.json", summary)
+        try:
+            self.db.execute(
+                "INSERT OR REPLACE INTO snapshots VALUES (?,?,?,?,?,?,?,?,?)",
+                (
+                    summary["snapshot_id"],
+                    self.config.url,
+                    self.meta("started_at"),
+                    summary["exported_at"],
+                    summary["profile"],
+                    __version__,
+                    len(pages),
+                    "complete",
+                    json.dumps(self.meta("last_configuration") or asdict(self.config), ensure_ascii=False),
+                ),
+            )
+            self.db.commit()
+        except Exception:
+            pass
         write_json(self.out / "robots.json", self.meta("robots") or {})
         write_json(
             self.out / "sitemaps.json",
@@ -701,6 +814,7 @@ class Crawler:
             "body_bytes",
             "fetched_at",
             "html_path",
+            "incremental_state",
         ]
         write_csv(self.out / "pages.csv", fields, inventory)
         write_csv(

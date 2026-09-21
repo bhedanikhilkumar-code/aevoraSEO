@@ -50,6 +50,7 @@ function showHelp() {
   console.log(`  ${c.cyan}reputation${c.reset} <domain>      Calculate Aevora Reputation & Entity score`);
   console.log(`  ${c.cyan}backlinks${c.reset} <domain>       Discover and score high-authority backlink sources`);
   console.log(`  ${c.cyan}crawl${c.reset} <target-url>        Crawl website structure and discover search links`);
+  console.log(`  ${c.cyan}compare${c.reset}                  Compare two crawl snapshots for added/changed/removed URLs`);
   console.log(`  ${c.cyan}doctor${c.reset}                  Check CLI environment, connectivity & engine status`);
   console.log(`  ${c.cyan}version${c.reset}                 Print version information\n`);
 
@@ -59,6 +60,8 @@ function showHelp() {
 
   console.log(`${c.bold}EXAMPLES:${c.reset}`);
   console.log(`  $ npx aevoraseo audit https://example.com`);
+  console.log(`  $ npx aevoraseo crawl https://example.com --profile quick --out ./crawl1`);
+  console.log(`  $ npx aevoraseo compare --before ./crawl1 --after ./crawl2 --out ./diff`);
   console.log(`  $ npx aevoraseo reputation example.com`);
   console.log(`  $ npx aevoraseo doctor\n`);
 }

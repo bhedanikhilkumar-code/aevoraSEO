@@ -243,27 +243,33 @@ The exact files depend on the command and enabled features.
 Examples:
 
 ```bash
-# General crawl
-python3 scripts/run.py crawl https://example.com \
-  --out ./client-runs/example \
-  --max-pages 50
+# Rapid diagnostic crawl with the quick profile
+aevoraseo crawl https://example.com --profile quick --out ./runs/quick-check
+
+# Comprehensive crawl with the deep profile
+aevoraseo crawl https://example.com --profile deep --out ./runs/deep-audit
+
+# Incremental crawl (reusing unmodified pages via ETag/304 conditional HTTP requests)
+aevoraseo crawl https://example.com --incremental ./runs/baseline --out ./runs/recheck
+
+# Compare two crawl snapshots to detect added, removed, changed & unchanged pages
+aevoraseo compare --before ./runs/baseline --after ./runs/recheck --out ./runs/diff
 
 # One page with browser rendering
-python3 scripts/run.py scrape https://example.com/article \
-  --out ./client-runs/article \
+aevoraseo scrape https://example.com/article \
+  --out ./runs/article \
   --mode browser \
   --wait-for-selector article \
   --scroll-steps 5
 
 # Capture a browser screenshot
-python3 scripts/run.py scrape https://example.com \
-  --out ./client-runs/visual \
+aevoraseo scrape https://example.com \
+  --out ./runs/visual \
   --screenshot
 
-# Resume an existing snapshot
-python3 scripts/run.py crawl https://example.com \
-  --out ./client-runs/example \
-  --max-pages 100 \
+# Resume an interrupted snapshot without repeating completed work
+aevoraseo crawl https://example.com \
+  --out ./runs/example \
   --resume
 ```
 

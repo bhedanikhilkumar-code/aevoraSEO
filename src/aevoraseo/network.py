@@ -87,9 +87,45 @@ def origin(url):
     return p.scheme + "://" + p.netloc
 
 
+CRAWL_PROFILES = {
+    "quick": {
+        "max_pages": 25,
+        "max_depth": 3,
+        "workers": 2,
+        "delay": 0.2,
+        "timeout": 10.0,
+        "retries": 1,
+        "render_mode": "http",
+        "screenshot": False,
+    },
+    "standard": {
+        "max_pages": 100,
+        "max_depth": 6,
+        "workers": 4,
+        "delay": 0.5,
+        "timeout": 20.0,
+        "retries": 2,
+        "render_mode": "http",
+        "screenshot": False,
+    },
+    "deep": {
+        "max_pages": 500,
+        "max_depth": 12,
+        "workers": 8,
+        "delay": 0.25,
+        "timeout": 30.0,
+        "retries": 2,
+        "render_mode": "auto",
+        "scroll_steps": 5,
+        "screenshot": False,
+    },
+}
+
+
 @dataclass
 class Config:
     url: str
+    profile: str = "standard"
     max_pages: int = 100
     max_depth: int = 6
     workers: int = 4
@@ -120,7 +156,20 @@ class Config:
     headless: bool = True
     include_www: bool = False
 
+    @classmethod
+    def from_profile(cls, profile_name: str, url: str, **overrides) -> "Config":
+        if profile_name not in CRAWL_PROFILES:
+            supported = ", ".join(CRAWL_PROFILES.keys())
+            raise ValueError(f"Unknown crawl profile '{profile_name}'. Supported profiles: {supported}")
+        kwargs = dict(CRAWL_PROFILES[profile_name])
+        kwargs["profile"] = profile_name
+        kwargs.update({k: v for k, v in overrides.items() if v is not None})
+        return cls(url=url, **kwargs)
+
     def __post_init__(self):
+        if self.profile not in CRAWL_PROFILES and self.profile != "custom":
+            supported = ", ".join(CRAWL_PROFILES.keys())
+            raise ValueError(f"profile must be one of: {supported}, custom")
         self.url = normalize_url(self.url, drop_tracking=self.drop_tracking)
         if not self.url:
             raise ValueError("Provide a valid http(s) URL without credentials.")
@@ -285,6 +334,8 @@ class Transport:
                 "x-client-info",
                 "access-control-request-method",
                 "access-control-request-headers",
+                "if-none-match",
+                "if-modified-since",
             }
             for k, v in (request_headers or {}).items():
                 if k.lower() in allowed_headers:

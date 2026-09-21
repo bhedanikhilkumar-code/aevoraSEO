@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import csv
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -247,11 +249,20 @@ def export_readiness(out, pages=None, summary=None, robots=None, sitemaps=None):
     return save_report(out, "readiness", result, lines)
 
 
+def normalize_text_for_diff(text: str | None) -> str:
+    if not text:
+        return ""
+    return re.sub(r"\s+", " ", str(text)).strip()
+
+
 def page_snapshot(page):
     data, representation = selected_data(page)
     signals = index_signals(
         data, page.get("headers") or {}, page.get("status", 0), page.get("final_url", page["url"])
     )
+    main_text = data.get("main_text", "")
+    norm_text = normalize_text_for_diff(main_text)
+    norm_text_hash = hashlib.sha256(norm_text.encode("utf-8")).hexdigest() if norm_text else ""
     return {
         "status": page.get("status"),
         "error": page.get("error", ""),
@@ -260,7 +271,8 @@ def page_snapshot(page):
         "title": data.get("title"),
         "description": data.get("meta_description"),
         "h1": data.get("headings", {}).get("h1", []),
-        "content_hash": data.get("content_sha256"),
+        "content_hash": norm_text_hash or data.get("content_sha256"),
+        "word_count": data.get("word_count", 0),
         "canonical": data.get("canonical", []),
         "noindex": signals["googlebot_noindex_observed"],
         "schema_types": data.get("schema_types", []),
@@ -269,7 +281,7 @@ def page_snapshot(page):
     }
 
 
-def compare(before, after, out):
+def compare(before, after, out, format="terminal", status_filter="all", url_filter=None):
     a, b = Path(before), Path(after)
     sa, sb = read_json(a / "summary.json"), read_json(b / "summary.json")
     if sa["seed"] != sb["seed"]:
@@ -277,22 +289,47 @@ def compare(before, after, out):
             "Snapshot comparison needs the same seed URL. Compare competitors in the SEO workflow."
         )
     left, right = ({p["url"]: page_snapshot(p) for p in read_pages(d)} for d in (a, b))
+
+    if url_filter:
+        pattern = re.compile(url_filter)
+        left = {u: p for u, p in left.items() if pattern.search(u)}
+        right = {u: p for u, p in right.items() if pattern.search(u)}
+
+    common_urls = sorted(left.keys() & right.keys())
+    newly_observed = sorted(right.keys() - left.keys())
+    not_reobserved = sorted(left.keys() - right.keys())
+
     changed = []
-    for url in sorted(left.keys() & right.keys()):
+    unchanged = []
+    errors = []
+
+    for url in common_urls:
+        l_page = left[url]
+        r_page = right[url]
+        if (
+            l_page.get("error")
+            or r_page.get("error")
+            or l_page.get("status", 0) >= 400
+            or r_page.get("status", 0) >= 400
+        ):
+            errors.append(url)
         fields = {
-            k: {"before": left[url][k], "after": right[url][k]}
-            for k in left[url]
-            if left[url][k] != right[url][k]
+            k: {"before": l_page[k], "after": r_page[k]}
+            for k in l_page
+            if l_page[k] != r_page[k]
         }
         if fields:
             changed.append({"url": url, "fields": fields})
+        else:
+            unchanged.append(url)
+
     old_issues, new_issues = (
         {(r["url"], r["code"]) for r in read_json(d / "issues.json")} for d in (a, b)
     )
     # A disappearing URL or failed observation must never count as a resolved issue.
     comparable = {
         u
-        for u in left.keys() & right.keys()
+        for u in common_urls
         if left[u]["content_hash"]
         and right[u]["content_hash"]
         and not left[u]["error"]
@@ -306,13 +343,27 @@ def compare(before, after, out):
     result = {
         "checked_at": utcnow(),
         "seed": sa["seed"],
+        "before_snapshot_id": sa.get("snapshot_id"),
+        "after_snapshot_id": sb.get("snapshot_id"),
         "before_at": sa.get("exported_at"),
         "after_at": sb.get("exported_at"),
         "coverage_limited": bool(sa.get("coverage_limited") or sb.get("coverage_limited")),
         "configuration_changed": sa.get("configuration") != sb.get("configuration"),
+        "summary": {
+            "added": len(newly_observed),
+            "removed": len(not_reobserved),
+            "changed": len(changed),
+            "unchanged": len(unchanged),
+            "errors": len(errors),
+            "total_before": len(left),
+            "total_after": len(right),
+        },
         "changed_pages": changed,
-        "newly_observed_urls": sorted(right.keys() - left.keys()),
-        "not_reobserved_urls": sorted(left.keys() - right.keys()),
+        "newly_observed_urls": newly_observed,
+        "not_reobserved_urls": not_reobserved,
+        "added_urls": newly_observed,
+        "removed_urls": not_reobserved,
+        "unchanged_urls": unchanged,
         "new_findings": [{"url": u, "code": c} for u, c in sorted(new_issues - old_issues)],
         "findings_no_longer_observed_on_comparable_pages": [
             {"url": u, "code": c} for u, c in resolved
@@ -322,6 +373,8 @@ def compare(before, after, out):
     lines = [
         "# What changed since the last review",
         "",
+        f"Added: {len(newly_observed)} | Removed: {len(not_reobserved)} | Changed: {len(changed)} | Unchanged: {len(unchanged)} | Errors: {len(errors)}",
+        "",
         f"{len(changed)} pages changed; {len(result['new_findings'])} new findings; {len(resolved)} findings no longer observed on comparable pages.",
         "",
         result["note"],
@@ -330,4 +383,40 @@ def compare(before, after, out):
     ]
     for row in changed:
         lines += ["", "- " + row["url"] + ": " + ", ".join(row["fields"])]
+
+    out = Path(out)
+    out.mkdir(parents=True, exist_ok=True)
+
+    # Export comparison.csv
+    csv_rows = []
+    for u in newly_observed:
+        csv_rows.append({"url": u, "state": "ADDED", "field": "url", "before": "", "after": u})
+    for u in not_reobserved:
+        csv_rows.append({"url": u, "state": "REMOVED", "field": "url", "before": u, "after": ""})
+    for row in changed:
+        for f, diff in row["fields"].items():
+            csv_rows.append(
+                {
+                    "url": row["url"],
+                    "state": "CHANGED",
+                    "field": f,
+                    "before": json.dumps(diff["before"], ensure_ascii=False)
+                    if isinstance(diff["before"], (list, dict))
+                    else str(diff["before"]),
+                    "after": json.dumps(diff["after"], ensure_ascii=False)
+                    if isinstance(diff["after"], (list, dict))
+                    else str(diff["after"]),
+                }
+            )
+    for u in unchanged:
+        csv_rows.append(
+            {"url": u, "state": "UNCHANGED", "field": "all", "before": "matched", "after": "matched"}
+        )
+
+    if csv_rows:
+        with (out / "comparison.csv").open("w", newline="", encoding="utf-8-sig") as f:
+            writer = csv.DictWriter(f, fieldnames=["url", "state", "field", "before", "after"])
+            writer.writeheader()
+            writer.writerows(csv_rows)
+
     return save_report(out, "comparison", result, lines)

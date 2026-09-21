@@ -21,7 +21,19 @@ def parser():
         p = sub.add_parser(name)
         p.add_argument("url")
         p.add_argument("--out", required=True, type=Path)
-        p.add_argument("--max-pages", type=int, default=1 if name == "scrape" else 100)
+        p.add_argument(
+            "--profile",
+            choices=["quick", "standard", "deep"],
+            default="standard",
+            help="Crawl profile preset (quick: rapid diagnostic, standard: balanced default, deep: comprehensive analysis).",
+        )
+        p.add_argument(
+            "--incremental",
+            type=Path,
+            default=None,
+            help="Incremental crawl against a previous snapshot directory, reusing unchanged pages.",
+        )
+        p.add_argument("--max-pages", type=int, default=None)
         if name == "watch":
             p.add_argument("--cycles", type=int, default=3)
             p.add_argument(
@@ -30,11 +42,11 @@ def parser():
                 default=3600,
                 help="Seconds between completed runs; minimum 60.",
             )
-        p.add_argument("--max-depth", type=int, default=6)
-        p.add_argument("--workers", type=int, default=4)
-        p.add_argument("--delay", type=float, default=0.5)
-        p.add_argument("--timeout", type=float, default=20)
-        p.add_argument("--retries", type=int, default=2)
+        p.add_argument("--max-depth", type=int, default=None)
+        p.add_argument("--workers", type=int, default=None)
+        p.add_argument("--delay", type=float, default=None)
+        p.add_argument("--timeout", type=float, default=None)
+        p.add_argument("--retries", type=int, default=None)
         p.add_argument("--max-bytes", type=int, default=5_000_000)
         p.add_argument("--max-discovered", type=int, default=10_000)
         p.add_argument("--max-sitemaps", type=int, default=25)
@@ -82,7 +94,7 @@ def parser():
         p.add_argument(
             "--mode",
             choices=["auto", "http", "browser"],
-            default="auto",
+            default=None,
             help="Auto renders likely JavaScript shells; browser renders every HTML page.",
         )
         p.add_argument(
@@ -111,7 +123,7 @@ def parser():
         p.add_argument(
             "--scroll-steps",
             type=int,
-            default=3,
+            default=None,
             help="Bounded viewport scrolls to expose lazy content; 0 disables.",
         )
         p.add_argument(
@@ -155,9 +167,22 @@ def parser():
     p = sub.add_parser("readiness", help="Explain search and answer readiness from saved evidence.")
     p.add_argument("--out", type=Path, required=True)
     p = sub.add_parser("compare", help="Compare two snapshots of the same website.")
-    p.add_argument("--before", type=Path, required=True)
-    p.add_argument("--after", type=Path, required=True)
-    p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--before", type=Path, required=True, help="Path to initial crawl snapshot.")
+    p.add_argument("--after", type=Path, required=True, help="Path to subsequent crawl snapshot.")
+    p.add_argument("--out", type=Path, required=True, help="Path to write comparison report.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Format for comparison output.",
+    )
+    p.add_argument(
+        "--status",
+        choices=["all", "added", "removed", "changed", "unchanged"],
+        default="all",
+        help="Filter compared pages by state.",
+    )
+    p.add_argument("--filter", default=None, help="Regex pattern to filter compared URLs.")
     p = sub.add_parser("backlinks", help="Check supplied source pages for links to a website.")
     p.add_argument("--sources", type=Path, required=True)
     p.add_argument("--target", required=True)
@@ -325,7 +350,44 @@ def main(argv=None):
             elif args.command == "compare":
                 from .review import compare
 
-                result = compare(args.before, args.after, args.out)
+                fmt = getattr(args, "format", "terminal")
+                result = compare(
+                    args.before,
+                    args.after,
+                    args.out,
+                    format=fmt,
+                    status_filter=getattr(args, "status", "all"),
+                    url_filter=getattr(args, "filter", None),
+                )
+                if fmt == "terminal":
+                    s = result.get("summary", {})
+                    out_lines = [
+                        "Snapshot comparison",
+                        f"Before: {result.get('before_snapshot_id') or result.get('before_at') or 'N/A'}",
+                        f"After:  {result.get('after_snapshot_id') or result.get('after_at') or 'N/A'}",
+                        "",
+                        f"Added:     {s.get('added', 0)}",
+                        f"Removed:   {s.get('removed', 0)}",
+                        f"Changed:   {s.get('changed', 0)}",
+                        f"Unchanged: {s.get('unchanged', 0)}",
+                        f"Errors:    {s.get('errors', 0)}",
+                    ]
+                    print("\n".join(out_lines))
+                elif fmt == "markdown":
+                    md_path = args.out / "comparison.md"
+                    if md_path.exists():
+                        print(md_path.read_text(encoding="utf-8").strip())
+                    else:
+                        print(json.dumps(result, ensure_ascii=False, indent=2))
+                elif fmt == "csv":
+                    csv_path = args.out / "comparison.csv"
+                    if csv_path.exists():
+                        print(csv_path.read_text(encoding="utf-8").strip())
+                    else:
+                        print("url,state,field,before,after")
+                else:
+                    print(json.dumps(result, ensure_ascii=False, indent=2))
+                return 0
             elif args.command == "backlinks":
                 from .backlinks import check_sources
 
@@ -398,14 +460,42 @@ def main(argv=None):
             if args.command == "scrape":
                 args.max_pages = 1
                 args.no_sitemaps = True
+            from .network import CRAWL_PROFILES
+
+            profile_name = getattr(args, "profile", "standard")
+            preset = CRAWL_PROFILES.get(profile_name, CRAWL_PROFILES["standard"])
+
+            max_pages = (
+                args.max_pages
+                if args.max_pages is not None
+                else (1 if args.command == "scrape" else preset["max_pages"])
+            )
+            max_depth = args.max_depth if args.max_depth is not None else preset["max_depth"]
+            workers = args.workers if args.workers is not None else preset["workers"]
+            delay = args.delay if args.delay is not None else preset["delay"]
+            timeout = args.timeout if args.timeout is not None else preset["timeout"]
+            retries = args.retries if args.retries is not None else preset["retries"]
+            render_mode = args.mode if args.mode is not None else preset["render_mode"]
+            scroll_steps = (
+                args.scroll_steps
+                if args.scroll_steps is not None
+                else preset.get("scroll_steps", 3)
+            )
+            render_settle_ms = (
+                args.render_settle_ms
+                if args.render_settle_ms is not None
+                else preset.get("render_settle_ms", 1500)
+            )
+
             config = Config(
                 url=args.url,
-                max_pages=args.max_pages,
-                max_depth=args.max_depth,
-                workers=args.workers,
-                delay=args.delay,
-                timeout=args.timeout,
-                retries=args.retries,
+                profile=profile_name,
+                max_pages=max_pages,
+                max_depth=max_depth,
+                workers=workers,
+                delay=delay,
+                timeout=timeout,
+                retries=retries,
                 max_bytes=args.max_bytes,
                 max_discovered=args.max_discovered,
                 max_sitemaps=args.max_sitemaps,
@@ -421,12 +511,12 @@ def main(argv=None):
                 render_wait_ms=args.render_wait_ms,
                 render_max_requests=args.render_max_requests,
                 render_allow_hosts=args.render_allow_host,
-                render_mode=args.mode,
+                render_mode=render_mode,
                 robots_policy=args.robots,
                 render_asset_policy=args.browser_assets,
                 wait_for_selector=args.wait_for_selector,
-                render_settle_ms=args.render_settle_ms,
-                scroll_steps=args.scroll_steps,
+                render_settle_ms=render_settle_ms,
+                scroll_steps=scroll_steps,
                 screenshot=args.screenshot,
                 headless=not args.headed,
             )
@@ -467,6 +557,7 @@ def main(argv=None):
                 args.out,
                 resume=args.command == "report" or args.resume,
                 selectors=selectors,
+                incremental_from=getattr(args, "incremental", None),
             )
             if args.command != "report":
                 if args.quiet:

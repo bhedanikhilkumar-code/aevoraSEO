@@ -199,7 +199,7 @@ def summarize_access(pages, robots, sitemap_fetches, summary):
     events = [e for p in pages for e in p.get("http_events", [])]
     events += [e for r in robots.values() for e in r.get("http_events", [])]
     events += [e for r in sitemap_fetches for e in r.get("http_events", [])]
-    events += [e for p in pages for e in p.get("rendered", {}).get("http_events", [])]
+    events += [e for p in pages for e in (p.get("rendered") or {}).get("http_events", [])]
     retry_429 = sum(e["status"] == 429 for e in events)
     http_denials = sum(e["status"] in (401, 403) for e in events)
     challenges = sum(bool(e.get("challenge_detected")) for e in events)
@@ -214,7 +214,9 @@ def summarize_access(pages, robots, sitemap_fetches, summary):
         for c in ("http_access_denied", "http_rate_limited", "challenge_response")
     )
     render_blocks = Counter(
-        e["reason"] for p in pages for e in p.get("rendered", {}).get("blocked_request_log", [])
+        e["reason"]
+        for p in pages
+        for e in (p.get("rendered") or {}).get("blocked_request_log", [])
     )
     stop = []
     if (

@@ -14,12 +14,31 @@ Readiness is not an AI visibility score. It does not establish indexing, citatio
 
 ## Compare and repeat audits
 
-Use a fresh folder for each observation. `compare` requires the same seed URL and reports changed content, metadata, status, schema, canonical and noindex signals. It also records newly observed URLs and pages that were not reobserved. A missing or failed page does not count as a resolved finding.
+Use a fresh folder for each observation. `compare` requires the same seed URL and reports changed content, metadata, status, schema, canonical and noindex signals. It categorizes every page into deterministic states:
+- **`ADDED`**: Newly observed URLs present in the subsequent snapshot but not in the previous snapshot.
+- **`REMOVED`**: URLs present in the previous snapshot but no longer observed.
+- **`CHANGED`**: URLs present in both snapshots where meaningful SEO content, metadata, headings, status or canonical values changed.
+- **`UNCHANGED`**: URLs present in both snapshots with identical content hashes and signals.
 
 ```sh
+# Basic comparison
 aevoraseo compare --before runs/baseline --after runs/recheck --out runs/comparison
+
+# Output formats: terminal (default), json, csv, or markdown
+aevoraseo compare --before runs/baseline --after runs/recheck --out runs/comparison --format terminal
+aevoraseo compare --before runs/baseline --after runs/recheck --out runs/comparison --format json
+aevoraseo compare --before runs/baseline --after runs/recheck --out runs/comparison --format csv
+aevoraseo compare --before runs/baseline --after runs/recheck --out runs/comparison --format markdown
+
+# Filter by state or URL pattern
+aevoraseo compare --before runs/baseline --after runs/recheck --out runs/comparison --status changed
+aevoraseo compare --before runs/baseline --after runs/recheck --out runs/comparison --filter "^https://example\.com/products"
+
+# Scheduled continuous monitoring loop
 aevoraseo watch https://example.com --out runs/weekly-review --cycles 3 --interval 86400 --max-pages 25 --mode auto
 ```
+
+In addition to `comparison.json` and `comparison.md`, every comparison exports `comparison.csv` with granular field-by-field diffs (`url`, `state`, `field`, `before`, `after`). A missing or failed page does not count as a resolved finding.
 
 `watch` accepts the crawl controls, including host scope, rendering and selector waits. Each cycle creates a fresh `run-0001`, `run-0002` folder and subsequent comparisons. `watch.json` records progress. Intervals are measured from the end of a run; the minimum is 60 seconds. Two consecutive runs without usable HTML stop the loop. Press Ctrl+C to stop and retain completed evidence. Use a new parent folder for a new series.
 

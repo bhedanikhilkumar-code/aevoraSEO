@@ -20,15 +20,17 @@ Crawl/scrape/report exit codes: 0 means at least one unique HTML document was ex
 
 | Option | CLI default | Meaning |
 |---|---:|---|
-| `--max-pages` | 100 | Total processed URL records, including failed or withheld attempts; scrape fixes this at 1 |
-| `--max-depth` | 6 | Discovery depth from the seed or sitemap URLs |
+| `--profile quick\|standard\|deep` | standard | Configuration profile preset altering depth, page limits, workers, timeouts and rendering |
+| `--incremental DIRECTORY` | none | Incremental crawl using a previous snapshot directory, sending ETag/If-Modified-Since headers to reuse unmodified (304) pages |
+| `--max-pages` | profile default | Total processed URL records, including failed or withheld attempts; scrape fixes this at 1 |
+| `--max-depth` | profile default | Discovery depth from the seed or sitemap URLs |
 | `--max-discovered` | 10000 | Queue and sitemap membership cap |
 | `--max-sitemaps` | 25 | Unique sitemap fetch cap |
 | `--max-query-variants` | 20 | Query variants per origin/path |
-| `--workers` | 4 | Concurrent HTTP page workers, maximum 32; browser pages run sequentially |
-| `--delay` | 0.5 seconds | Minimum spacing per origin; robots crawl-delay may increase it |
-| `--timeout` | 20 seconds | HTTP connection/read budget and browser observation budget |
-| `--retries` | 2 | Retries after the initial transient failure |
+| `--workers` | profile default | Concurrent HTTP page workers, maximum 32; browser pages run sequentially |
+| `--delay` | profile default | Minimum spacing per origin; robots crawl-delay may increase it |
+| `--timeout` | profile default | HTTP connection/read budget and browser observation budget |
+| `--retries` | profile default | Retries after the initial transient failure |
 | `--max-bytes` | 5000000 | Response/decompressed body and rendered HTML size cap |
 | `--allow-host HOST` | none | Add an exact website hostname; repeat as needed |
 | `--include-www` | false | Add only the seed host's exact www/non-www counterpart for a normal site audit; robots/address checks stay active |
@@ -38,6 +40,25 @@ Crawl/scrape/report exit codes: 0 means at least one unique HTML document was ex
 | `--no-sitemaps` | false | Disable sitemap discovery |
 | `--keep-tracking` | false | Keep common tracking parameters in frontier identities |
 | `--resume` | false | Continue the same snapshot |
+
+### Crawl Profiles
+
+AevoraSEO provides three pre-tuned crawl profiles:
+- **`quick`**: Optimized for rapid initial diagnostics (25 pages, depth 3, 2 workers, 0.2s delay, 10s timeout, 1 retry, raw HTTP mode).
+- **`standard`**: Balanced default for site audits (100 pages, depth 6, 4 workers, 0.5s delay, 20s timeout, 2 retries, HTTP mode).
+- **`deep`**: Thorough exploration for full architectural reviews (500 pages, depth 12, 8 workers, 0.25s delay, 30s timeout, 2 retries, automatic JS rendering with 5 scroll steps).
+
+Explicit CLI flags (e.g. `--max-pages 50`) override profile defaults.
+
+### Incremental Crawling & Snapshots
+
+Every crawl automatically receives a persistent `snapshot_id` (format: `YYYYMMDDTHHMMSSZ_<seed_hash>`) and records snapshot metadata in the `snapshots` table of `crawl.sqlite3`.
+
+When running with `--incremental <previous_run_dir>`:
+- HTTP requests include `If-None-Match` (ETag) and `If-Modified-Since` conditional headers from the previous crawl.
+- HTTP 304 Not Modified responses reuse previous extraction payloads and skip browser rendering.
+- Each page is tagged with its `incremental_state`: `unchanged`, `changed`, or `added`.
+- `summary.json` includes `incremental_stats` tracking unmodified reused pages and state transitions.
 
 The URL budget is not an HTTP request budget. Robots files, sitemaps, redirects, retries and browser resources make additional requests. Redirect chains are bounded. The transport identifies itself as AevoraSEO, validates TLS, ignores environment proxies and connects to a checked resolved address. Embedded credentials and non-HTTP schemes are rejected. OS-managed DNS resolution can take longer than an application timeout.
 
