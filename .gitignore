@@ -24,10 +24,9 @@ Thumbs.db
 .idea/
 .vscode/
 
-# Core Proprietary Engine & Internal Tests (Isolated from public repository)
-src/
-scripts/
-tests/
+# Release and temporary runner artifacts
+bin/runner/
+bin/build_runner.py
 
 changes/
 private/

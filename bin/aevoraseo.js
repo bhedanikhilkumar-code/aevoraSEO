@@ -2,7 +2,7 @@
 
 /**
  * AevoraSEO CLI — Official Command-Line Interface
- * Distributed via NPM with zero-source leakage compiled native engine runner.
+ * Dual native binary runner and Python engine runtime.
  * 
  * Powered by AevoraSEO Engine
  * Author: Bheda Nikhilkumar
@@ -71,7 +71,7 @@ if (args.includes('-v') || args.includes('--version') || args[0] === 'version') 
   process.exit(0);
 }
 
-// Resolve compiled binary runner path
+// Resolve runner: First check compiled native binary, then fallback to Python runtime
 const runnerDir = path.join(__dirname, 'runner');
 let binaryPath = '';
 
@@ -83,15 +83,12 @@ if (process.platform === 'win32') {
   binaryPath = path.join(runnerDir, 'aevoraseo-linux');
 }
 
-// Check if binary exists
-if (fs.existsSync(binaryPath)) {
-  // If no args, show help
+function runNativeBinary(binPath) {
   if (args.length === 0) {
     banner();
   }
 
-  // Execute native compiled engine
-  const child = spawn(binaryPath, args, {
+  const child = spawn(binPath, args, {
     stdio: 'inherit',
     windowsHide: true,
   });
@@ -102,23 +99,71 @@ if (fs.existsSync(binaryPath)) {
   });
 
   child.on('exit', (code) => {
-    // Diagnostic inspection commands exit cleanly once report is printed
     if (args[0] === 'doctor' || args.includes('--help') || args.includes('-h') || args.includes('--version') || args.includes('-v')) {
       process.exit(0);
     }
     process.exit(code === 0 || code === null ? 0 : code);
   });
+}
 
-} else {
-  // If binary not found on this platform, show JS help or notice
+function runPythonEngine() {
+  const venvPythonWin = path.join(__dirname, '..', '.venv', 'Scripts', 'python.exe');
+  const venvPythonUnix = path.join(__dirname, '..', '.venv', 'bin', 'python');
+  
+  let pythonCmd = '';
+  let pythonArgs = [];
+
+  if (process.platform === 'win32' && fs.existsSync(venvPythonWin)) {
+    pythonCmd = venvPythonWin;
+  } else if (fs.existsSync(venvPythonUnix)) {
+    pythonCmd = venvPythonUnix;
+  } else {
+    pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+  }
+
+  const cliPath = path.join(__dirname, '..', 'src', 'aevoraseo', 'cli.py');
+  if (fs.existsSync(cliPath)) {
+    pythonArgs = [cliPath, ...args];
+  } else {
+    pythonArgs = ['-m', 'aevoraseo', ...args];
+  }
+
+  if (args.length === 0) {
+    banner();
+  }
+
+  const child = spawn(pythonCmd, pythonArgs, {
+    stdio: 'inherit',
+    windowsHide: true,
+  });
+
+  child.on('error', () => {
+    showMissingEngineNotice();
+  });
+
+  child.on('exit', (code) => {
+    process.exit(code === 0 || code === null ? 0 : code);
+  });
+}
+
+function showMissingEngineNotice() {
   if (args.length === 0 || args.includes('-h') || args.includes('--help') || args[0] === 'help') {
     showHelp();
     process.exit(0);
   }
 
   banner();
-  console.log(`${c.yellow}Notice: Native runner binary not found at:${c.reset} ${binaryPath}`);
-  console.log(`${c.dim}Compiled runner is currently available for Windows x64.${c.reset}`);
-  console.log(`\nVisit: ${c.cyan}https://github.com/bhedanikhilkumar-code/aevoraSEO${c.reset} for instructions.\n`);
-  process.exit(0);
+  console.log(`${c.yellow}AevoraSEO runtime not found.${c.reset}`);
+  console.log(`\nTo run AevoraSEO via Python:`);
+  console.log(`  ${c.green}pip install aevoraseo${c.reset}  OR  ${c.green}pip install -e .${c.reset}`);
+  console.log(`\nTo build the standalone native runner:`);
+  console.log(`  ${c.green}python scripts/release.py${c.reset}`);
+  console.log(`\nVisit: ${c.cyan}https://github.com/bhedanikhilkumar-code/aevoraSEO${c.reset}\n`);
+  process.exit(1);
+}
+
+if (fs.existsSync(binaryPath)) {
+  runNativeBinary(binaryPath);
+} else {
+  runPythonEngine();
 }
