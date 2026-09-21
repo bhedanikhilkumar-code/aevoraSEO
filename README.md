@@ -13,7 +13,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-111827?style=for-the-badge" alt="MIT License"></a>
   <a href="https://www.npmjs.com/package/aevoraseo"><img src="https://img.shields.io/badge/npm-aevoraseo-CB3837?style=for-the-badge&logo=npm&logoColor=white" alt="NPM Package"></a>
   <a href="https://github.com/bhedanikhilkumar-code/aevoraSEO/actions"><img src="https://img.shields.io/badge/build-passing-16A34A?style=for-the-badge&logo=githubactions&logoColor=white" alt="Build Status"></a>
-  <a href="https://github.com/bhedanikhilkumar-code/aevoraSEO/releases"><img src="https://img.shields.io/badge/release-3.0.0-2563EB?style=for-the-badge" alt="Release 3.0.0"></a>
+  <a href="https://github.com/bhedanikhilkumar-code/aevoraSEO/releases"><img src="https://img.shields.io/badge/release-1.0.0-2563EB?style=for-the-badge" alt="Release 1.0.0"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10+"></a>
   <a href="docs/setup.md"><img src="https://img.shields.io/badge/API_keys-not_required-16A34A?style=for-the-badge" alt="Native engine does not require an SEO API key"></a>
 </p>

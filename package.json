@@ -1,6 +1,6 @@
 {
   "name": "aevoraseo",
-  "version": "3.0.0",
+  "version": "1.0.0",
   "description": "Autonomous SEO & AEO audit engine CLI powered by AevoraSEO Cloud",
   "bin": {
     "aevoraseo": "./bin/aevoraseo.js"

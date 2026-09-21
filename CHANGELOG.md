@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.0.0 — AevoraSEO rebrand
+## 1.0.0 — AevoraSEO launch
 
 - Renamed the project, Python distribution, CLI entry point and import package to `aevoraseo`.
 - Replaced legacy project branding in documentation, metadata, examples and tests.
@@ -8,7 +8,7 @@
 - Removed the previous creator's personal details from project metadata and documentation.
 - Updated maintainer metadata to Bheda Nikhilkumar.
 - Added a deeper README covering architecture, evidence model, capabilities, security boundaries, development and roadmap.
-- Bumped the package version to 3.0.0 because the package and CLI rename is a breaking change.
+- Set the package version to 1.0.0 for the official initial launch of AevoraSEO.
 
 2.7.1
 
