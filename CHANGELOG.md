@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.0 — Production Release (2026-09-22)
+
+AevoraSEO 1.0.0 represents the complete, production-ready release of the evidence-first SEO, AEO, GEO, Entity, Authority, Reputation, Search/Commercial, and Content Optimization intelligence engine.
+
+### Complete 10-Phase Capabilities
+- **Phase A — Core Engine Reconciliation**: Native Python 3.12+ engine restored, hybrid Node runner, standardized 1.0.0 package metadata, automated release hygiene, and cross-platform CLI parity.
+- **Phase B — Crawler Hardening & Incremental Intelligence**: Quick/standard/deep crawl profiles, persistent SQLite snapshots, conditional ETag/304 extraction reuse, snapshot diff engine, SSRF defenses, and cache isolation.
+- **Phase C — AEO/GEO Intelligence Engine**: Direct answer proximity detection (10–60w definitions, structured lists), question/intent coverage, Schema.org audits, AI crawler access matrix (10 bots), transparent scoring (0–100), and `aeo-compare` temporal diffing.
+- **Phase D — Backlink & Reputation Intelligence**: Conclusive target link matching, anchor text extraction, sentence context excerpts, source classification (`editorial`, `directory`, `profile`, `community`, `owned`), strict ownership boundary, Model 1.1 reputation scoring, 206-site opportunity catalog, and `reputation-compare`.
+- **Phase E — Entity, Authority & Knowledge Intelligence**: Multi-source entity extraction (JSON-LD, Microdata, OpenGraph), typed models (`Organization`, `Person`, etc.), `sameAs` authority footprint across 10+ registries, cross-page entity consistency auditing, directed knowledge graph builder with graph metrics, Entity & Authority Score (0–100), and `entity-compare`.
+- **Phase F — Search, Local & Commercial Intelligence**: Search intent taxonomy (Informational, Commercial, Transactional, Navigational, Local), deterministic query extraction, cannibalization detection, local search visibility (NAP, maps, click-to-call), commercial CTA and conversion friction, buyer decision support matrices, Search & Commercial Visibility Score (0–100), and `search-compare`.
+- **Phase G — Content & Optimization Intelligence**: Title and meta description optimization, heading hierarchy and single H1 audits, direct answer and definition opportunity detection (40–60 words), FAQ objection handling, topic cluster pillar-spoke mapping, internal link graph auditing, intent-matched schema recommendations, grounded content briefs and editorial outlines, content gap/refresh prioritization, 30/60/90-day roadmaps, Content Optimization Score (0–100), and `optimize-compare`.
+- **Phase H — Multi-Agent & Platform Compatibility**: Empirical platform registry cataloging 18 target environments (Agent, Claude Code, Codex, Hermes, OpenClaw, aider, Copilot CLI, Gemini CLI, Factory Droid, Kilocode CLI, OpenCode CLI, Qwen, JCODE, jcode CLI, juni CLI, Kiro, prime-agent, cai), runtime environment detection, profile validation, platform adapter generation, fixture verification, and `aevoraseo agent` CLI.
+- **Phase I — Reporting, Operations & Professional Workflow**: Unified cross-subsystem report generator synthesizing all intelligence dimensions into executive HTML, terminal, markdown, JSON, and CSV reports, calibrated overall scorecard (0–100), P0/P1/P2 issue prioritization with acceptance criteria, audit verification (`audit-verify`), multi-snapshot progress tracking (`progress`), and SQLite database integrity diagnostics.
+- **Phase J — Production Hardening & Security**: Dual-check formula injection defense across all CSV exports, XML sitemap null-byte sanitization, deterministic SQLite connection lifecycle (`try/finally conn.close()`) for Windows lock safety, multi-snapshot scaling, zero stub policy compliance, and strictly validated hosted skill package ceiling ($\le 200$ archive files).
+
 ## Phase J — Production Hardening & Release
 
 - Conducted adversarial penetration audit across all subsystems, reinforcing SSRF defenses, scheme blocking, private IP detection, and XXE XML injection safeguards.
