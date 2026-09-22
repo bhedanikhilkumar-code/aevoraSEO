@@ -553,15 +553,37 @@ The repository contains a portable `SKILL.md` and supporting playbooks.
 
 Supported workflows include:
 
-| Environment | Starting point |
-|---|---|
-| ChatGPT Work | [Work setup](docs/agent-installation.md#chatgpt-work) |
-| Claude | [Claude setup](docs/agent-installation.md#claude-website-and-desktop-skills) |
-| Claude Code | [Claude Code setup](docs/agent-installation.md#claude-code) |
-| Codex | [Codex setup](docs/agent-installation.md#codex) |
-| Hermes | [Hermes setup](docs/agent-installation.md#hermes-agent) |
-| OpenClaw | [OpenClaw setup](docs/agent-installation.md#openclaw) |
-| Terminal / Python | Run the native engine directly |
+| Environment | Starting point | Status |
+|---|---|---|
+| Claude Code | [Claude Code setup](docs/agent-installation.md#claude-code) | VERIFIED |
+| Codex | [Codex setup](docs/agent-installation.md#codex) | VERIFIED |
+| Hermes Agent | [Hermes setup](docs/agent-installation.md#hermes-agent) | VERIFIED |
+| OpenClaw | [OpenClaw setup](docs/agent-installation.md#openclaw) | VERIFIED |
+| ChatGPT Work | [Work setup](docs/agent-installation.md#chatgpt-work) | DOCUMENTED |
+| aider | [Multi-agent guide](references/multi-agent-compatibility.md) | DOCUMENTED |
+| Copilot CLI | [Multi-agent guide](references/multi-agent-compatibility.md) | DOCUMENTED |
+| Gemini CLI | [Multi-agent guide](references/multi-agent-compatibility.md) | DOCUMENTED |
+| Droid / Kilocode / OpenCode / Qwen / etc. | [Multi-agent guide](references/multi-agent-compatibility.md) | NOT VERIFIED |
+| Terminal / Python | Run the native engine directly | VERIFIED |
+
+### Multi-Agent CLI Commands
+
+```bash
+# Auto-detect active agent platform and workspace
+npx aevoraseo agent detect
+
+# List all 18 supported platforms and verification statuses
+npx aevoraseo agent list
+
+# Inspect detailed integration specifications
+npx aevoraseo agent inspect claude-code
+
+# Generate adapter or configuration files for a platform
+npx aevoraseo agent adapt aider
+
+# Run fixture-based compatibility verification tests
+npx aevoraseo agent verify
+```
 
 The installer can validate and configure a supported host:
 
@@ -569,13 +591,7 @@ The installer can validate and configure a supported host:
 python3 scripts/install_skill.py --host claude-code --setup
 ```
 
-Use:
-
-```bash
-python3 scripts/install_skill.py --help
-```
-
-for host-specific options.
+Use `python3 scripts/install_skill.py --help` for host-specific options.
 
 ---
 

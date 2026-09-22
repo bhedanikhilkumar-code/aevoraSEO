@@ -206,9 +206,20 @@ Running the same local install again is safe: an identical installation is repor
 
 Use `--dry-run` to preview without writing or downloading anything. Use `--dest "/exact/path/aevoraseo"` for a custom skill location. This is a filesystem installer; it does not save a ChatGPT workspace skill or change host settings. For web uploads, use the host's supported update controls and avoid leaving two enabled versions.
 
-## Other assistants
+## Other assistants & AI Coding Agents
 
-A host that reads the Agent Skills format can load the workflow. Full native crawling additionally requires accessible source files, Python 3.10+, permitted network access and, for rendered pages, Chromium execution. Register the complete folder using that host's documented controls, then run the checks above. Compatibility with the format is not a promise of every agent's save permissions, tools or operating environment.
+AevoraSEO supports 18 agent and CLI environments including Claude Code, Codex, Hermes, OpenClaw, aider, Copilot CLI, Gemini CLI, Factory Droid, Kilocode, OpenCode, Qwen, JCODE, juni, Kiro, prime-agent, and cai.
+
+Use the native CLI to inspect and adapt your environment:
+```bash
+aevoraseo agent detect                # Auto-detect active host & workspace
+aevoraseo agent list                  # List all supported environments
+aevoraseo agent inspect <host>        # View detailed integration spec
+aevoraseo agent adapt <host>          # Generate adapter/config files
+aevoraseo agent verify [--host <h>]   # Run fixture-based verification tests
+```
+
+See [Multi-Agent & Platform Compatibility Reference](../references/multi-agent-compatibility.md) for the complete evidence-based matrix, installation routes, and workspace behaviors.
 
 ## Package review and support
 

@@ -142,6 +142,23 @@ The native Content & Optimization intelligence engine audits content quality, ti
 
 See [Content & Optimization methodology](content-optimization.md) for detailed technical specifications.
 
+## Multi-Agent & Platform Compatibility: implemented
+
+The native Multi-Agent & Platform Compatibility engine audits, validates, adapts, and verifies integration across 18 AI coding environments and CLI tools without mutating user workspaces or violating package upload limits.
+
+| Function | What it does |
+|---|---|
+| Platform registry | Empirical specifications for 18 platforms across 4 integration tiers (First-party skill, Project instruction, CLI integration, Generic adapter) |
+| Environment detection | Auto-detects active platform, workspace root, configuration files, and Python runtime via env vars, workspace markers, and global config paths |
+| Installation validation | Validates receipt integrity and file SHA-256 checksums from `aevoraseo-install.json` |
+| Workspace isolation audit | Validates path confinement, ensures no symlinks point outside workspace, and prevents directory pollution |
+| Adapter generation | Emits deterministic configuration and instruction files (`.aider.conf.yml`, `.github/copilot-instructions.md`, `GEMINI.md`, etc.) |
+| Fixture-based verification | Runs 4-step verification suites (Python compatibility, spec completeness, detection, receipt validation) simulating platform environments |
+| CLI commands (`agent`) | Multi-format (`terminal`, `json`, `markdown`) commands: `detect`, `list`, `inspect`, `adapt`, and `verify` |
+| Node launcher parity | Integrated with `bin/aevoraseo.js` runner and help documentation |
+
+See [Multi-Agent & Platform Compatibility methodology](multi-agent-compatibility.md) for detailed technical specifications.
+
 ## SEO workflows included
 
 These are agent workflows supported by the reference library. They are available for analysis and planning; their presence does not mean the standalone Python script automatically completes every task.

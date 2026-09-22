@@ -68,14 +68,31 @@ def host_destination(host, workspace=None, profile_home=None):
     if profile_home and host != "hermes":
         raise ValueError("--profile-home is for Hermes. Use --dest for a custom folder.")
     if workspace:
-        roots = {"claude-code": ".claude/skills", "codex": ".agents/skills", "openclaw": "skills"}
+        roots = {
+            "claude-code": ".claude/skills",
+            "codex": ".agents/skills",
+            "openclaw": "skills",
+            "agent": ".agents/skills",
+            "aider": ".aider/skills",
+            "copilot": ".github/skills",
+            "gemini": ".gemini/skills",
+            "droid": ".factory/skills",
+            "kilocode": ".kilocode/skills",
+            "opencode": ".opencode/skills",
+            "qwen": ".qwen/skills",
+            "jcode": ".jcode/skills",
+            "juni": ".juni/skills",
+            "prime-agent": ".prime/skills",
+            "cai": ".cai/skills",
+            "kiro": ".kiro/skills",
+        }
         if host not in roots:
             raise ValueError("Use --profile-home for a Hermes profile, not --workspace.")
         return Path(workspace).expanduser().absolute() / roots[host] / "aevoraseo"
     home = Path.home()
     if host == "claude-code":
         return home / ".claude/skills/aevoraseo"
-    if host == "codex":
+    if host in ("codex", "agent"):
         return home / ".agents/skills/aevoraseo"
     if host == "openclaw":
         return (
@@ -100,7 +117,19 @@ def host_destination(host, workspace=None, profile_home=None):
                     "directory, or run this command from its terminal with HERMES_HOME set."
                 )
         return base / "skills/aevoraseo"
-    raise ValueError("Choose claude-code, codex, hermes or openclaw, or use --dest.")
+    if host == "gemini":
+        return home / ".gemini/skills/aevoraseo"
+    if host == "copilot":
+        return home / ".copilot/skills/aevoraseo"
+    if host == "opencode":
+        return (
+            Path(os.getenv("XDG_CONFIG_HOME") or home / ".config").expanduser()
+            / "opencode/skills/aevoraseo"
+        )
+    if host in ("droid", "kilocode", "qwen", "jcode", "juni", "prime-agent", "cai", "kiro", "aider"):
+        prefix = f".{host}" if host != "droid" else ".factory"
+        return home / f"{prefix}/skills/aevoraseo"
+    raise ValueError(f"Unknown host: {host}. Choose a supported platform or use --dest.")
 
 
 def shell_command(arguments):
@@ -212,7 +241,28 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     target = parser.add_mutually_exclusive_group(required=True)
     target.add_argument("--dest", type=Path, help="Exact skill folder to create.")
-    target.add_argument("--host", choices=["claude-code", "codex", "hermes", "openclaw"])
+    target.add_argument(
+        "--host",
+        choices=[
+            "claude-code",
+            "codex",
+            "hermes",
+            "openclaw",
+            "agent",
+            "aider",
+            "copilot",
+            "gemini",
+            "droid",
+            "kilocode",
+            "opencode",
+            "qwen",
+            "jcode",
+            "juni",
+            "prime-agent",
+            "cai",
+            "kiro",
+        ],
+    )
     parser.add_argument("--workspace", type=Path, help="Project/workspace root for a local host.")
     parser.add_argument("--profile-home", type=Path, help="Exact Hermes profile directory.")
     parser.add_argument(

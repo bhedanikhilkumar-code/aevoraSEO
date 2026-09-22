@@ -61,6 +61,12 @@ Start with the task you want to complete. Each guide connects the commands, evid
 |---|---|
 | [Content & Optimization methodology](../references/content-optimization.md) | Title/meta audits, single H1/hierarchy checks, 40-60w answer boxes, topic clusters, briefs & 30/60/90d roadmaps |
 
+## Multi-agent and platform compatibility
+
+| Guide | Covers |
+|---|---|
+| [Multi-Agent & Platform methodology](../references/multi-agent-compatibility.md) | 18 AI coding environments, detection heuristics, profile validation, adapters, and verification |
+
 ## Strategy, content and follow-up
 
 | Guide | Covers |

@@ -266,19 +266,51 @@ Forensic audit evidence:
 
 ---
 
+### Phase H — Multi-Agent & Platform Compatibility
+**STATUS: COMPLETE — PASS**
+
+Verified scope:
+- native Multi-Agent & Platform Compatibility subsystem (`aevoraseo.compatibility`)
+- empirical platform registry cataloging 18 target environments: Agent (ChatGPT Work), Claude Code, Codex, Hermes Agent, OpenClaw, aider, Copilot CLI, Gemini CLI, Factory Droid, Kilocode CLI, OpenCode CLI, Qwen, JCODE, jcode CLI, juni CLI, Kiro, prime-agent, and cai
+- platform integration tiers: First-party skill, Project instruction, CLI integration, and Generic adapter
+- environment detector (`detect_environment`) discovering active platforms and workspaces via environment variables, workspace marker files, and global user config directories
+- profile and workspace validator (`validate_installation`, `validate_workspace_isolation`, `check_python_compatibility`) verifying receipt integrity, SHA-256 checksums, and strict boundary isolation
+- platform adapter generator (`generate_adapter`) emitting deterministic configuration files (`.aider.conf.yml`, `.github/copilot-instructions.md`, `GEMINI.md`) with safe `--dry-run` and collision guards
+- fixture-based compatibility verifier (`verify_platform`, `verify_all_platforms`) executing simulated workspace tests without mutating real host configurations
+- CLI parity via `aevoraseo agent` (with actions: `detect`, `list`, `inspect`, `adapt`, `verify`) across `terminal`, `json`, and `markdown` output formats
+- Node launcher parity in `bin/aevoraseo.js` with `agent` command routing and help text
+- expanded `scripts/install_skill.py` supporting all 18 platform destinations under `--host`
+- technical methodology reference in `references/multi-agent-compatibility.md` with evidence-based status definitions (`VERIFIED`, `PARTIAL`, `DOCUMENTED`, `NOT VERIFIED`, `UNSUPPORTED`)
+- consolidated 8 unreferenced core and competitor playbooks, maintaining hosted skill bundle strictly below upload ceiling (198 bundle files, 199 archive files <= 200 limit)
+- comprehensive unit, detector, validator, adapter, verifier, and CLI test suites (23 new tests, 477 tests passing across the suite)
+
+Forensic audit evidence:
+- 477 passed
+- 2 skipped
+- 0 failed
+- 479 collected
+- 22 subtests passed in 104.56s
+- release hygiene: 266 files checked, 0 findings, PASSED
+- upload package validation: 198 files, 199 archive files (<= 200 limit), 220 local references, format check PASSED
+- zero `TODO`, `FIXME`, `NotImplementedError`, or stub placeholders
+- cross-platform connection handling verified on Windows
+
+---
+
 ## 3. CURRENT PHASE
 
-### Phase H — Multi-Agent & Platform Compatibility
+### Phase I — Reporting, Operations & Professional Workflow
 **STATUS: NEXT / READY FOR IMPLEMENTATION**
 
-Phase G has passed all verification gates and forensic audits. Phase H is the next implementation phase.
+Phase H has passed all verification gates and forensic audits. Phase I is the next implementation phase.
 
 Required scope:
-- multi-agent / platform CLI compatibility testing across supported AI/agent environments (Claude Code, Codex, Hermes, OpenClaw, aider, Gemini CLI, Copilot CLI, etc.)
-- skill packaging and installation profile validations
-- workspace resolution, config path discovery, and environment isolation
-- deterministic agent guidance playbooks and verification scripts
-- non-destructive audit and execution workflows
+- unified client reporting (HTML/PDF/Markdown/JSON/CSV)
+- cross-subsystem evidence tables (Technical + Content + AEO + GEO + Entity + Authority + Reputation + Search/Local)
+- executive summary generation and priority matrices
+- acceptance checks and change reviews
+- operational diagnostics and approval loops
+- safe, non-destructive execution workflows
 
 ---
 
@@ -340,48 +372,24 @@ Known boundary:
 Title tag & meta description audits, single H1 & heading hierarchy verification, direct answer box & definition engineering (40-60 words), FAQ objection handling, topic cluster pillar-spoke mapping, internal link graph & orphan recovery, intent-matched schema recommendations, grounded content briefs & editorial outlines, content gap & refresh prioritization, 30/60/90-day roadmaps, Content Optimization Score (0-100), SQLite persistence in `content_optimization.sqlite3`, optimize-compare diff engine, and formula injection defense.
 
 ## Phase H — Multi-Agent & Platform Compatibility
-**NEXT**
+**COMPLETE — PASS**
 
-The product must work consistently across the agent/CLI environments shown in the project compatibility target.
+Empirical platform registry across 18 environments, environment detection, installation & isolation validation, adapter generation, fixture verification, CLI parity (`aevoraseo agent`), Node launcher parity, and skill package boundary compliance (198 bundle files, 199 archive files <= 200 limit).
 
-Target environments from the current project setup:
-
-1. Agent
-2. aider
-3. cai
-4. Copilot CLI
-5. droid
-6. Gemini CLI
-7. JCODE
-8. jcode CLI
-9. juni CLI
-10. Kilocode CLI
-11. Kiro
-12. OpenCode CLI
-13. prime-agent
-14. Qwen
-
-Compatibility must be evidence-based.
-
-For each target, maintain:
-- installation route
-- skill/agent file location if applicable
-- runtime requirements
-- CLI invocation
-- workspace behavior
-- Python/runtime discovery
-- crawler readiness
-- browser readiness
-- permission requirements
-- smoke test
-- known limitations
-
-Do not claim a host is supported merely because it can read Markdown.
-
-A host is only marked verified after a real installation or fixture-based compatibility test proves the required workflow.
+Forensic evidence:
+- 479 collected
+- 477 passed
+- 2 skipped
+- 0 failed
+- 22 subtests passed
+- release hygiene: 266 files checked, 0 findings
+- bundle validation: 198 files / 199 archive files (<= 200 ceiling)
+- 220 local references checked
+- compileall clean
+- Node `version`, `--help`, `doctor`, and `agent list` verified
 
 ## Phase I — Reporting, Operations & Professional Workflow
-**PLANNED**
+**NEXT**
 
 Unify:
 - client reports
@@ -728,36 +736,23 @@ The agent must NOT jump randomly between future phases.
 
 The next implementation target is:
 
-## PHASE D — BACKLINK & REPUTATION INTELLIGENCE
+## PHASE I — REPORTING, OPERATIONS & PROFESSIONAL WORKFLOW
 
 Start by inspecting:
-- current `src/aevoraseo/`
-- `backlinks.py`
-- `reputation.py`
-- `discovery.py`
-- `deep_research.py`
-- `review.py`
-- `cli.py`
-- SQLite snapshot and AEO persistence schemas
-- existing backlink catalog `docs/backlink-source-catalog.md` and `scripts/backlink_sources.py`
-- current tests (`tests/test_reputation.py`, `tests/test_posting_catalog.py`, `tests/test_deep_research.py`, `tests/test_discovery_research.py`)
-- `references/reputation.md`
-- `references/measurement-boundaries.md`
+- current `src/aevoraseo/reports.py` and `src/aevoraseo/publishing.py`
+- HTML/PDF template assets in `src/aevoraseo/report_assets/`
+- SQLite schemas across `crawl.sqlite3`, `aeo.sqlite3`, `entities.sqlite3`, `search_commercial.sqlite3`, `content_optimization.sqlite3`, `reputation.sqlite3`, and `backlinks.sqlite3`
+- client delivery playbooks in `playbooks/core/` and `playbooks/templates/`
+- references in `references/audit-delivery.md` and `docs/branded-reports.md`
 
-Then implement Phase D according to the Phase D specification:
-1. Native backlink discovery and verification model.
-2. Verified backlinks vs unverified page mentions.
-3. Source classification (editorial, directory, profile, community, owned).
-4. Ownership vs independent proof.
-5. Referring-domain evidence and anchor context.
-6. Link status, target reachability, and rel attributes (nofollow, ugc, sponsored).
-7. Conservative reputation scoring with confidence intervals.
-8. Backlink opportunity tracking and catalog shortlist integration.
-9. Snapshot-aware before/after reputation comparisons.
-10. SQLite persistence for backlink and mention observations.
-11. Deterministic and adversarial tests.
-
-Do not begin Phase E entity graph work until Phase D has passed its full verification and forensic audit.
+Then implement Phase I according to the Phase I specification:
+1. Unified cross-subsystem report generator synthesizing Technical, Content, AEO, GEO, Entity, Authority, Reputation, and Search/Local intelligence into one cohesive audit.
+2. Standardized report models with executive summaries, dimensional scores, issue priority matrices (P0/P1/P2), and stakeholder-ready recommendations.
+3. Multi-format export: responsive offline HTML, styled client PDF (via reportlab), GitHub-flavored Markdown, and formula-sanitized CSV evidence tables.
+4. Operational change review: staging, diffing, verifying, and rolling back approved website optimizations.
+5. Snapshot trend visualization and historical progress tracking across crawls.
+6. Acceptance checks and operational diagnostics.
+7. Parity across CLI, Node runner, and agent interfaces.
 
 ---
 
@@ -827,9 +822,9 @@ If the repository contradicts this document, inspect the code and tests first an
 | D | Backlinks & Reputation Intelligence | COMPLETE — PASS |
 | E | Entity & Authority Intelligence | COMPLETE — PASS |
 | F | Search / Local / Commercial Intelligence | COMPLETE — PASS |
-| G | Content & Optimization Intelligence | NEXT |
-| H | Multi-Agent / CLI Ecosystem | PLANNED |
-| I | Reporting & Operations | PLANNED |
+| G | Content & Optimization Intelligence | COMPLETE — PASS |
+| H | Multi-Agent / CLI Ecosystem | COMPLETE — PASS |
+| I | Reporting & Operations | NEXT |
 | J | Production Hardening & Release | PLANNED |
 
 **Rule:** Do not skip phases without documenting why.

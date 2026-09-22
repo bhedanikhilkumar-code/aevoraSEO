@@ -1,5 +1,21 @@
 # Changelog
 
+## Phase H — Multi-Agent & Platform Compatibility Engine
+
+- Implemented native Multi-Agent & Platform Compatibility subsystem (`aevoraseo.compatibility`).
+- Built platform registry cataloging 18 target AI agent and CLI coding environments: Agent (ChatGPT Work), Claude Code, Codex, Hermes Agent, OpenClaw, aider, Copilot CLI, Gemini CLI, Factory Droid, Kilocode CLI, OpenCode CLI, Qwen, JCODE, jcode CLI, juni CLI, Kiro, prime-agent, and cai.
+- Defined empirical platform integration tiers: First-party skill, Project instruction, CLI integration, and Generic adapter.
+- Implemented environment detector (`detect_environment`) discovering active platforms and workspaces via environment variables, workspace marker files, and global user config directories.
+- Built profile and workspace validator (`validate_installation`, `validate_workspace_isolation`, `check_python_compatibility`) verifying receipt integrity, SHA-256 checksums, and strict boundary isolation.
+- Created platform adapter generator (`generate_adapter`) emitting deterministic configuration files (`.aider.conf.yml`, `.github/copilot-instructions.md`, `GEMINI.md`) with safe `--dry-run` and collision guards.
+- Implemented fixture-based compatibility verifier (`verify_platform`, `verify_all_platforms`) executing simulated workspace tests without mutating real host configurations.
+- Added CLI parity via `aevoraseo agent` (with actions: `detect`, `list`, `inspect`, `adapt`, `verify`) across `terminal`, `json`, and `markdown` output formats.
+- Synchronized Node launcher (`bin/aevoraseo.js`) with `agent` command routing and help text.
+- Expanded `scripts/install_skill.py` to support all 18 platform destinations under `--host`.
+- Authored comprehensive technical reference in `references/multi-agent-compatibility.md` with evidence-based status definitions (`VERIFIED`, `PARTIAL`, `DOCUMENTED`, `NOT VERIFIED`, `UNSUPPORTED`).
+- Consolidated 8 unreferenced core and competitor playbooks, maintaining hosted skill bundle strictly below upload ceiling (198 bundle files, 199 archive files $\le 200$ limit).
+- Built comprehensive unit, detector, validator, adapter, verifier, and CLI test suites (23 new tests, 477 tests passing across the suite).
+
 ## Phase G — Content & Optimization Intelligence Engine
 
 - Implemented native Content & Optimization Intelligence subsystem (`aevoraseo.optimization`).

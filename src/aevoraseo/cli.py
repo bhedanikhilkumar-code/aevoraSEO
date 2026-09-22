@@ -452,6 +452,46 @@ def parser():
             p.add_argument(
                 "--expect-plan", required=True, help="SHA-256 of the reviewed plan.json."
             )
+    agent_p = sub.add_parser(
+        "agent",
+        help="Multi-agent platform compatibility: detect, list, inspect, adapt, verify.",
+    )
+    agent_sub = agent_p.add_subparsers(dest="agent_action", required=True)
+    p = agent_sub.add_parser("detect", help="Detect the current agent/platform environment.")
+    p.add_argument("--workspace", type=Path, default=None, help="Workspace root to inspect.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
+    p = agent_sub.add_parser("list", help="List all supported agent platforms and their status.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
+    p = agent_sub.add_parser("inspect", help="Show detailed specification for a platform.")
+    p.add_argument("host", help="Platform name (e.g. claude-code, aider, copilot, gemini).")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
+    p = agent_sub.add_parser("adapt", help="Generate adapter/config files for a platform.")
+    p.add_argument("host", help="Platform name (e.g. aider, copilot, gemini).")
+    p.add_argument("--workspace", type=Path, default=None, help="Target workspace directory.")
+    p.add_argument("--dry-run", action="store_true", help="Preview without writing files.")
+    p = agent_sub.add_parser("verify", help="Run fixture-based compatibility verification.")
+    p.add_argument("--host", default=None, help="Verify specific platform; omit for all.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
     return root
 
 
@@ -549,6 +589,7 @@ def main(argv=None):
             "reputation-compare",
             "search-plan",
             "search-import",
+            "agent",
         ):
             if args.command == "readiness":
                 from .review import export_readiness
@@ -1019,6 +1060,159 @@ def main(argv=None):
                     return 0
                 elif fmt == "json":
                     print(json.dumps(diff, ensure_ascii=False, indent=2))
+                    return 0
+            elif args.command == "agent":
+                from .compatibility import (
+                    detect_environment,
+                    get_all_platforms,
+                    get_platform,
+                    platform_from_string,
+                    generate_adapter,
+                    verify_platform,
+                    verify_all_platforms,
+                )
+                from dataclasses import asdict
+
+                fmt = getattr(args, "format", "terminal")
+
+                if args.agent_action == "detect":
+                    ws = str(args.workspace) if args.workspace else None
+                    inspection = detect_environment(workspace=ws)
+                    data = asdict(inspection)
+                    if fmt == "json":
+                        print(json.dumps(data, ensure_ascii=False, indent=2))
+                    elif fmt == "markdown":
+                        print("# Environment Detection Result\n")
+                        print(f"**Detected Platform:** {data['detected_platform'] or 'None'}")
+                        print(f"**Workspace Root:** {data['workspace_root']}")
+                        print(f"**Python Version:** {data['python_version']}")
+                        print(f"**Python Path:** {data['python_path']}")
+                        print(f"**AevoraSEO Installed:** {data['aevoraseo_installed']}")
+                        print(f"**Isolation:** {data['isolation_status']}")
+                        if data["config_files_found"]:
+                            print("\n**Config Files Found:**")
+                            for cf in data["config_files_found"]:
+                                print(f"  - {cf}")
+                    else:
+                        platform_name = data["detected_platform"] or "None"
+                        print(f"Detected platform: {platform_name}")
+                        print(f"Workspace root:    {data['workspace_root']}")
+                        print(f"Python:            {data['python_version']} ({data['python_path']})")
+                        print(f"AevoraSEO:         {'installed' if data['aevoraseo_installed'] else 'not found'}")
+                        print(f"Isolation:         {data['isolation_status']}")
+                        if data["config_files_found"]:
+                            print("Config files:")
+                            for cf in data["config_files_found"]:
+                                print(f"  {cf}")
+                    return 0
+
+                elif args.agent_action == "list":
+                    platforms = get_all_platforms()
+                    if fmt == "json":
+                        rows = [
+                            {
+                                "id": p.id.value,
+                                "name": p.name,
+                                "tier": p.tier.value,
+                                "status": p.status.value,
+                                "install": p.install_command,
+                            }
+                            for p in platforms
+                        ]
+                        print(json.dumps(rows, ensure_ascii=False, indent=2))
+                    elif fmt == "markdown":
+                        print("# Supported Agent Platforms\n")
+                        print("| Platform | Tier | Status | Install |")
+                        print("|---|---|---|---|")
+                        for p in platforms:
+                            print(f"| {p.name} | {p.tier.value} | {p.status.value} | `{p.install_command}` |")
+                    else:
+                        print(f"{'Platform':<25} {'Tier':<22} {'Status':<15}")
+                        print("-" * 62)
+                        for p in platforms:
+                            print(f"{p.name:<25} {p.tier.value:<22} {p.status.value:<15}")
+                    return 0
+
+                elif args.agent_action == "inspect":
+                    pid = platform_from_string(args.host)
+                    if pid is None:
+                        print(f"Unknown platform: {args.host}", file=sys.stderr)
+                        return 1
+                    spec = get_platform(pid)
+                    data = asdict(spec)
+                    data["id"] = spec.id.value
+                    data["tier"] = spec.tier.value
+                    data["status"] = spec.status.value
+                    if fmt == "json":
+                        print(json.dumps(data, ensure_ascii=False, indent=2))
+                    elif fmt == "markdown":
+                        print(f"# {spec.name}\n")
+                        print(f"**Tier:** {spec.tier.value}")
+                        print(f"**Status:** {spec.status.value}")
+                        print(f"**Install:** `{spec.install_command}`")
+                        print(f"**Skill Location:** `{spec.skill_file_location}`")
+                        print(f"**Invocation:** `{spec.invocation}`")
+                        print(f"**Smoke Test:** `{spec.smoke_test}`")
+                        print(f"**Known Limitations:** {spec.known_limitations}")
+                        if spec.verification_evidence:
+                            print(f"\n**Evidence:** {spec.verification_evidence}")
+                    else:
+                        print(f"Platform:     {spec.name}")
+                        print(f"Tier:         {spec.tier.value}")
+                        print(f"Status:       {spec.status.value}")
+                        print(f"Install:      {spec.install_command}")
+                        print(f"Skill file:   {spec.skill_file_location}")
+                        print(f"Invocation:   {spec.invocation}")
+                        print(f"Smoke test:   {spec.smoke_test}")
+                        print(f"Limitations:  {spec.known_limitations}")
+                        if spec.verification_evidence:
+                            print(f"Evidence:     {spec.verification_evidence}")
+                    return 0
+
+                elif args.agent_action == "adapt":
+                    pid = platform_from_string(args.host)
+                    if pid is None:
+                        print(f"Unknown platform: {args.host}", file=sys.stderr)
+                        return 1
+                    ws = str(args.workspace) if args.workspace else None
+                    result = generate_adapter(pid, workspace=ws, dry_run=args.dry_run)
+                    data = asdict(result)
+                    data["platform"] = result.platform.value
+                    print(json.dumps(data, ensure_ascii=False, indent=2))
+                    return 0
+
+                elif args.agent_action == "verify":
+                    if args.host:
+                        pid = platform_from_string(args.host)
+                        if pid is None:
+                            print(f"Unknown platform: {args.host}", file=sys.stderr)
+                            return 1
+                        results = [verify_platform(pid)]
+                    else:
+                        results = verify_all_platforms()
+
+                    if fmt == "json":
+                        rows = []
+                        for r in results:
+                            d = asdict(r)
+                            d["platform"] = r.platform.value
+                            d["status"] = r.status.value
+                            rows.append(d)
+                        print(json.dumps(rows, ensure_ascii=False, indent=2))
+                    elif fmt == "markdown":
+                        print("# Platform Verification Results\n")
+                        print("| Platform | Status | Passed | Failed |")
+                        print("|---|---|---|---|")
+                        for r in results:
+                            print(f"| {r.platform.value} | {r.status.value} | {r.passed} | {r.failed} |")
+                    else:
+                        print(f"{'Platform':<25} {'Status':<15} {'Passed':<8} {'Failed':<8}")
+                        print("-" * 56)
+                        for r in results:
+                            print(f"{r.platform.value:<25} {r.status.value:<15} {r.passed:<8} {r.failed:<8}")
+                        total_p = sum(r.passed for r in results)
+                        total_f = sum(r.failed for r in results)
+                        print(f"\nTotal: {total_p} passed, {total_f} failed across {len(results)} platforms")
                     return 0
             else:
                 from .publishing import apply_change, open_store, stage
