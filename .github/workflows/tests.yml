@@ -5,17 +5,21 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+# Push/PR runs are the required CI gate and stay on Linux to avoid exhausting
+# hosted-runner capacity on a private repository. A manual run executes the
+# complete Linux + Windows + macOS compatibility matrix.
 jobs:
   test-python:
     name: Test Python Core Engine (${{ matrix.os }} - Py${{ matrix.python-version }})
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: ${{ fromJSON(github.event_name == 'workflow_dispatch' && '["ubuntu-latest","windows-latest","macos-latest"]' || '["ubuntu-latest"]') }}
         python-version: ["3.10", "3.11", "3.12"]
     runs-on: ${{ matrix.os }}
     steps:
@@ -45,7 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: ${{ fromJSON(github.event_name == 'workflow_dispatch' && '["ubuntu-latest","windows-latest","macos-latest"]' || '["ubuntu-latest"]') }}
         node-version: [18, 20, 22]
     runs-on: ${{ matrix.os }}
     steps:
