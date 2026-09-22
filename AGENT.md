@@ -817,10 +817,14 @@ Summary of verified capabilities:
 - **Phase I**: Unified client reporting (HTML/PDF/MD/JSON/CSV), acceptance checks, progress tracking
 - **Phase J**: Adversarial security penetration, formula injection defense, zero stubs, upload ceiling compliance
 
-Next operational action:
-- Tag release `v1.0.0`
-- Publish to npm and PyPI
-- Register skill across supported AI coding-agent platforms
+Current operational status:
+- Tag release `v1.0.0`: **COMPLETE** (Tagged at HEAD, pushed to `origin`, GitHub Release synchronized with `aevoraseo-1.0.0-skill.zip` and SHA-256 sidecar).
+- Quality gates: 526 tests passing, 0 failures, 268 files release hygiene passed, 197 files / 198 archive files strictly $\le 200$ upload limit.
+
+Next operational distribution steps:
+- Publish package to npm (`npm publish --access public`)
+- Publish package to PyPI (`python -m build && twine upload dist/*`)
+- Register skill across supported AI coding-agent platforms (`scripts/install_skill.py --host <platform>`)
 
 ---
 
