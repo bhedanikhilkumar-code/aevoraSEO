@@ -63,6 +63,15 @@ npx aevoraseo reputation example.com
 # Discover high-authority backlink opportunities
 npx aevoraseo backlinks example.com
 
+# Generate holistic cross-subsystem client audit report (HTML/Terminal/Markdown/JSON/CSV)
+npx aevoraseo report ./crawl_output --format terminal
+
+# Verify if prior audit recommendations are resolved in subsequent crawl
+npx aevoraseo audit-verify --audit ./audit.json --crawl ./crawl_output
+
+# Track multi-snapshot score trajectory across historical crawls
+npx aevoraseo progress --crawls ./snap1 ./snap2 ./snap3
+
 # Inspect engine health and local environment readiness
 npx aevoraseo doctor
 ```
@@ -80,9 +89,14 @@ aevoraseo entity ./crawl_output
 aevoraseo entity-compare --before ./crawl1 --after ./crawl2
 aevoraseo search ./crawl_output
 aevoraseo search-compare --before ./crawl1 --after ./crawl2
+aevoraseo optimize ./crawl_output
+aevoraseo optimize-compare --before ./crawl1 --after ./crawl2
 aevoraseo backlinks https://example.com --sources ./sources.csv
 aevoraseo reputation https://example.com --sources ./sources.csv
 aevoraseo reputation-compare --before ./rep1/reputation.json --after ./rep2/reputation.json
+aevoraseo report ./crawl_output --format html --out ./deliverables
+aevoraseo audit-verify --audit ./audit.json --crawl ./crawl_output
+aevoraseo progress --crawls ./snap1 ./snap2 ./snap3
 aevoraseo doctor
 ```
 

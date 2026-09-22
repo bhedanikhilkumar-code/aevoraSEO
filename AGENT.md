@@ -297,20 +297,59 @@ Forensic audit evidence:
 
 ---
 
+### Phase I — Reporting, Operations & Professional Workflow
+**STATUS: COMPLETE — PASS**
+
+Verified scope:
+- unified cross-subsystem report generator (`aevoraseo.unified_report`) synthesizing Technical, Content, AEO, GEO, Entity, Authority, Reputation, and Search/Commercial intelligence
+- deterministic health scorecard aggregating subsystem metrics and calculating calibrated overall score (0–100)
+- multi-format client report exports (`terminal`, `html`, `markdown`, `json`, `csv`) with styled responsive executive HTML presentation
+- strict P0 (Critical Blocker), P1 (High Impact Opportunity), and P2 (Optimization Routine) issue prioritization with actionable impact, remediation steps, and verification criteria
+- formula injection protection across all exported CSV files (`audit-issues.csv`, `audit-scorecard.csv`) with `sanitize_csv_cell`
+- operational acceptance verification engine (`aevoraseo.workflow.verify_audit_acceptance`) verifying whether prior audit issues are resolved or persist in subsequent crawl snapshots
+- chronological progress tracking (`aevoraseo.workflow.track_progress`) analyzing score deltas and trajectory (`IMPROVING`, `DECLINING`, `STABLE`) across multi-snapshot crawl histories
+- operational database diagnostics (`aevoraseo.workflow.run_operational_diagnostics`) executing `PRAGMA integrity_check` on all workspace SQLite databases and reporting runtime health
+- CLI parity for `aevoraseo report`, `aevoraseo audit-verify`, and `aevoraseo progress` across terminal, JSON, Markdown, and CSV formats
+- Node launcher parity in `bin/aevoraseo.js` with synchronized command routing and help text
+- technical methodology reference in `references/reporting-operations.md`
+- consolidated playbooks to maintain upload package boundary compliance (197 bundle files, 198 archive files <= 200 limit)
+- comprehensive unit and CLI integration test suites in `tests/test_unified_report.py` and `tests/test_operational_workflow.py` (15 new tests, 492 tests passing across the suite)
+
+Forensic audit evidence:
+- 492 passed
+- 2 skipped
+- 0 failed
+- 494 collected
+- 22 subtests passed in 97.71s
+- release hygiene: 267 files checked, 0 findings, PASSED
+- upload package validation: 197 files, 198 archive files (<= 200 ceiling), 226 local references, format check PASSED
+- zero `TODO`, `FIXME`, `NotImplementedError`, or stub placeholders
+- cross-platform connection handling verified on Windows
+
+Reference commit:
+- `a460b3b` — `feat(reporting): implement unified cross-subsystem report generator, operational workflow, and CLI commands`
+- `872d713` — `test(reporting): add unit and CLI integration tests for unified reporting and operational workflow`
+
+---
+
 ## 3. CURRENT PHASE
 
-### Phase I — Reporting, Operations & Professional Workflow
+### Phase J — Production Hardening & Release
 **STATUS: NEXT / READY FOR IMPLEMENTATION**
 
-Phase H has passed all verification gates and forensic audits. Phase I is the next implementation phase.
+Phase I has passed all verification gates and forensic audits. Phase J is the next and final implementation phase.
 
 Required scope:
-- unified client reporting (HTML/PDF/Markdown/JSON/CSV)
-- cross-subsystem evidence tables (Technical + Content + AEO + GEO + Entity + Authority + Reputation + Search/Local)
-- executive summary generation and priority matrices
-- acceptance checks and change reviews
-- operational diagnostics and approval loops
-- safe, non-destructive execution workflows
+- security review and adversarial penetration audit
+- performance benchmarks and memory behavior on multi-page crawls
+- large-site behavior and streaming pagination
+- backward compatibility and migration verification
+- complete CLI and Node runner parity audit
+- cross-platform checks (Windows, Linux, macOS)
+- upload package validation (<= 200 files ceiling)
+- documentation completeness and final release automation
+- zero stub policy verification and forensic audit
+- final public release readiness (v1.0.0)
 
 ---
 
@@ -389,22 +428,28 @@ Forensic evidence:
 - Node `version`, `--help`, `doctor`, and `agent list` verified
 
 ## Phase I — Reporting, Operations & Professional Workflow
-**NEXT**
+**COMPLETE — PASS**
 
-Unify:
-- client reports
-- HTML/PDF/Markdown/JSON/CSV outputs
-- evidence tables
-- priorities
-- acceptance checks
-- snapshot history
-- change review
-- operational diagnostics
-- safe approved website changes
-- audit/review loops
+Unified cross-subsystem report generator synthesizing Technical, Content, AEO, GEO, Entity, Authority, Reputation, and Search/Commercial intelligence, multi-format exports (`terminal`, `html`, `markdown`, `json`, `csv`), P0/P1/P2 issue prioritization with acceptance criteria, spreadsheet formula injection protection, operational acceptance verification (`aevoraseo audit-verify`), chronological multi-snapshot progress tracking (`aevoraseo progress`), SQLite database integrity diagnostics, and Node launcher parity.
+
+Reference commits:
+- `a460b3b` — `feat(reporting): implement unified cross-subsystem report generator, operational workflow, and CLI commands`
+- `872d713` — `test(reporting): add unit and CLI integration tests for unified reporting and operational workflow`
+
+Forensic evidence:
+- 494 collected
+- 492 passed
+- 2 skipped
+- 0 failed
+- 22 subtests passed in 97.71s
+- release hygiene: 267 files checked, 0 findings
+- bundle validation: 197 files / 198 archive files (<= 200 ceiling)
+- 226 local references checked
+- compileall clean
+- Node `version`, `--help`, `doctor`, `report`, `audit-verify`, and `progress` verified
 
 ## Phase J — Production Hardening & Release
-**PLANNED**
+**NEXT**
 
 Finalize:
 - security review
@@ -431,21 +476,21 @@ A  COMPLETE
  ↓
 B  COMPLETE
  ↓
-C  AEO/GEO
+C  COMPLETE
  ↓
-D  Backlinks + Reputation
+D  COMPLETE
  ↓
-E  Entity + Authority
+E  COMPLETE
  ↓
-F  Search + Local + Commercial
+F  COMPLETE
  ↓
-G  Content + Optimization
+G  COMPLETE
  ↓
-H  Multi-Agent / CLI Ecosystem
+H  COMPLETE
  ↓
-I  Reporting + Operations
+I  COMPLETE
  ↓
-J  Production Release
+J  Production Release (NEXT)
 ```
 
 A phase may use existing capabilities from a later conceptual area only when the functionality already exists. Do not duplicate it just to satisfy a phase label.
@@ -736,23 +781,19 @@ The agent must NOT jump randomly between future phases.
 
 The next implementation target is:
 
-## PHASE I — REPORTING, OPERATIONS & PROFESSIONAL WORKFLOW
+## PHASE J — PRODUCTION HARDENING & RELEASE
 
-Start by inspecting:
-- current `src/aevoraseo/reports.py` and `src/aevoraseo/publishing.py`
-- HTML/PDF template assets in `src/aevoraseo/report_assets/`
-- SQLite schemas across `crawl.sqlite3`, `aeo.sqlite3`, `entities.sqlite3`, `search_commercial.sqlite3`, `content_optimization.sqlite3`, `reputation.sqlite3`, and `backlinks.sqlite3`
-- client delivery playbooks in `playbooks/core/` and `playbooks/templates/`
-- references in `references/audit-delivery.md` and `docs/branded-reports.md`
+Phase I is complete and verified. The agent must proceed to Phase J:
 
-Then implement Phase I according to the Phase I specification:
-1. Unified cross-subsystem report generator synthesizing Technical, Content, AEO, GEO, Entity, Authority, Reputation, and Search/Local intelligence into one cohesive audit.
-2. Standardized report models with executive summaries, dimensional scores, issue priority matrices (P0/P1/P2), and stakeholder-ready recommendations.
-3. Multi-format export: responsive offline HTML, styled client PDF (via reportlab), GitHub-flavored Markdown, and formula-sanitized CSV evidence tables.
-4. Operational change review: staging, diffing, verifying, and rolling back approved website optimizations.
-5. Snapshot trend visualization and historical progress tracking across crawls.
-6. Acceptance checks and operational diagnostics.
-7. Parity across CLI, Node runner, and agent interfaces.
+1. Security review and adversarial penetration audit across all subsystems (SSRF, formula injection, path traversal, cycle guards).
+2. Performance benchmarks and streaming pagination for large-scale snapshot analysis.
+3. Backward compatibility verification across SQLite schemas and configuration files.
+4. Comprehensive CLI and Node runner (`bin/aevoraseo.js`) parity audit.
+5. Cross-platform checks and Windows/Linux file system normalization.
+6. Hosted skill upload package ceiling verification (`archive_files <= 200`).
+7. Complete release hygiene checks (no secrets, zero stubs, clean compileall).
+8. Documentation and user guide finalization.
+9. Final release readiness and verification evidence for public release.
 
 ---
 

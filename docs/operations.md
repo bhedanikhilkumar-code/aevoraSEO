@@ -44,6 +44,37 @@ In addition to `comparison.json` and `comparison.md`, every comparison exports `
 
 This is a foreground local process: it runs while the machine and process remain active. It does not install a scheduler, send notifications, deploy edits or rewrite content automatically. For ongoing assisted work, define the sites, cadence and allowed edits with your agent or existing task runner. Review meaningful changes and act only within that agreed scope. An interrupted individual crawl may be continued with `crawl --resume` in its run folder.
 
+## Operational Acceptance Verification (`audit-verify`)
+
+Once recommendations or website changes have been applied, verify whether the prior audit checklist has been satisfied:
+
+```sh
+# Terminal verification output (default)
+aevoraseo audit-verify --audit /path/to/prior-audit.json --crawl /path/to/recheck-crawl
+
+# JSON verification status for CI/CD or automation pipelines
+aevoraseo audit-verify --audit /path/to/prior-audit.json --crawl /path/to/recheck-crawl --format json
+
+# Markdown verification log
+aevoraseo audit-verify --audit /path/to/prior-audit.json --crawl /path/to/recheck-crawl --format markdown
+```
+
+Every prior item is evaluated against current evidence and marked `RESOLVED` or `UNRESOLVED`. The overall audit status transitions across `ALL_RESOLVED`, `PARTIAL_PROGRESS`, `NO_PROGRESS`, or `NO_PRIOR_ITEMS`.
+
+## Historical Progress Tracking (`progress`)
+
+To evaluate score trajectories and health trends across multiple historical crawls:
+
+```sh
+# Terminal progress trajectory
+aevoraseo progress --crawls runs/snap1 runs/snap2 runs/snap3
+
+# JSON trajectory with chronological deltas
+aevoraseo progress --crawls runs/snap1 runs/snap2 runs/snap3 --format json
+```
+
+Trajectories classify performance into `IMPROVING`, `DECLINING`, or `STABLE` and calculate the overall score delta across the first and last snapshot.
+
 ## Check supplied backlinks
 
 ```sh

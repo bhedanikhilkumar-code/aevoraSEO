@@ -24,7 +24,30 @@ python3 scripts/run.py present --audit /path/to/client/audit.json \
 
 This preserves findings, URLs, dates, claim types, priority rationale, actions, acceptance checks and uncertainty. It does not invent an executive judgment, competitor research or missing measurements. For a complete strategy report, the assistant prepares reviewed content JSON from the audit and other captured research first.
 
-`--format html` needs no PDF library. `--format pdf` requests only PDF. The default `both` retains usable HTML if the PDF renderer is unavailable and returns a partial status with the reason. An explicitly overwritten, outdated PDF is removed in that case so it cannot be mistaken for the new report. The existing `report --out` command still regenerates raw crawl exports; `present` is the client-facing design step.
+`--format html` needs no PDF library. `--format pdf` requests only PDF. The default `both` retains usable HTML if the PDF renderer is unavailable and returns a partial status with the reason. An explicitly overwritten, outdated PDF is removed in that case so it cannot be mistaken for the new report. The `present` command produces executive strategy deliverables from structured JSON.
+
+## Unified Client Audit Reports (`report` command)
+
+For an automated, holistic audit across all implemented SEO dimensions—synthesizing Technical SEO, Content Quality, AEO, GEO, Entity & Authority, Reputation, and Search/Commercial intelligence—use the `aevoraseo report` command:
+
+```sh
+# Terminal summary (default)
+aevoraseo report /path/to/crawl-dir --target https://example.com
+
+# Standalone styled HTML client audit report
+aevoraseo report /path/to/crawl-dir --format html --out /path/to/deliverable
+
+# Markdown executive summary
+aevoraseo report /path/to/crawl-dir --format markdown
+
+# Structured JSON export
+aevoraseo report /path/to/crawl-dir --format json
+
+# Spreadsheets (audit-issues.csv and audit-scorecard.csv with formula injection protection)
+aevoraseo report /path/to/crawl-dir --format csv --out /path/to/deliverable
+```
+
+The unified report computes a calibrated overall health score (0–100), itemizes individual subsystem metrics, categorizes issues into strict priority tiers (`P0` Critical Blocker, `P1` High-Impact Opportunity, `P2` Optimization Routine), and constructs a 30/60/90-day implementation roadmap. All CSV outputs are neutralized against spreadsheet formula injection attacks.
 
 ## Write the content first
 

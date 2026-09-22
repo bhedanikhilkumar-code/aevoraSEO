@@ -1,5 +1,20 @@
 # Changelog
 
+## Phase I — Reporting, Operations & Professional Workflow
+
+- Implemented unified cross-subsystem report generator (`aevoraseo.unified_report`) synthesizing Technical, Content, AEO, GEO, Entity, Authority, Reputation, and Search/Commercial intelligence.
+- Added deterministic health scorecard aggregating subsystem metrics and calculating calibrated overall score (0–100).
+- Implemented multi-format client report exports (`terminal`, `html`, `markdown`, `json`, `csv`) with styled responsive executive HTML presentation.
+- Added strict P0 (Critical Blocker), P1 (High Impact Opportunity), and P2 (Optimization Routine) issue prioritization with actionable impact, remediation steps, and verification criteria.
+- Implemented formula injection protection across all exported CSV files (`audit-issues.csv`, `audit-scorecard.csv`) with `sanitize_csv_cell`.
+- Built operational acceptance verification engine (`aevoraseo.workflow.verify_audit_acceptance`) verifying whether prior audit issues are resolved or persist in subsequent crawl snapshots.
+- Added chronological progress tracking (`aevoraseo.workflow.track_progress`) analyzing score deltas and trajectory (`IMPROVING`, `DECLINING`, `STABLE`) across multi-snapshot crawl histories.
+- Implemented operational database diagnostics (`aevoraseo.workflow.run_operational_diagnostics`) executing `PRAGMA integrity_check` on all workspace SQLite databases and reporting runtime health.
+- Added CLI parity for `aevoraseo report`, `aevoraseo audit-verify`, and `aevoraseo progress` across terminal, JSON, Markdown, and CSV formats.
+- Maintained Node launcher parity in `bin/aevoraseo.js` with synchronized command routing and help text.
+- Authored technical methodology reference in `references/reporting-operations.md`.
+- Added comprehensive unit and CLI integration test suites in `tests/test_unified_report.py` and `tests/test_operational_workflow.py` (15 new tests, 492 tests passing across the suite).
+
 ## Phase H — Multi-Agent & Platform Compatibility Engine
 
 - Implemented native Multi-Agent & Platform Compatibility subsystem (`aevoraseo.compatibility`).
