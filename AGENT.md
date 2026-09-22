@@ -892,8 +892,8 @@ If the repository contradicts this document, inspect the code and tests first an
 | F | Search / Local / Commercial Intelligence | COMPLETE — PASS |
 | G | Content & Optimization Intelligence | COMPLETE — PASS |
 | H | Multi-Agent / CLI Ecosystem | COMPLETE — PASS |
-| I | Reporting & Operations | NEXT |
-| J | Production Hardening & Release | PLANNED |
+| I | Reporting & Operations | COMPLETE — PASS |
+| J | Production Hardening & Release | COMPLETE — PASS |
 
 **Rule:** Do not skip phases without documenting why.
 
