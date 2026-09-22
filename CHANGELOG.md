@@ -1,5 +1,18 @@
 # Changelog
 
+## Phase D — Backlink & Reputation Intelligence Engine
+
+- Implemented native backlink discovery and verification subsystem (`aevoraseo.backlinks` & `aevoraseo.backlink_persistence`).
+- Added granular link attribute extraction: normalized anchor text, tokenized `rel` attributes, conclusive `dofollow` classification, target URL path resolution, and 160-char sentence context excerpts.
+- Built automated source page classification (`editorial`, `directory`, `profile`, `community`, `owned`) based on structural URL and domain heuristics.
+- Enforced strict ownership boundaries: target domain, subdomains, and `--related-host` flags are classified as owned and excluded from independent proof.
+- Implemented SQLite persistence for backlink verification and reputation assessments across `backlinks.sqlite3` (`backlink_snapshots`, `backlink_sources`, `backlink_links`, `backlink_mentions`) and `reputation.sqlite3` (`reputation_assessments`, `reputation_diffs`).
+- Integrated backlink opportunity pipeline cross-referencing candidate referring domains and unreached leads against the embedded 206-site catalog (`posting-sites.json`), outputting actionable recommendations (`reputation-opportunities.json`, `reputation-opportunities.csv`).
+- Built snapshot-aware temporal diff engine (`aevoraseo.reputation_comparison`, `aevoraseo reputation-compare`) calculating score deltas, added/lost/retained links, added/lost/retained mentions, and converted opportunities.
+- Added new CLI commands and arguments: `aevoraseo backlinks <target>`, `aevoraseo reputation <target>`, `aevoraseo reputation-compare --before <file> --after <file>` with format support (`--format {terminal,json,csv,markdown}`).
+- Security hardening: sanitized all exported CSV files (`reputation-sources.csv`, `reputation-opportunities.csv`, `backlink-links.csv`) against spreadsheet formula injection attacks.
+- Added comprehensive unit, intelligence, adversarial, and CLI test suites (22 new tests, 394 tests passing across the suite).
+
 ## Phase C — AEO & GEO Intelligence Engine
 
 - Implemented native Answer Engine Optimization (AEO) and Generative Engine Optimization (GEO) analytical engines.

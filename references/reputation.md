@@ -26,14 +26,22 @@ aevoraseo search-plan --target https://example.com --brand "Example" --pages 5 -
 aevoraseo search-import --html page1.html page2.html --target https://example.com \
   --query '"Example" -site:example.com' --captured-at 2026-09-14T09:00:00Z --out runs/import
 
-# Verify a source CSV and calculate the estimate.
-aevoraseo reputation --sources runs/import/sources.csv --target https://example.com \
+# Verify external backlinks and source pages directly.
+aevoraseo backlinks https://example.com --sources runs/import/sources.csv \
+  --brand "Example" --format terminal --out runs/backlinks
+
+# Verify a source CSV and calculate the reputation estimate.
+aevoraseo reputation https://example.com --sources runs/import/sources.csv \
   --brand "Example" --alias "Example Company" --related-host related-company.com \
-  --max-sources 50 --search-pages 5 --out runs/reputation
+  --max-sources 50 --search-pages 5 --format terminal --out runs/reputation
+
+# Compare reputation snapshots across time to track added/lost links and conversions.
+aevoraseo reputation-compare --before runs/rep1/reputation.json --after runs/rep2/reputation.json \
+  --format terminal --out runs/reputation-diff
 
 # Reassess dated evidence without another network request.
-aevoraseo reputation --evidence runs/reputation/verification/backlinks.json \
-  --target https://example.com --brand "Example" --out runs/reassessment
+aevoraseo reputation https://example.com --evidence runs/reputation/verification/backlinks.json \
+  --brand "Example" --out runs/reassessment
 ```
 
 The importer supports Google/Bing result HTML, DuckDuckGo HTML and Bing RSS, excludes the target site, and consolidates URLs without dropping provenance. Recognized empty results, parser failures and access failures are distinct. Query, capture time and engine are operator-supplied provenance, not independently authenticated history. For browser DOM extracts or other source lists, supply a CSV directly and retain the discovery evidence alongside it.
@@ -120,6 +128,57 @@ Use friendly language: “We found three pages linking to you in the sources we 
 The score does not measure sentiment, satisfaction, traffic, conversions, indexing or AI citations. Improving it is not a substitute for useful content, credible business proof and measured customer outcomes.
 
 References: [Google link attributes](https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links), [crawlable links](https://developers.google.com/search/docs/crawling-indexing/links-crawlable), [spam policies](https://developers.google.com/search/docs/essentials/spam-policies).
+
+## Native backlink discovery and verification
+
+The `backlinks` subsystem inspects external source pages directly, extracting granular link attributes and contextual metadata:
+
+- **Target Link Matching**: Resolves all `<a href>` targets against normalized target domains, subdomains, and root URLs.
+- **Anchor Text**: Extracts normalized, whitespace-cleaned visible anchor text.
+- **Rel Attribute Tokenization**: Tokenizes `rel` attribute values (e.g. `nofollow`, `noopener`, `ugc`, `sponsored`).
+- **Dofollow Status**: Conclusively flags links as `dofollow` (true if neither `nofollow`, `ugc`, nor `sponsored` are present in `rel`).
+- **Context Snippets**: Captures bounded surrounding sentence context (up to 160 characters) enclosing the anchor.
+- **Source Classification**: Deterministically categorizes sources based on structural URL and domain heuristics:
+  - `owned`: Matching target host, subdomain, or explicit `--related-host`.
+  - `profile`: Social media and user profile URLs (e.g. GitHub, LinkedIn, Twitter/X, Medium, Substack).
+  - `directory`: Business registries, review sites, and catalog listings (e.g. Yelp, Crunchbase, ProductHunt, Clutch).
+  - `community`: Discussion forums and community hubs (e.g. Reddit, StackOverflow, HackerNews).
+  - `editorial`: Independent articles, publications, blogs, and news sources.
+- **Referring Domains**: Aggregates link counts, dofollow counts, and best observed source quality per referring domain.
+
+## SQLite persistence
+
+Backlink verification and reputation assessments are persisted to SQLite databases for historical analysis, caching, and diff comparisons:
+
+### `backlinks.sqlite3`
+- `backlink_snapshots`: Snapshot metadata (`snapshot_id`, `target_url`, `brand`, `created_at`, `total_sources`, `verified_sources`, `total_links`, `total_mentions`).
+- `backlink_sources`: Checked source pages (`source_id`, `source_url`, `final_url`, `status_code`, `has_target_link`, `has_brand_mention`, `source_quality_points`, `source_class`).
+- `backlink_links`: Discovered individual hyperlinks (`link_id`, `source_url`, `target_url`, `target_path`, `anchor_text`, `rel_tokens`, `is_dofollow`, `context_excerpt`).
+- `backlink_mentions`: Extracted brand mentions without direct links (`mention_id`, `source_url`, `brand_term`, `context_excerpt`).
+
+### `reputation.sqlite3`
+- `reputation_assessments`: Calculated score records (`assessment_id`, `target_url`, `brand`, `created_at`, `headline_score`, `confidence`, `coverage_rate`, `evidence_factor`).
+- `reputation_diffs`: Snapshot-to-snapshot comparison records (`diff_id`, `target_url`, `before_snapshot_id`, `after_snapshot_id`, `score_delta`, `created_at`).
+
+## Opportunity pipeline (206-Source Catalog Integration)
+
+The opportunity tracker extracts actionable backlink targets from unreached discovery candidates and the embedded 206-site catalog (`playbooks/backlink-system/posting-sites.json`):
+- Cross-references missing referring domains against curated directories, platforms, communities, and developer registries.
+- Classifies candidate potential into high/medium/low based on domain authority patterns, format requirements, and category relevance.
+- Exports structured recommendations to `reputation-opportunities.json` and `reputation-opportunities.csv`.
+
+## Snapshot-aware reputation comparisons (`reputation-compare`)
+
+The `reputation-compare` engine compares two temporal snapshots (`--before` and `--after`) for the same target:
+- Calculates headline score delta and confidence transitions.
+- Identifies **added backlinks**, **lost backlinks**, and **retained backlinks**.
+- Identifies **added mentions**, **lost mentions**, and **retained mentions**.
+- Highlights **converted opportunities** (where previously unlinked domains now link).
+- Generates unified reports across terminal, JSON, CSV, and markdown formats.
+
+## Security hardening: CSV formula injection
+
+All CSV exports (`reputation-sources.csv`, `reputation-opportunities.csv`, `backlink-links.csv`) strictly sanitize every field using `sanitize_csv_cell`. Any cell beginning with risky spreadsheet command characters (`=`, `+`, `-`, `@`, `\t`, `\r`) is prefixed with a single quote (`'`), neutralizing formula execution in Microsoft Excel, Google Sheets, and LibreOffice Calc.
 
 ## Deeper competitor comparisons
 

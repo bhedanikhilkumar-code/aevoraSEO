@@ -138,30 +138,57 @@ Reference commit:
 
 ---
 
+### Phase D — Backlink & Reputation Intelligence
+**STATUS: COMPLETE — PASS**
+
+Verified scope:
+- native backlink discovery and verification subsystem (`aevoraseo.backlinks`, `aevoraseo.backlink_persistence`)
+- target link matching, anchor text extraction, rel tokenization, conclusive dofollow determination, and 160-char sentence context excerpts
+- deterministic source classification (`editorial`, `directory`, `profile`, `community`, `owned`) based on structural URL and domain heuristics
+- strict ownership proof boundary: target domain, subdomains, and related hosts are classified as owned and excluded from independent proof
+- conservative reputation scoring (Model 1.1) with supported points, evidence adjustments, confidence ceiling (49/100), and sensitivity range
+- opportunity pipeline cross-referencing candidate referring domains and unreached leads against the 206-site catalog (`posting-sites.json`), exporting `reputation-opportunities.json` and `reputation-opportunities.csv`
+- temporal snapshot comparison engine (`aevoraseo.reputation_comparison`, `aevoraseo reputation-compare`) calculating score deltas, added/lost/retained links, added/lost/retained mentions, and converted opportunities
+- full SQLite persistence across `backlinks.sqlite3` (`backlink_snapshots`, `backlink_sources`, `backlink_links`, `backlink_mentions`) and `reputation.sqlite3` (`reputation_assessments`, `reputation_diffs`) with Windows-safe connection cleanup (`try/finally conn.close()`)
+- CLI parity: `aevoraseo backlinks <target>`, `aevoraseo reputation <target>`, and `aevoraseo reputation-compare` with positional targets, default directories, and format flag (`--format {terminal,json,csv,markdown}`)
+- security hardening: all CSV exports sanitized against spreadsheet formula injection attacks with `sanitize_csv_cell`
+- comprehensive unit, intelligence, adversarial, and CLI test suites
+
+Forensic audit evidence:
+- 394 passed
+- 2 skipped
+- 0 failed
+- 396 collected
+- release hygiene: 244 files checked, 0 findings, PASSED
+- zero `TODO`, `FIXME`, `NotImplementedError`, or stub placeholders
+- cross-platform connection handling verified on Windows
+
+---
+
 ## 3. CURRENT PHASE
 
-### Phase D — Backlink & Reputation Intelligence
+### Phase E — Entity, Authority & Knowledge Intelligence
 **STATUS: NEXT / READY FOR IMPLEMENTATION**
 
-Phase C has passed all verification gates and forensic audits. Phase D is the next implementation phase.
+Phase D has passed all verification gates and forensic audits. Phase E is the next implementation phase.
 
 Required areas:
-- native backlink discovery model
-- verified backlinks vs. page mentions
-- source classification (editorial, directory, profile, community, owned)
-- ownership vs. independent proof
-- referring-domain evidence and anchor context
-- link status, target reachability, and rel attributes (nofollow, ugc, sponsored)
-- conservative reputation scoring with confidence intervals
-- backlink opportunity tracking and catalog shortlist integration
-- snapshot-aware before/after reputation comparisons
-- SQLite persistence for backlink and mention observations
-- deterministic and adversarial tests
+- organization identity modeling & schema verification
+- brand & entity consistency across pages and metadata
+- person, product, service, and place entity extraction
+- `sameAs` relationship discovery and validation
+- organization, publisher, and author relationship mapping
+- cross-page entity conflict and contradiction detection
+- first-party vs independent authority evidence
+- topical authority signals and subject matter expert footprint
+- observed entity knowledge graph stored in SQLite
+- entity evolution and snapshot diffing engine
+- deterministic and adversarial test suites
 
 Critical boundary:
-- Do not pretend to be a whole-web commercial backlink index.
-- Search snippets are leads, not verified backlinks.
-- Never extrapolate whole-web totals from a sample.
+- Never invent knowledge-graph facts or claim unobserved relationships.
+- Clearly distinguish self-declared schema entities from independently corroborated entities.
+- Entity graphs must reflect strictly observed page evidence.
 
 ---
 
@@ -185,27 +212,12 @@ Profiles, snapshots, conditional requests, incremental reuse, diffing, resume, c
 Answer readiness, question/intent coverage, direct answers, entity clarity, citation readiness, schema intelligence, AI crawler accessibility, extraction quality, transparent scoring, SQLite persistence, and snapshot comparison.
 
 ## Phase D — Backlink & Reputation Intelligence
-**NEXT**
+**COMPLETE**
 
-Build a native evidence model for:
-- backlink discovery
-- verified backlinks
-- page mentions
-- source classification
-- ownership vs independent sources
-- referring-domain evidence
-- anchor/context evidence
-- link status and verification
-- reputation evidence
-- conservative reputation scoring
-- opportunity tracking
-- source quality and confidence
-- before/after reputation comparisons
-
-Do not pretend to be a commercial whole-web backlink index.
+Native backlink discovery, anchor/context extraction, source classification, ownership proof boundary, Model 1.1 reputation scoring, 206-site opportunity tracking, SQLite persistence, snapshot comparison, CSV formula injection defense.
 
 ## Phase E — Entity, Authority & Knowledge Intelligence
-**PLANNED**
+**NEXT**
 
 Build:
 - organization identity

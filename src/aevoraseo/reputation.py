@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from urllib.parse import urlencode, urlsplit
 
+from .backlink_persistence import persist_reputation_assessment
 from .backlinks import check_sources
-from .engine import write_csv
+from .engine import write_csv, write_json
 from .network import normalize_url, utcnow
 from .review import read_json, save_report
+
+CATALOG_PATH = Path(__file__).resolve().parents[2] / "playbooks/backlink-system/posting-sites.json"
 
 MODEL_VERSION = "1.1"
 LOW_CONFIDENCE_CEILING = 49.0
@@ -301,8 +305,91 @@ def assess(verification, related_hosts=(), requested_search_pages=5):
     return result
 
 
+def extract_backlink_opportunities(target, brand, scored_sources, catalog_path=None):
+    """
+    Categorize backlink and outreach opportunities:
+    1. Acquired links: already verified.
+    2. Unlinked brand mentions: priority outreach leads.
+    3. Catalog shortlist: high-quality opportunities from the 206-site catalog.
+    """
+    cat_file = Path(catalog_path or CATALOG_PATH)
+    catalog = []
+    if cat_file.exists():
+        try:
+            catalog = json.loads(cat_file.read_text(encoding="utf-8"))
+        except Exception:
+            catalog = []
+
+    acquired = []
+    unlinked_mentions = []
+    seen_domains = set()
+
+    for s in scored_sources:
+        s_host = host(s.get("final_url") or s["source_url"])
+        seen_domains.add(s_host)
+        if s.get("observed_link"):
+            acquired.append({
+                "type": "ACQUIRED",
+                "source_url": s["source_url"],
+                "domain": s_host,
+                "publisher_group": s.get("publisher_group", s_host),
+                "supported_points": s.get("supported_quality_points"),
+                "status": "link_verified",
+            })
+        elif s.get("observed_mention"):
+            unlinked_mentions.append({
+                "type": "UNLINKED_MENTION",
+                "source_url": s["source_url"],
+                "domain": s_host,
+                "publisher_group": s.get("publisher_group", s_host),
+                "mentions": s.get("brand_mentions", []),
+                "priority": "HIGH",
+                "action": "Request link attribution for existing editorial brand mention",
+            })
+
+    shortlist = []
+    for entry in catalog:
+        c_id = entry.get("id", "").lower().removeprefix("www.")
+        if c_id in seen_domains:
+            continue
+        is_reviewed = entry.get("review_status") == "guidance_reviewed"
+        is_free = entry.get("cost_status") in ("free_basic", "conditional_free")
+        priority = "HIGH" if (is_reviewed and is_free) else "MEDIUM"
+
+        shortlist.append({
+            "type": "CATALOG_PROSPECT",
+            "name": entry.get("name", c_id),
+            "domain": c_id,
+            "kind": entry.get("kind", "article"),
+            "topics": entry.get("topics", []),
+            "priority": priority,
+            "posting_route": entry.get("posting_url") or entry.get("website_url", ""),
+            "cost_status": entry.get("cost_status", "unknown"),
+            "review_status": entry.get("review_status", "unknown"),
+            "sheet_dr_range": entry.get("sheet_dr_values", []),
+        })
+
+    shortlist.sort(key=lambda x: (0 if x["priority"] == "HIGH" else 1, x["name"]))
+
+    return {
+        "target": target,
+        "brand": brand,
+        "acquired_count": len(acquired),
+        "unlinked_mention_count": len(unlinked_mentions),
+        "catalog_prospects_count": len(shortlist),
+        "acquired": acquired,
+        "unlinked_mentions": unlinked_mentions,
+        "catalog_shortlist": shortlist[:30],
+    }
+
+
 def export_assessment(result, out):
     out = Path(out)
+    opportunities = extract_backlink_opportunities(
+        result["target"], result.get("brand", ""), result["sources"]
+    )
+    result["opportunities"] = opportunities
+
     lines = [
         "# AevoraSEO Reputation Score",
         "",
@@ -342,6 +429,17 @@ def export_assessment(result, out):
         f"- {r['source_url']} — mention observed in captured content; no direct link captured."
         for r in result["top_mentions_without_links"]
     ]
+
+    if opportunities.get("unlinked_mentions"):
+        lines += ["", "## 🎯 Priority Outreach Opportunities (Brand Mentions)", ""]
+        for m in opportunities["unlinked_mentions"][:5]:
+            lines.append(f"- **{m['source_url']}** — Brand mention observed; no link captured. Action: {m['action']}.")
+
+    if opportunities.get("catalog_shortlist"):
+        lines += ["", "## 🚀 Recommended Catalog Prospects", ""]
+        for p in opportunities["catalog_shortlist"][:5]:
+            lines.append(f"- **{p['name']}** ({p['kind']}) — Route: {p['posting_route']}; Topics: {', '.join(p['topics'][:3])}.")
+
     lines += [
         "",
         "## Practical next steps",
@@ -374,6 +472,39 @@ def export_assessment(result, out):
         "target_links",
     ]
     write_csv(out / "reputation-sources.csv", fields, result["sources"])
+
+    # Export opportunities CSV and JSON
+    opp_fields = ["type", "name", "domain", "kind", "priority", "posting_route", "action"]
+    opp_rows = []
+    for m in opportunities.get("unlinked_mentions", []):
+        opp_rows.append({
+            "type": "UNLINKED_MENTION",
+            "name": m.get("domain", ""),
+            "domain": m.get("domain", ""),
+            "kind": "mention",
+            "priority": "HIGH",
+            "posting_route": m["source_url"],
+            "action": m["action"],
+        })
+    for p in opportunities.get("catalog_shortlist", []):
+        opp_rows.append({
+            "type": "CATALOG_PROSPECT",
+            "name": p["name"],
+            "domain": p["domain"],
+            "kind": p["kind"],
+            "priority": p["priority"],
+            "posting_route": p["posting_route"],
+            "action": f"Publish original brief / profile on {p['name']}",
+        })
+    write_csv(out / "reputation-opportunities.csv", opp_fields, opp_rows)
+    write_json(out / "reputation-opportunities.json", opportunities)
+
+    # Persist to SQLite
+    try:
+        persist_reputation_assessment(out / "reputation.sqlite3", result)
+    except Exception:
+        pass
+
     return result
 
 
@@ -404,6 +535,16 @@ def reputation(
                 "Saved backlink evidence must have been captured with this brand for mention verification."
             )
     else:
+        if not sources:
+            if CATALOG_PATH.exists():
+                cat_data = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+                sources = [
+                    {"URL": s["website_url"], "name": s["name"], "kind": s["kind"]}
+                    for s in cat_data
+                    if s.get("review_status") == "guidance_reviewed" and s.get("cost_status") in ("free_basic", "conditional_free")
+                ][:limit]
+            else:
+                sources = []
         verification = check_sources(
             sources, target, out / "verification", limit, mode, allow_private, True, brand, aliases
         )

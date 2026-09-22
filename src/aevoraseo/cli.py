@@ -235,9 +235,10 @@ def parser():
         help="Output presentation format.",
     )
     p = sub.add_parser("backlinks", help="Check supplied source pages for links to a website.")
-    p.add_argument("--sources", type=Path, required=True)
-    p.add_argument("--target", required=True)
-    p.add_argument("--out", type=Path, required=True)
+    p.add_argument("target_domain", nargs="?", default=None, help="Target website URL or domain.")
+    p.add_argument("--sources", type=Path, default=None, help="Path to sources CSV.")
+    p.add_argument("--target", default=None, help="Target website URL or domain.")
+    p.add_argument("--out", type=Path, default=None, help="Output directory for reports and database.")
     p.add_argument("--max-sources", type=int, default=30)
     p.add_argument("--mode", choices=["http", "auto", "browser"], default="auto")
     p.add_argument("--allow-private", action="store_true")
@@ -247,6 +248,12 @@ def parser():
         "--no-follow-redirects",
         action="store_true",
         help="Keep redirected source hosts within the initial scope.",
+    )
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
     )
     p = sub.add_parser(
         "search-plan",
@@ -268,24 +275,44 @@ def parser():
     p = sub.add_parser(
         "reputation", help="AevoraSEO's estimated reputation score from verified source evidence."
     )
-    inputs = p.add_mutually_exclusive_group(required=True)
-    inputs.add_argument(
-        "--sources", type=Path, help="Discovered source CSV; pages are fetched and verified."
+    p.add_argument("target_domain", nargs="?", default=None, help="Target website URL or domain.")
+    p.add_argument(
+        "--sources", type=Path, default=None, help="Discovered source CSV; pages are fetched and verified."
     )
-    inputs.add_argument(
+    p.add_argument(
         "--evidence",
         type=Path,
+        default=None,
         help="Reuse a prior brand-aware backlinks.json; no new live checks.",
     )
-    p.add_argument("--target", required=True)
-    p.add_argument("--brand", required=True)
-    p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--target", default=None, help="Target website URL or domain.")
+    p.add_argument("--brand", default=None, help="Brand name to verify in captured text.")
+    p.add_argument("--out", type=Path, default=None, help="Output directory.")
     p.add_argument("--max-sources", type=int, default=50)
     p.add_argument("--search-pages", type=int, default=5)
     p.add_argument("--mode", choices=["http", "auto", "browser"], default="auto")
     p.add_argument("--alias", action="append", default=[])
     p.add_argument("--related-host", action="append", default=[])
     p.add_argument("--allow-private", action="store_true")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
+    p = sub.add_parser(
+        "reputation-compare",
+        help="Compare two reputation snapshots of the same website.",
+    )
+    p.add_argument("--before", type=Path, required=True, help="Path to initial reputation snapshot folder or JSON.")
+    p.add_argument("--after", type=Path, required=True, help="Path to subsequent reputation snapshot folder or JSON.")
+    p.add_argument("--out", type=Path, default=None, help="Output directory for comparison results.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
     edit = sub.add_parser("edit", help="Stage, apply or roll back a reviewed content file.")
     actions = edit.add_subparsers(dest="action", required=True)
     for action in ("plan", "apply", "rollback"):
@@ -393,6 +420,7 @@ def main(argv=None):
             "backlinks",
             "edit",
             "reputation",
+            "reputation-compare",
             "search-plan",
             "search-import",
         ):
@@ -525,12 +553,20 @@ def main(argv=None):
                     print(json.dumps(diff.to_dict(), ensure_ascii=False, indent=2))
                 return 0
             elif args.command == "backlinks":
+                from urllib.parse import urlsplit
                 from .backlinks import check_sources
+
+                target = args.target or args.target_domain
+                if not target:
+                    raise ValueError("Target website URL or domain is required. Specify as first argument or via --target.")
+                if not target.startswith(("http://", "https://")):
+                    target = "https://" + target
+                out_dir = args.out or Path(f"backlinks_{urlsplit(target).hostname.removeprefix('www.').replace('.', '_')}")
 
                 result = check_sources(
                     args.sources,
-                    args.target,
-                    args.out,
+                    target,
+                    out_dir,
                     args.max_sources,
                     args.mode,
                     args.allow_private,
@@ -538,6 +574,36 @@ def main(argv=None):
                     args.brand,
                     args.alias,
                 )
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "terminal":
+                    print(f"AevoraSEO Backlink Verification — Target: {result['target']}")
+                    print(f"Sources Checked: {result['sources_checked']} | Unverified: {result['unverified_pages']}")
+                    print(f"Verified Backlink Pages: {result['observed_link_pages']} ({result.get('total_links_observed', 0)} links: {result.get('dofollow_links_count', 0)} dofollow, {result.get('nofollow_links_count', 0)} nofollow/ugc/sponsored)")
+                    print(f"Unique Referring Domains: {result.get('referring_domains_count', 0)}")
+                    print(f"Brand Mention Pages: {result['observed_mention_pages']}")
+                    if result.get('results'):
+                        print("\nTop Verified Sources:")
+                        for r in result['results'][:5]:
+                            print(f"  - {r['source_url']} ({r['verification']})")
+                    print(f"\nFull reports and database saved to: {out_dir}")
+                    return 0
+                elif fmt == "markdown":
+                    md_file = out_dir / "backlinks.md"
+                    if md_file.exists():
+                        print(md_file.read_text(encoding="utf-8"))
+                    else:
+                        print(json.dumps(result, indent=2))
+                    return 0
+                elif fmt == "csv":
+                    csv_file = out_dir / "backlinks.csv"
+                    if csv_file.exists():
+                        print(csv_file.read_text(encoding="utf-8-sig").strip())
+                    else:
+                        print("source_url,final_url,verification,target_url,anchor,rel,is_dofollow,context")
+                    return 0
+                elif fmt == "json":
+                    print(json.dumps(result, ensure_ascii=False, indent=2))
+                    return 0
             elif args.command == "search-plan":
                 from .reputation import search_plan
 
@@ -549,13 +615,25 @@ def main(argv=None):
                     args.html, args.target, args.query, args.captured_at, args.out, args.engine
                 )
             elif args.command == "reputation":
+                from urllib.parse import urlsplit
                 from .reputation import reputation
+
+                target = args.target or args.target_domain
+                if not target:
+                    raise ValueError("Target website URL or domain is required. Specify as first argument or via --target.")
+                if not target.startswith(("http://", "https://")):
+                    target = "https://" + target
+                brand = args.brand
+                if not brand:
+                    domain_part = (urlsplit(target).hostname or "").removeprefix("www.").split(".")[0]
+                    brand = domain_part.capitalize()
+                out_dir = args.out or Path(f"reputation_{urlsplit(target).hostname.removeprefix('www.').replace('.', '_')}")
 
                 result = reputation(
                     args.sources,
-                    args.target,
-                    args.brand,
-                    args.out,
+                    target,
+                    brand,
+                    out_dir,
                     args.max_sources,
                     args.mode,
                     args.allow_private,
@@ -564,6 +642,76 @@ def main(argv=None):
                     args.search_pages,
                     args.evidence,
                 )
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "terminal":
+                    print(f"AevoraSEO Reputation Assessment — Target: {result['target']}")
+                    score_display = f"{result['score']} / 100" if result['score'] is not None else "withheld"
+                    print(f"Evidence-supported Score: {score_display} ({result['score_status']})")
+                    print(f"Sensitivity Range:        {result['score_range']} (Confidence: {result['confidence']})")
+                    print(f"Observed Backlinks:       {result['observed_link_pages']} pages")
+                    print(f"Observed Brand Mentions:  {result['observed_mention_pages']} pages")
+                    opps = result.get("opportunities") or {}
+                    if opps.get("unlinked_mentions"):
+                        print(f"\nUnlinked Brand Mentions (Outreach Leads): {len(opps['unlinked_mentions'])}")
+                        for m in opps['unlinked_mentions'][:3]:
+                            print(f"  🎯 {m['source_url']}")
+                    if opps.get("catalog_shortlist"):
+                        print(f"\nRecommended Catalog Prospects: {len(opps['catalog_shortlist'])}")
+                        for p in opps['catalog_shortlist'][:3]:
+                            print(f"  🚀 {p['name']} ({p['kind']}) -> {p['posting_route']}")
+                    print(f"\nFull reports and database saved to: {out_dir}")
+                    return 0
+                elif fmt == "markdown":
+                    md_file = out_dir / "reputation.md"
+                    if md_file.exists():
+                        print(md_file.read_text(encoding="utf-8"))
+                    else:
+                        print(json.dumps(result, indent=2))
+                    return 0
+                elif fmt == "csv":
+                    csv_file = out_dir / "reputation-sources.csv"
+                    if csv_file.exists():
+                        print(csv_file.read_text(encoding="utf-8-sig").strip())
+                    else:
+                        print("source_url,final_url,publisher_group,verification,observed_link,observed_mention,quality_estimate")
+                    return 0
+                elif fmt == "json":
+                    print(json.dumps(result, ensure_ascii=False, indent=2))
+                    return 0
+            elif args.command == "reputation-compare":
+                from .reputation_comparison import compare_reputation_snapshots, generate_reputation_diff_markdown
+
+                out_dir = args.out or (args.after if args.after.is_dir() else args.after.parent) / "reputation_compare"
+                diff = compare_reputation_snapshots(args.before, args.after, out_dir=out_dir)
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "terminal":
+                    s = diff["summary"]
+                    delta_str = f"{s['score_delta']:+.1f}" if s["score_delta"] is not None else "N/A"
+                    print("AevoraSEO Reputation Snapshot Comparison")
+                    print(f"Target: {diff['target']}")
+                    print(f"Score Delta: {delta_str} (Before: {s['before_score']}, After: {s['after_score']})")
+                    print(f"Backlinks: +{s['new_backlinks_count']} new, -{s['lost_backlinks_count']} lost, {s['retained_backlinks_count']} retained")
+                    print(f"Brand Mentions: +{s['new_mentions_count']} new, -{s['lost_mentions_count']} lost, {s['retained_mentions_count']} retained")
+                    print(f"Converted Opportunities: {s['opportunity_conversions_count']}")
+                    if diff["opportunity_conversions"]:
+                        print("\nConverted Opportunities:")
+                        for c in diff["opportunity_conversions"]:
+                            print(f"  🎯 {c['source_url']} -> {c['target_url']}")
+                    print(f"\nDiff saved to: {out_dir}")
+                    return 0
+                elif fmt == "markdown":
+                    print(generate_reputation_diff_markdown(diff))
+                    return 0
+                elif fmt == "csv":
+                    csv_file = out_dir / "reputation_comparison.csv"
+                    if csv_file.exists():
+                        print(csv_file.read_text(encoding="utf-8-sig").strip())
+                    else:
+                        print("change_type,source_url,target_url,anchor,rel,note")
+                    return 0
+                elif fmt == "json":
+                    print(json.dumps(diff, ensure_ascii=False, indent=2))
+                    return 0
             else:
                 from .publishing import apply_change, open_store, stage
 

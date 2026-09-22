@@ -42,11 +42,23 @@ The command-line interface is documented in `crawler.md`. The crawler does not s
 
 See [operations](../docs/operations.md) for readiness reports, source-page backlink checks, snapshot comparisons, bounded repeat audits and reviewed local/SFTP/FTPS content-file changes. Changes retain original bytes, verify reviewed hashes and refuse to overwrite later edits during rollback. Remote adapters need compatible hosting; database/CMS editing and arbitrary third-party account automation remain separate.
 
-## Reputation discovery and rating: implemented
+## Reputation discovery, backlinks and rating: implemented
 
 The [shared discovery workflow](../docs/discovery-and-competitors.md) collects bounded search leads through native public-search adapters, available host browser/search tools, saved result HTML or supplied URLs/CSVs. The agent chooses from its actual available capabilities; a particular browser or paid search API is not required. Source failures retain evidence and use permitted fallbacks. Search snippets are leads until the native crawler checks the source page.
 
 The [native reputation system](reputation.md) verifies backlinks and page mentions, follows bounded redirect hosts and checks late JavaScript links. It calculates the AevoraSEO Reputation Score with its sensitivity range, confidence and transparent rubric. Own-site sources are excluded; repeated publishers are grouped and related sources cannot supply independent proof. `search-plan` prepares navigation URLs and a requested page budget; it does not execute a search. Native discovery is a bounded sample, never a complete backlink index.
+
+| Function | What it does |
+|---|---|
+| Direct backlink verification | Inspects external HTML, extracts anchor text, rel tokens, dofollow status, context excerpts, and target paths |
+| Brand mention extraction | Discovers target brand and alias occurrences without direct links in readable body text |
+| Source classification | Heuristically categorizes sources as editorial, directory, profile, community, or owned |
+| Ownership proof boundary | Excludes target domain, subdomains, and explicit related hosts from independent editorial proof |
+| Conservative reputation scoring | Implements Model 1.1 with supported points, evidence adjustments, confidence ceiling (49/100), and sensitivity range |
+| Opportunity pipeline | Cross-references unreached discovery leads against the 206-site catalog (`posting-sites.json`) |
+| SQLite persistence | Persists snapshots, sources, links, mentions, assessments, and diffs to `backlinks.sqlite3` and `reputation.sqlite3` |
+| Snapshot diff engine (`reputation-compare`) | Compares temporal snapshots for score deltas, added/lost/retained links/mentions, and converted opportunities |
+| Export & security hardening | Emits Terminal, JSON, CSV, and Markdown with mandatory sanitization against CSV formula injection |
 
 ## Posting catalog and shortlist helper: implemented
 

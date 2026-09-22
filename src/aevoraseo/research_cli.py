@@ -13,10 +13,18 @@ def add_commands(sub):
     p.add_argument("--source-limit", type=int, default=30)
     p.add_argument("--out", type=Path, required=True)
     p = sub.add_parser(
-        "compare-reputation", help="Compare captured cohort evidence; rank only comparable samples."
+        "compare-reputation", help="Compare reputation snapshots across time or cohort manifest."
     )
-    p.add_argument("--manifest", type=Path, required=True)
-    p.add_argument("--out", type=Path, required=True)
+    p.add_argument("--before", type=Path, default=None, help="Initial reputation snapshot folder or JSON.")
+    p.add_argument("--after", type=Path, default=None, help="Subsequent reputation snapshot folder or JSON.")
+    p.add_argument("--manifest", type=Path, default=None, help="Cohort research manifest for multi-site ranking.")
+    p.add_argument("--out", type=Path, default=None, help="Output directory for comparison results.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
     p = sub.add_parser("discover", help="Collect unverified search leads with bounded fallbacks.")
     p.add_argument("--query", action="append", default=[])
     p.add_argument(
@@ -83,9 +91,45 @@ def execute(args):
             args.source_limit,
         )
     if args.command == "compare-reputation":
-        from .deep_research import comparison_from_manifest
+        if args.manifest:
+            from .deep_research import comparison_from_manifest
 
-        return comparison_from_manifest(args.manifest, args.out)
+            return comparison_from_manifest(args.manifest, args.out)
+        elif args.before and args.after:
+            from .reputation_comparison import compare_reputation_snapshots, generate_reputation_diff_markdown
+
+            out_dir = args.out or (args.after if args.after.is_dir() else args.after.parent) / "reputation_compare"
+            diff = compare_reputation_snapshots(args.before, args.after, out_dir=out_dir)
+            fmt = getattr(args, "format", "terminal")
+            if fmt == "terminal":
+                s = diff["summary"]
+                delta_str = f"{s['score_delta']:+.1f}" if s["score_delta"] is not None else "N/A"
+                print("AevoraSEO Reputation Snapshot Comparison")
+                print(f"Target: {diff['target']}")
+                print(f"Score Delta: {delta_str} (Before: {s['before_score']}, After: {s['after_score']})")
+                print(f"Backlinks: +{s['new_backlinks_count']} new, -{s['lost_backlinks_count']} lost, {s['retained_backlinks_count']} retained")
+                print(f"Brand Mentions: +{s['new_mentions_count']} new, -{s['lost_mentions_count']} lost, {s['retained_mentions_count']} retained")
+                print(f"Converted Opportunities: {s['opportunity_conversions_count']}")
+                if diff["opportunity_conversions"]:
+                    print("\nConverted Opportunities:")
+                    for c in diff["opportunity_conversions"]:
+                        print(f"  🎯 {c['source_url']} -> {c['target_url']}")
+                print(f"\nDiff saved to: {out_dir}")
+                return diff
+            elif fmt == "markdown":
+                print(generate_reputation_diff_markdown(diff))
+                return diff
+            elif fmt == "csv":
+                csv_file = out_dir / "reputation_comparison.csv"
+                if csv_file.exists():
+                    print(csv_file.read_text(encoding="utf-8-sig").strip())
+                else:
+                    print("change_type,source_url,target_url,anchor,rel,note")
+                return diff
+            elif fmt == "json":
+                return diff
+        else:
+            raise ValueError("Provide either --manifest for cohort comparison, or --before and --after for snapshot comparison.")
     if args.command == "discover":
         queries = read_json(args.queries) if args.queries else []
         queries += [
