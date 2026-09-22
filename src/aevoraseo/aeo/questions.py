@@ -76,8 +76,13 @@ def extract_faq_from_jsonld(jsonld_blocks: List[Any]) -> List[QuestionAnswerSign
     Extracts structured Q&A pairs from JSON-LD FAQPage blocks.
     """
     signals: List[QuestionAnswerSignal] = []
+    visited: set[int] = set()
 
-    def _traverse(node: Any):
+    def _traverse(node: Any, depth: int = 0):
+        if depth > 25 or id(node) in visited:
+            return
+        visited.add(id(node))
+
         if isinstance(node, dict):
             type_val = node.get("@type", "")
             types = type_val if isinstance(type_val, list) else [type_val]
@@ -109,13 +114,13 @@ def extract_faq_from_jsonld(jsonld_blocks: List[Any]) -> List[QuestionAnswerSign
                                 )
                             )
             for v in node.values():
-                _traverse(v)
+                _traverse(v, depth + 1)
         elif isinstance(node, list):
             for item in node:
-                _traverse(item)
+                _traverse(item, depth + 1)
 
     for block in jsonld_blocks:
-        _traverse(block)
+        _traverse(block, 0)
 
     return signals
 

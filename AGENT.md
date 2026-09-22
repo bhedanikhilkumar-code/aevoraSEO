@@ -101,49 +101,67 @@ Known non-blocking findings:
 2. Incremental crawl with a mismatched seed can currently proceed as a full crawl without a warning. Future work should add warning/strict behavior.
 3. Export currently uses `fetchall()`; very large snapshots may eventually benefit from streaming pagination.
 
-Do not regress or silently remove these Phase B controls.
+### Phase C — AEO/GEO Intelligence
+**STATUS: COMPLETE — PASS**
+
+Verified scope:
+- answer readiness
+- question/intent coverage
+- direct-answer proximity detection (10-60 word definitions and structured lists)
+- entity clarity and cross-page consistency audit
+- citation/source readiness (author bylines, timestamps, publisher, canonicals)
+- structured-data intelligence (Schema.org audit, completeness, consistency, syntax errors)
+- AI crawler/bot accessibility matrix (10 tracked AI bots against robots.txt, robots meta, X-Robots-Tag)
+- content extractability and semantic heading structure
+- transparent AEO (0-100) and GEO (0-100) scoring models with signal contributions and deductions
+- strict separation between analytical readiness and empirical external observed visibility
+- snapshot comparison engine (`aeo-compare`) with categorized transitions (ADDED, REMOVED, IMPROVED, REGRESSED, UNCHANGED)
+- SQLite persistence (`aeo_snapshots`, `aeo_pages`, `aeo_questions`, `aeo_entities`, `aeo_diffs`) integrated into `crawl.sqlite3` and `aeo.sqlite3`
+- CLI commands: `aevoraseo aeo` and `aevoraseo aeo-compare` with terminal, JSON, CSV, and Markdown formats
+- Node runner parity
+- Security hardening against CSV formula injection attacks
+- Defensive depth and cycle guards on JSON-LD parsing
+- Comprehensive adversarial and security test suite (`tests/test_aeo_adversarial.py`)
+- Technical methodology reference (`references/aeo-geo.md`)
+
+Forensic audit evidence:
+- 375 passed
+- 2 skipped
+- 0 failed
+- 377 collected
+- release hygiene: 238 files checked, 0 findings
+- cross-platform connection handling verified on Windows
+
+Reference commit:
+- `d1f2736` — `feat(aeo): implement Phase C AEO/GEO intelligence engine, scoring, and snapshot diff`
+- subsequent hardening: SQLite persistence, formula injection sanitization, adversarial tests, methodology documentation.
 
 ---
 
 ## 3. CURRENT PHASE
 
-### Phase C — AEO/GEO Intelligence
-**STATUS: NEXT / NOT YET VERIFIED COMPLETE**
+### Phase D — Backlink & Reputation Intelligence
+**STATUS: NEXT / READY FOR IMPLEMENTATION**
 
-This is the next implementation phase.
+Phase C has passed all verification gates and forensic audits. Phase D is the next implementation phase.
 
 Required areas:
-- answer readiness
-- question/intent coverage
-- direct-answer detection
-- entity clarity
-- citation/source readiness
-- structured-data intelligence
-- AI crawler/bot accessibility
-- content extractability
-- semantic structure
-- transparent AEO/GEO scoring
-- confidence and evidence models
-- snapshot-aware AEO/GEO comparisons
-- SQLite persistence
-- CLI commands
-- terminal/JSON/CSV/Markdown reports
-- deterministic tests
-- adversarial/security tests
+- native backlink discovery model
+- verified backlinks vs. page mentions
+- source classification (editorial, directory, profile, community, owned)
+- ownership vs. independent proof
+- referring-domain evidence and anchor context
+- link status, target reachability, and rel attributes (nofollow, ugc, sponsored)
+- conservative reputation scoring with confidence intervals
+- backlink opportunity tracking and catalog shortlist integration
+- snapshot-aware before/after reputation comparisons
+- SQLite persistence for backlink and mention observations
+- deterministic and adversarial tests
 
 Critical boundary:
-
-```
-Observed Evidence
-      ↓
-Derived Signals
-      ↓
-Predicted Readiness
-
-DO NOT present predicted readiness as actual AI visibility.
-```
-
-Do not claim rankings, citations, recommendations, or visibility in ChatGPT, Google AI, Gemini, Perplexity, or other answer engines unless real external measurements are supplied.
+- Do not pretend to be a whole-web commercial backlink index.
+- Search snippets are leads, not verified backlinks.
+- Never extrapolate whole-web totals from a sample.
 
 ---
 
@@ -162,12 +180,12 @@ Open-source source visibility, version alignment, hybrid runner, CI, and release
 Profiles, snapshots, conditional requests, incremental reuse, diffing, resume, cache isolation, and security hardening.
 
 ## Phase C — AEO/GEO Intelligence
-**NEXT**
+**COMPLETE**
 
-Answer readiness, question/intent coverage, direct answers, entity clarity, citation readiness, schema intelligence, AI crawler accessibility, extraction quality, transparent scoring, and snapshot comparison.
+Answer readiness, question/intent coverage, direct answers, entity clarity, citation readiness, schema intelligence, AI crawler accessibility, extraction quality, transparent scoring, SQLite persistence, and snapshot comparison.
 
 ## Phase D — Backlink & Reputation Intelligence
-**PLANNED**
+**NEXT**
 
 Build a native evidence model for:
 - backlink discovery
@@ -628,25 +646,36 @@ The agent must NOT jump randomly between future phases.
 
 The next implementation target is:
 
-## PHASE C — AEO/GEO INTELLIGENCE
+## PHASE D — BACKLINK & REPUTATION INTELLIGENCE
 
 Start by inspecting:
 - current `src/aevoraseo/`
-- `engine.py`
-- `network.py`
+- `backlinks.py`
+- `reputation.py`
+- `discovery.py`
+- `deep_research.py`
 - `review.py`
 - `cli.py`
-- SQLite snapshot schema
-- existing schema/entity extraction
-- existing reports
-- current tests
-- `SKILL.md`
-- `references/capabilities.md`
-- `docs/agent-installation.md`
+- SQLite snapshot and AEO persistence schemas
+- existing backlink catalog `docs/backlink-source-catalog.md` and `scripts/backlink_sources.py`
+- current tests (`tests/test_reputation.py`, `tests/test_posting_catalog.py`, `tests/test_deep_research.py`, `tests/test_discovery_research.py`)
+- `references/reputation.md`
+- `references/measurement-boundaries.md`
 
-Then implement Phase C according to the Phase C Master Prompt.
+Then implement Phase D according to the Phase D specification:
+1. Native backlink discovery and verification model.
+2. Verified backlinks vs unverified page mentions.
+3. Source classification (editorial, directory, profile, community, owned).
+4. Ownership vs independent proof.
+5. Referring-domain evidence and anchor context.
+6. Link status, target reachability, and rel attributes (nofollow, ugc, sponsored).
+7. Conservative reputation scoring with confidence intervals.
+8. Backlink opportunity tracking and catalog shortlist integration.
+9. Snapshot-aware before/after reputation comparisons.
+10. SQLite persistence for backlink and mention observations.
+11. Deterministic and adversarial tests.
 
-Do not begin Phase D backlink work until Phase C has passed its full verification and forensic audit.
+Do not begin Phase E entity graph work until Phase D has passed its full verification and forensic audit.
 
 ---
 
@@ -712,8 +741,8 @@ If the repository contradicts this document, inspect the code and tests first an
 |---|---|---|
 | A | Repository & Engine Reconciliation | COMPLETE |
 | B | Crawler Hardening & Incremental Intelligence | COMPLETE — MINOR FINDINGS |
-| C | AEO/GEO Intelligence | NEXT |
-| D | Backlinks & Reputation Intelligence | PLANNED |
+| C | AEO/GEO Intelligence | COMPLETE — PASS |
+| D | Backlinks & Reputation Intelligence | NEXT |
 | E | Entity & Authority Intelligence | PLANNED |
 | F | Search / Local / Commercial Intelligence | PLANNED |
 | G | Content & Optimization Intelligence | PLANNED |

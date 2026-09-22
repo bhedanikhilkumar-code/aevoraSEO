@@ -39,6 +39,12 @@ Run AevoraSEO instantly anywhere with **Node.js / NPX** — zero manual Python c
 # Run a full website SEO, AEO & performance audit
 npx aevoraseo audit https://example.com
 
+# Analyze AEO answer readiness & GEO signals on a crawl snapshot
+npx aevoraseo aeo ./crawl_output --format terminal
+
+# Compare AEO/GEO readiness trajectory between two snapshots
+npx aevoraseo aeo-compare --before ./crawl1 --after ./crawl2 --format terminal
+
 # Calculate brand entity authority & reputation score
 npx aevoraseo reputation example.com
 
@@ -56,6 +62,8 @@ npm install -g aevoraseo
 
 # Run directly from any terminal
 aevoraseo audit https://example.com
+aevoraseo aeo ./crawl_output
+aevoraseo aeo-compare --before ./crawl1 --after ./crawl2
 aevoraseo doctor
 ```
 
@@ -78,7 +86,7 @@ This release changes the public project identity from the previous product name 
 - Project assets replaced with the AevoraSEO visual identity.
 - Original creator identity and contact information removed.
 - Maintainer metadata now points to **Bheda Nikhilkumar**.
-- Public profile URLs remain placeholders until the maintainer supplies the exact links.
+- Public maintainer links verified (GitHub, LinkedIn, Portfolio, and Email).
 
 If you have an existing installation of the old package, treat this as a **breaking rename** and reinstall from a clean environment.
 
@@ -255,6 +263,12 @@ aevoraseo crawl https://example.com --incremental ./runs/baseline --out ./runs/r
 # Compare two crawl snapshots to detect added, removed, changed & unchanged pages
 aevoraseo compare --before ./runs/baseline --after ./runs/recheck --out ./runs/diff
 
+# Analyze AEO answer readiness and GEO signal strength on a crawl snapshot
+aevoraseo aeo ./runs/deep-audit --out ./runs/deep-audit/aeo --format terminal
+
+# Compare AEO/GEO score evolution and state transitions between snapshots
+aevoraseo aeo-compare --before ./runs/baseline --after ./runs/recheck --out ./runs/aeo-diff --format terminal
+
 # One page with browser rendering
 aevoraseo scrape https://example.com/article \
   --out ./runs/article \
@@ -286,8 +300,9 @@ AevoraSEO is intentionally broader than a basic metadata checker.
 | Technical SEO | Crawlability, metadata, canonicals, redirects, status codes, sitemaps and access behavior |
 | Content | Main content extraction, headings, descriptions, readable Markdown/text and content gaps |
 | Schema / entities | JSON-LD observations, organization identity and entity consistency |
-| AEO | Answer readiness, direct answers, FAQs and question-oriented content opportunities |
-| GEO | AI-search readiness, factual clarity, source-worthiness and entity evidence |
+| AEO | AevoraSEO AEO Readiness Score (0–100), direct answers, question coverage, heading hierarchy, and AI bot accessibility |
+| GEO | AevoraSEO GEO Signal Score (0–100), entity clarity, author/source readiness, factual density, and extractability |
+| AEO/GEO Trajectory | Snapshot-aware score comparisons (`aeo-compare`), state transitions (ADDED, REMOVED, IMPROVED, REGRESSED, UNCHANGED), and attributed evidence |
 | Competitors | Business-aware discovery, comparable pages, evidence-backed differences |
 | Reputation | Backlink discovery, source inspection, mentions and conservative evidence scoring |
 | Backlinks | Source catalog, eligibility checks, publishing routes and verification workflow |
@@ -298,7 +313,7 @@ AevoraSEO is intentionally broader than a basic metadata checker.
 | Hosting | Local, SFTP and FTPS workflows with guarded file changes |
 | Assistant skills | Portable `SKILL.md`, playbooks, references and host-specific setup |
 
-See the [capability map](references/capabilities.md) for the detailed workflow.
+See the [capability map](references/capabilities.md) and [AEO & GEO methodology](references/aeo-geo.md) for the detailed workflow.
 
 ---
 

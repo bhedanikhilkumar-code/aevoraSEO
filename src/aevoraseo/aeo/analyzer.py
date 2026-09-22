@@ -25,6 +25,16 @@ from aevoraseo.aeo.accessibility import evaluate_bot_accessibility
 from aevoraseo.aeo.content_structure import audit_page_content_structure, audit_snapshot_content_conflicts
 from aevoraseo.aeo.scoring import calculate_aeo_readiness, calculate_geo_signals
 from aevoraseo.aeo.visibility import load_observed_visibility
+from aevoraseo.aeo.persistence import persist_snapshot_aeo
+
+
+def sanitize_csv_cell(value: Any) -> Any:
+    """Sanitizes CSV cell values to prevent formula injection attacks."""
+    if isinstance(value, (list, dict)):
+        value = json.dumps(value, ensure_ascii=False)
+    if isinstance(value, str) and value.lstrip().startswith(("=", "+", "-", "@", "\t", "\r")):
+        value = "'" + value
+    return value
 
 
 def analyze_page(
@@ -366,6 +376,14 @@ def analyze_snapshot(
 
     result.summary_markdown = generate_aeo_summary_markdown(result)
 
+    # Persist directly into crawl.sqlite3 if present in snapshot directory
+    crawl_db = snap_path / "crawl.sqlite3"
+    if crawl_db.exists():
+        try:
+            persist_snapshot_aeo(result, crawl_db)
+        except Exception:
+            pass
+
     # Export outputs if out_dir is specified
     if out_dir is not None:
         target_dir = Path(out_dir)
@@ -383,7 +401,7 @@ def analyze_snapshot(
             encoding="utf-8",
         )
 
-        # 3. aeo_pages.csv
+        # 3. aeo_pages.csv (with formula injection protection)
         csv_rows = []
         for p in page_results:
             csv_rows.append({
@@ -424,6 +442,13 @@ def analyze_snapshot(
         with (target_dir / "aeo_pages.csv").open("w", newline="", encoding="utf-8-sig") as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
-            writer.writerows(csv_rows)
+            for r in csv_rows:
+                writer.writerow({k: sanitize_csv_cell(v) for k, v in r.items()})
+
+        # 4. aeo.sqlite3 persistence in output directory
+        try:
+            persist_snapshot_aeo(result, target_dir / "aeo.sqlite3")
+        except Exception:
+            pass
 
     return result

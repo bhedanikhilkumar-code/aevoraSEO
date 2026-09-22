@@ -65,11 +65,24 @@ def audit_jsonld_node(
     node: Dict[str, Any],
     page_title: str = "",
     canonical_url: str = "",
+    visited_ids: Optional[Set[int]] = None,
+    current_depth: int = 0,
+    max_depth: int = 25,
 ) -> List[SchemaQualitySignal]:
     """
     Evaluates a single JSON-LD dictionary against requirements and page consistency.
     """
     signals: List[SchemaQualitySignal] = []
+
+    if current_depth > max_depth or not isinstance(node, dict):
+        return signals
+
+    if visited_ids is None:
+        visited_ids = set()
+
+    if id(node) in visited_ids:
+        return signals
+    visited_ids.add(id(node))
 
     type_val = node.get("@type")
     if not type_val:
@@ -130,11 +143,29 @@ def audit_jsonld_node(
     # Recurse into nested dictionaries or lists
     for val in node.values():
         if isinstance(val, dict):
-            signals.extend(audit_jsonld_node(val, page_title=page_title, canonical_url=canonical_url))
+            signals.extend(
+                audit_jsonld_node(
+                    val,
+                    page_title=page_title,
+                    canonical_url=canonical_url,
+                    visited_ids=visited_ids,
+                    current_depth=current_depth + 1,
+                    max_depth=max_depth,
+                )
+            )
         elif isinstance(val, list):
             for item in val:
                 if isinstance(item, dict):
-                    signals.extend(audit_jsonld_node(item, page_title=page_title, canonical_url=canonical_url))
+                    signals.extend(
+                        audit_jsonld_node(
+                            item,
+                            page_title=page_title,
+                            canonical_url=canonical_url,
+                            visited_ids=visited_ids,
+                            current_depth=current_depth + 1,
+                            max_depth=max_depth,
+                        )
+                    )
 
     return signals
 

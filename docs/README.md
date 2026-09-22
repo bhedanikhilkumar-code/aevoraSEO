@@ -37,6 +37,12 @@ Start with the task you want to complete. Each guide connects the commands, evid
 | [Complete reputation method](../references/reputation.md) | Discovery/import, native verification, source reviews, formulas and limitations |
 | [Reputation growth plan](../playbooks/backlink-system/reputation-growth-plan.md) | Relevant contributions, useful assets, review evidence and next actions |
 
+## AEO and GEO intelligence
+
+| Guide | Covers |
+|---|---|
+| [AEO & GEO methodology](../references/aeo-geo.md) | Scoring dimensions, direct answers, entity clarity, bot accessibility matrix, SQLite schema, and snapshot diffing |
+
 ## Strategy, content and follow-up
 
 | Guide | Covers |

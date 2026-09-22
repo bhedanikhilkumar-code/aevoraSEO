@@ -31,6 +31,12 @@ from aevoraseo.aeo.comparison import (
 )
 from aevoraseo.aeo.accessibility import AI_BOT_REGISTRY, evaluate_bot_accessibility
 from aevoraseo.aeo.visibility import load_observed_visibility
+from aevoraseo.aeo.persistence import (
+    init_aeo_db,
+    persist_snapshot_aeo,
+    persist_aeo_diff,
+    query_snapshot_aeo_summary,
+)
 
 __all__ = [
     "AEODiffItem",
@@ -54,5 +60,9 @@ __all__ = [
     "evaluate_bot_accessibility",
     "generate_aeo_diff_markdown",
     "generate_aeo_summary_markdown",
+    "init_aeo_db",
     "load_observed_visibility",
+    "persist_aeo_diff",
+    "persist_snapshot_aeo",
+    "query_snapshot_aeo_summary",
 ]

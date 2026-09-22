@@ -1,5 +1,21 @@
 # Changelog
 
+## Phase C — AEO & GEO Intelligence Engine
+
+- Implemented native Answer Engine Optimization (AEO) and Generative Engine Optimization (GEO) analytical engines.
+- Added deterministic **AevoraSEO AEO Readiness Score (0–100)** across 5 dimensions: Answer Readiness, Question Coverage, Content Structure, Schema Quality, and AI Crawler Accessibility.
+- Added deterministic **AevoraSEO GEO Signal Score (0–100)** across 4 dimensions: Entity Clarity, Source Readiness, Factual Specificity & Density, and Content Depth & Extractability.
+- Implemented direct-answer proximity detection, concise definition phrasing analysis, and structured FAQ extraction.
+- Built tracked AI bot accessibility matrix auditing 10 major AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, etc.) across robots.txt, robots meta, and X-Robots-Tag.
+- Implemented structured Schema.org audit for completeness, syntax validity, and page-title/canonical URL consistency.
+- Built cross-page entity conflict detector flagging contradictions in Organization and Person entities.
+- Implemented full SQLite persistence across `crawl.sqlite3` and standalone `aeo.sqlite3` (`aeo_snapshots`, `aeo_pages`, `aeo_questions`, `aeo_entities`, and `aeo_diffs`).
+- Implemented snapshot comparison CLI command (`aevoraseo aeo-compare`) with categorized state transitions (ADDED, REMOVED, IMPROVED, REGRESSED, UNCHANGED) and attributed contributing evidence.
+- Hardened CSV exports against formula injection attacks with single-quote escaping on untrusted strings.
+- Added recursion depth and identity cycle guards preventing stack overflow on circular JSON-LD markup.
+- Added comprehensive adversarial and security test suite (`tests/test_aeo_adversarial.py`).
+- Added technical methodology documentation (`references/aeo-geo.md`).
+
 ## 1.0.0 — AevoraSEO launch
 
 - Renamed the project, Python distribution, CLI entry point and import package to `aevoraseo`.

@@ -54,6 +54,23 @@ The [native reputation system](reputation.md) verifies backlinks and page mentio
 
 The optional `scripts/import_backlink_pdf.py` reads visible PDF rows, preserves duplicate records and detects conflicting DR claims. It needs `pypdf` only for importing a new PDF; normal browsing and planning use the standard library.
 
+## AEO and GEO intelligence: implemented
+
+The native AEO/GEO intelligence engine evaluates answer readiness, question coverage, direct-answer proximity, structured-data validity, entity clarity, citation and source readiness, and AI crawler accessibility.
+
+| Function | What it does |
+|---|---|
+| AevoraSEO AEO Readiness Score | Evaluates 0–100 readiness across Answer Readiness, Question Coverage, Content Structure, Schema Quality, and AI Crawler Accessibility |
+| AevoraSEO GEO Signal Score | Evaluates 0–100 signal strength across Entity Clarity, Source Readiness, Factual Specificity, and Content Depth & Extractability |
+| Direct answer detection | Identifies adjacent definition/answer paragraphs (10–60 words) or structured lists following interrogative headings |
+| AI crawler accessibility matrix | Audits 10 AI bots (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, etc.) against robots.txt, robots meta, and X-Robots-Tag |
+| Structured schema audit | Validates required and recommended properties, detects syntax errors, and checks title/canonical URL consistency |
+| Cross-page entity conflict audit | Flags naming contradictions across pages for declared Organization and Person entities |
+| SQLite persistence | Persists snapshots, pages, questions, entities, and diffs to `crawl.sqlite3` and `aeo.sqlite3` |
+| Snapshot diff engine (`aeo-compare`) | Compares two crawl snapshots for AEO/GEO deltas, categorized states (ADDED, REMOVED, IMPROVED, REGRESSED, UNCHANGED), and attributed evidence |
+
+See [AEO & GEO methodology](aeo-geo.md) for detailed scoring formulas and boundary definitions.
+
 ## SEO workflows included
 
 These are agent workflows supported by the reference library. They are available for analysis and planning; their presence does not mean the standalone Python script automatically completes every task.

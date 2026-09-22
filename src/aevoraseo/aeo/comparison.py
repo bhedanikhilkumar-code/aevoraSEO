@@ -11,13 +11,14 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from aevoraseo.aeo.models import AEODiffItem, AEODiffResult
-from aevoraseo.aeo.analyzer import analyze_snapshot
+from aevoraseo.aeo.models import AEODiffItem, AEODiffResult, PageAEOResult
+from aevoraseo.aeo.analyzer import analyze_snapshot, sanitize_csv_cell
+from aevoraseo.aeo.persistence import persist_aeo_diff
 
 
 def _derive_contributing_evidence(
-    before_p: Optional[Dict[str, Any]],
-    after_p: Optional[Dict[str, Any]],
+    before_p: Optional[PageAEOResult],
+    after_p: Optional[PageAEOResult],
 ) -> List[str]:
     """
     Computes human-readable evidence strings describing why scores changed between snapshots.
@@ -266,6 +267,14 @@ def compare_aeo_snapshots(
         summary=summary_counts,
     )
 
+    # Persist diff to after_dir/crawl.sqlite3 if present
+    after_db = Path(after_dir) / "crawl.sqlite3"
+    if after_db.exists():
+        try:
+            persist_aeo_diff(diff_result, after_db)
+        except Exception:
+            pass
+
     if out_dir is not None:
         target_dir = Path(out_dir)
         target_dir.mkdir(parents=True, exist_ok=True)
@@ -280,7 +289,7 @@ def compare_aeo_snapshots(
         md_content = generate_aeo_diff_markdown(diff_result)
         (target_dir / "aeo_comparison.md").write_text(md_content + "\n", encoding="utf-8")
 
-        # 3. aeo_comparison.csv
+        # 3. aeo_comparison.csv (with formula injection protection)
         csv_rows = []
         for item in diff_items:
             csv_rows.append({
@@ -295,6 +304,13 @@ def compare_aeo_snapshots(
         with (target_dir / "aeo_comparison.csv").open("w", newline="", encoding="utf-8-sig") as f:
             writer = csv.DictWriter(f, fieldnames=["url", "metric", "before", "after", "delta", "state", "evidence"])
             writer.writeheader()
-            writer.writerows(csv_rows)
+            for r in csv_rows:
+                writer.writerow({k: sanitize_csv_cell(v) for k, v in r.items()})
+
+        # 4. aeo_diff.sqlite3 persistence in output directory
+        try:
+            persist_aeo_diff(diff_result, target_dir / "aeo_diff.sqlite3")
+        except Exception:
+            pass
 
     return diff_result
