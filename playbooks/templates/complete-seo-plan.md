@@ -77,3 +77,41 @@ Name the relevant companies and exact comparison pages. Explain selection, captu
 ## Missing evidence and next checks
 
 Identify remaining data needs, which conclusions they limit, and the smallest next step to resolve each. Do not turn unknowns into zero scores or fabricate ranking/traffic/link metrics.
+
+---
+
+## Supporting Export Template Schemas
+
+### Backlink Prospect Header (`backlink-prospect-template.csv`)
+```csv
+Website,Posting URL,Format,Why It Fits,Topic or Title,Outline,Target Page,Target Page Status,Permitted Link Location,Anchor Guidance,How To Post,Cost Status,Eligibility,Editorial or Owned Role,Current DA,Current DR,Metric Provider,Metric Date,Sheet DR Unverified,Guidance Checked On,Guidance Sources,Priority,Planned Week,Owner,Status,Live Post URL,Observed Rel,Post Check Date,Result Notes
+```
+
+### Competitor Matrix Header (`competitor-matrix-template.csv`)
+```csv
+Competitor,Domain,Comparable Service,Target Market,Observed Strength,Observed Weakness,Identified Gap,Recommended Response,Priority
+```
+
+### Content Calendar Header (`content-calendar-template.csv`)
+```csv
+Publish Date,Target Keyword,Search Intent,Topic,Title,Target URL,Content Type,Author,Status,Review Date
+```
+
+### Issue Log Header (`issue-log-template.csv`)
+```csv
+Issue ID,Affected URL,Category,Severity,Impact,Effort,Priority Score,Status,Owner,Resolution Date
+```
+
+### Keyword Map Header (`keyword-map-template.csv`)
+```csv
+Keyword,Search Intent,Monthly Volume,Current Rank,Target Page URL,Competitor URL,Business Value,Action Plan
+```
+
+### Custom Selectors Spec (`selectors-example.json`)
+```json
+{
+  "page_heading": {"selector": "h1", "all": false},
+  "prices": ".price_color, .price",
+  "product_links": {"selector": "article h3 a", "attribute": "href", "all": true}
+}
+```

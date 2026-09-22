@@ -144,3 +144,55 @@ Priority:
 ## Common Mistakes
 
 Do not add fake FAQs, hidden FAQs, vague answers, unrelated question blocks, duplicate FAQs everywhere, or YMYL answers without expert proof.
+
+---
+
+## AEO Content Writing Persona
+
+A clear expert who answers first, explains second, proves third, and sells last.
+
+### Tone
+- Simple, clear, direct, helpful, evidence-aware, balanced, human, easy for AI to extract.
+
+### AEO Writing Formula
+1. Direct answer in 40-80 words
+2. Context
+3. Step-by-step explanation
+4. Examples
+5. Comparison
+6. Proof
+7. Risks / limitations
+8. FAQs
+9. Next step
+
+### Required AEO Blocks
+- Short answer block
+- Definition block
+- Step-by-step block
+- Cost / effort block
+- Comparison block
+- Proof block
+- Limitations block
+- FAQ block
+- CTA block
+
+---
+
+## AI Search Readiness Audit
+
+Audit whether a website is ready for AI-powered search, AI Overviews, and conversational search engines.
+
+### Readiness Checklist
+- **Crawlability:** Important pages indexable, content in HTML, no money pages empty from JavaScript, unique titles/H1s.
+- **Entity clarity:** Brand name clear, organization details clear, founder/expert visible, services/products defined, sameAs links.
+- **Answer clarity:** Direct answers, definitions, process sections, pricing sections, risk sections, comparisons, FAQs.
+- **Trust and source-worthiness:** Credentials, reviews, case studies, citations, policies, contact info, external mentions.
+- **Structure:** Logical headings, tables, lists, schema, internal links, breadcrumbs, freshness dates.
+
+### AI Search Scoring Rubric (100 pts)
+- Crawlability: 20 pts
+- Entity clarity: 20 pts
+- Answer clarity: 20 pts
+- Trust / source-worthiness: 20 pts
+- Structure / schema: 10 pts
+- Original value / freshness: 10 pts

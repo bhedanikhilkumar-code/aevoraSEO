@@ -183,6 +183,57 @@ def parser():
         help="Filter compared pages by state.",
     )
     p.add_argument("--filter", default=None, help="Regex pattern to filter compared URLs.")
+    p = sub.add_parser(
+        "aeo",
+        help="Analyze answer readiness, GEO signals, and AI crawler accessibility.",
+    )
+    p.add_argument("snapshot", type=Path, help="Path to crawl snapshot folder.")
+    p.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        help="Directory to save aeo_report.json, aeo_summary.md, aeo_pages.csv.",
+    )
+    p.add_argument(
+        "--visibility",
+        type=Path,
+        default=None,
+        help="Optional external observed visibility records (.json or .csv).",
+    )
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
+    p = sub.add_parser(
+        "aeo-compare",
+        help="Compare AEO/GEO scores and signals between two crawl snapshots.",
+    )
+    p.add_argument(
+        "--before",
+        type=Path,
+        required=True,
+        help="Path to baseline crawl snapshot folder.",
+    )
+    p.add_argument(
+        "--after",
+        type=Path,
+        required=True,
+        help="Path to subsequent crawl snapshot folder.",
+    )
+    p.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        help="Directory to save comparison outputs.",
+    )
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
     p = sub.add_parser("backlinks", help="Check supplied source pages for links to a website.")
     p.add_argument("--sources", type=Path, required=True)
     p.add_argument("--target", required=True)
@@ -337,6 +388,8 @@ def main(argv=None):
         if args.command in (
             "readiness",
             "compare",
+            "aeo",
+            "aeo-compare",
             "backlinks",
             "edit",
             "reputation",
@@ -372,6 +425,12 @@ def main(argv=None):
                         f"Unchanged: {s.get('unchanged', 0)}",
                         f"Errors:    {s.get('errors', 0)}",
                     ]
+                    if result.get("status_filter") and result["status_filter"] != "all":
+                        sf = result["status_filter"]
+                        urls = result.get("filtered_urls", [])
+                        out_lines.append(f"\nFiltered by status: {sf} ({len(urls)} matching)")
+                        for u in urls:
+                            out_lines.append(f"  - {u}")
                     print("\n".join(out_lines))
                 elif fmt == "markdown":
                     md_path = args.out / "comparison.md"
@@ -387,6 +446,83 @@ def main(argv=None):
                         print("url,state,field,before,after")
                 else:
                     print(json.dumps(result, ensure_ascii=False, indent=2))
+                return 0
+            elif args.command == "aeo":
+                from .aeo import analyze_snapshot
+
+                out_dir = args.out or (args.snapshot / "aeo")
+                res = analyze_snapshot(args.snapshot, visibility_file=args.visibility, out_dir=out_dir)
+
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "terminal":
+                    print(f"AevoraSEO AEO Intelligence Engine — Snapshot: {res.snapshot_id}")
+                    print(f"Pages Analyzed: {res.page_count}")
+                    print(f"AevoraSEO AEO Readiness Score: {res.average_aeo_readiness_score:.1f} / 100")
+                    print(f"AevoraSEO GEO Signal Score:    {res.average_geo_signal_score:.1f} / 100")
+                    print("\nAI Crawler Accessibility:")
+                    for bot, counts in sorted(res.bot_accessibility_matrix.items()):
+                        allowed = counts.get("crawl_allowed", 0)
+                        restricted = counts.get("crawl_restricted", 0)
+                        print(f"  - {bot:20} Allowed: {allowed} | Restricted: {restricted}")
+                    if res.top_questions:
+                        print(f"\nTop Detected Questions ({len(res.top_questions)}):")
+                        for q in res.top_questions[:5]:
+                            ans_mark = "✅" if q.get("answer_detected") else "❌"
+                            print(f"  {ans_mark} {q.get('question')} ({q.get('confidence', 0):.2f} conf)")
+                    if res.content_conflicts:
+                        print(f"\nContent Conflicts ({len(res.content_conflicts)}):")
+                        for c in res.content_conflicts:
+                            print(f"  - {c.get('type')}: {c.get('message')}")
+                    print(f"\nFull reports saved to: {out_dir}")
+                elif fmt == "markdown":
+                    print(res.summary_markdown)
+                elif fmt == "csv":
+                    csv_file = out_dir / "aeo_pages.csv"
+                    if csv_file.exists():
+                        print(csv_file.read_text(encoding="utf-8-sig").strip())
+                    else:
+                        print("url,aeo_readiness_score,geo_signal_score")
+                elif fmt == "json":
+                    print(json.dumps(res.to_dict(), ensure_ascii=False, indent=2))
+                return 0
+            elif args.command == "aeo-compare":
+                from .aeo import compare_aeo_snapshots, generate_aeo_diff_markdown
+
+                out_dir = args.out or (args.after / "aeo_compare")
+                diff = compare_aeo_snapshots(args.before, args.after, out_dir=out_dir)
+
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "terminal":
+                    print("AevoraSEO AEO / GEO Snapshot Comparison")
+                    print(
+                        f"Before: {diff.before_snapshot_id} (AEO: {diff.before_avg_aeo:.1f}, GEO: {diff.before_avg_geo:.1f})"
+                    )
+                    print(
+                        f"After:  {diff.after_snapshot_id} (AEO: {diff.after_avg_aeo:.1f}, GEO: {diff.after_avg_geo:.1f})"
+                    )
+                    print(f"Deltas: AEO {diff.aeo_delta:+.1f} | GEO {diff.geo_delta:+.1f}")
+                    print(
+                        f"Summary: Added {diff.summary.get('added', 0)}, Removed {diff.summary.get('removed', 0)}, "
+                        f"Improved {diff.summary.get('improved', 0)}, Regressed {diff.summary.get('regressed', 0)}, "
+                        f"Unchanged {diff.summary.get('unchanged', 0)}"
+                    )
+                    print("\nPage Changes:")
+                    for it in diff.items[:10]:
+                        ev = "; ".join(it.evidence) if it.evidence else "Stable"
+                        print(
+                            f"  [{it.state}] {it.url} ({it.metric}: {it.before:.1f} -> {it.after:.1f}, {it.delta:+.1f}) — {ev}"
+                        )
+                    print(f"\nDiff outputs saved to: {out_dir}")
+                elif fmt == "markdown":
+                    print(generate_aeo_diff_markdown(diff))
+                elif fmt == "csv":
+                    csv_file = out_dir / "aeo_comparison.csv"
+                    if csv_file.exists():
+                        print(csv_file.read_text(encoding="utf-8-sig").strip())
+                    else:
+                        print("url,metric,before,after,delta,state,evidence")
+                elif fmt == "json":
+                    print(json.dumps(diff.to_dict(), ensure_ascii=False, indent=2))
                 return 0
             elif args.command == "backlinks":
                 from .backlinks import check_sources

@@ -47,6 +47,8 @@ function showHelp() {
   
   console.log(`${c.bold}COMMANDS:${c.reset}`);
   console.log(`  ${c.cyan}audit${c.reset} <target-url>        Run complete SEO, AEO & performance audit`);
+  console.log(`  ${c.cyan}aeo${c.reset} <snapshot-dir>       Analyze AEO answer readiness and GEO signals`);
+  console.log(`  ${c.cyan}aeo-compare${c.reset}              Compare AEO/GEO readiness between two snapshots`);
   console.log(`  ${c.cyan}reputation${c.reset} <domain>      Calculate Aevora Reputation & Entity score`);
   console.log(`  ${c.cyan}backlinks${c.reset} <domain>       Discover and score high-authority backlink sources`);
   console.log(`  ${c.cyan}crawl${c.reset} <target-url>        Crawl website structure and discover search links`);
@@ -61,6 +63,8 @@ function showHelp() {
   console.log(`${c.bold}EXAMPLES:${c.reset}`);
   console.log(`  $ npx aevoraseo audit https://example.com`);
   console.log(`  $ npx aevoraseo crawl https://example.com --profile quick --out ./crawl1`);
+  console.log(`  $ npx aevoraseo aeo ./crawl1 --format terminal`);
+  console.log(`  $ npx aevoraseo aeo-compare --before ./crawl1 --after ./crawl2 --out ./aeo_diff`);
   console.log(`  $ npx aevoraseo compare --before ./crawl1 --after ./crawl2 --out ./diff`);
   console.log(`  $ npx aevoraseo reputation example.com`);
   console.log(`  $ npx aevoraseo doctor\n`);

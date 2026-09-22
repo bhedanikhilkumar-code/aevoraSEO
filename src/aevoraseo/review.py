@@ -288,10 +288,18 @@ def compare(before, after, out, format="terminal", status_filter="all", url_filt
         raise ValueError(
             "Snapshot comparison needs the same seed URL. Compare competitors in the SEO workflow."
         )
+    sf = (status_filter or "all").lower()
+    if sf not in ("all", "added", "removed", "changed", "unchanged"):
+        raise ValueError(
+            f"Invalid status filter '{status_filter}'. Expected all, added, removed, changed, or unchanged."
+        )
     left, right = ({p["url"]: page_snapshot(p) for p in read_pages(d)} for d in (a, b))
 
     if url_filter:
-        pattern = re.compile(url_filter)
+        try:
+            pattern = re.compile(url_filter)
+        except re.error as e:
+            raise ValueError(f"Invalid URL filter regular expression: {e}") from e
         left = {u: p for u, p in left.items() if pattern.search(u)}
         right = {u: p for u, p in right.items() if pattern.search(u)}
 
@@ -364,6 +372,18 @@ def compare(before, after, out, format="terminal", status_filter="all", url_filt
         "added_urls": newly_observed,
         "removed_urls": not_reobserved,
         "unchanged_urls": unchanged,
+        "status_filter": sf,
+        "filtered_urls": (
+            newly_observed
+            if sf == "added"
+            else not_reobserved
+            if sf == "removed"
+            else [r["url"] for r in changed]
+            if sf == "changed"
+            else unchanged
+            if sf == "unchanged"
+            else []
+        ),
         "new_findings": [{"url": u, "code": c} for u, c in sorted(new_issues - old_issues)],
         "findings_no_longer_observed_on_comparable_pages": [
             {"url": u, "code": c} for u, c in resolved
@@ -381,6 +401,8 @@ def compare(before, after, out, format="terminal", status_filter="all", url_filt
         "",
         f"Coverage limited: {result['coverage_limited']}. Configuration changed: {result['configuration_changed']}.",
     ]
+    if sf != "all":
+        lines.append(f"\nFiltered by state '{sf}': {len(result['filtered_urls'])} matching URLs.")
     for row in changed:
         lines += ["", "- " + row["url"] + ": " + ", ".join(row["fields"])]
 
@@ -389,34 +411,38 @@ def compare(before, after, out, format="terminal", status_filter="all", url_filt
 
     # Export comparison.csv
     csv_rows = []
-    for u in newly_observed:
-        csv_rows.append({"url": u, "state": "ADDED", "field": "url", "before": "", "after": u})
-    for u in not_reobserved:
-        csv_rows.append({"url": u, "state": "REMOVED", "field": "url", "before": u, "after": ""})
-    for row in changed:
-        for f, diff in row["fields"].items():
+    if sf in ("all", "added"):
+        for u in newly_observed:
+            csv_rows.append({"url": u, "state": "ADDED", "field": "url", "before": "", "after": u})
+    if sf in ("all", "removed"):
+        for u in not_reobserved:
+            csv_rows.append({"url": u, "state": "REMOVED", "field": "url", "before": u, "after": ""})
+    if sf in ("all", "changed"):
+        for row in changed:
+            for f, diff in row["fields"].items():
+                csv_rows.append(
+                    {
+                        "url": row["url"],
+                        "state": "CHANGED",
+                        "field": f,
+                        "before": json.dumps(diff["before"], ensure_ascii=False)
+                        if isinstance(diff["before"], (list, dict))
+                        else str(diff["before"]),
+                        "after": json.dumps(diff["after"], ensure_ascii=False)
+                        if isinstance(diff["after"], (list, dict))
+                        else str(diff["after"]),
+                    }
+                )
+    if sf in ("all", "unchanged"):
+        for u in unchanged:
             csv_rows.append(
-                {
-                    "url": row["url"],
-                    "state": "CHANGED",
-                    "field": f,
-                    "before": json.dumps(diff["before"], ensure_ascii=False)
-                    if isinstance(diff["before"], (list, dict))
-                    else str(diff["before"]),
-                    "after": json.dumps(diff["after"], ensure_ascii=False)
-                    if isinstance(diff["after"], (list, dict))
-                    else str(diff["after"]),
-                }
+                {"url": u, "state": "UNCHANGED", "field": "all", "before": "matched", "after": "matched"}
             )
-    for u in unchanged:
-        csv_rows.append(
-            {"url": u, "state": "UNCHANGED", "field": "all", "before": "matched", "after": "matched"}
-        )
 
-    if csv_rows:
-        with (out / "comparison.csv").open("w", newline="", encoding="utf-8-sig") as f:
-            writer = csv.DictWriter(f, fieldnames=["url", "state", "field", "before", "after"])
-            writer.writeheader()
+    with (out / "comparison.csv").open("w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=["url", "state", "field", "before", "after"])
+        writer.writeheader()
+        if csv_rows:
             writer.writerows(csv_rows)
 
     return save_report(out, "comparison", result, lines)

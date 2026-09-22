@@ -132,3 +132,60 @@ Missing Data:
 ## Common Mistakes
 
 Do not claim GEO success without testing, make generic pages, ignore external authority, ignore schema, hide expert proof, or exaggerate claims.
+
+---
+
+## AI-Friendly SEO Master Workflow
+
+Integrates crawling, entity identification, answer structure, and source attribution.
+
+### Phase 1: Entity & Brand Foundation
+- Confirm brand name, founder/author identity, and organization schema.
+- Validate `sameAs` authority links to Wikidata, Wikipedia, Crunchbase, GitHub, or social profiles.
+- Ensure consistent NAP (Name, Address, Phone) across external platforms.
+
+### Phase 2: Content Structuring for Extraction
+- Frame key sections around explicit user questions (what, how, why).
+- Place concise definitions immediately under headings.
+- Format comparisons, processes, and quantitative data as structured HTML tables and ordered lists.
+
+### Phase 3: Source-Worthiness and Freshness
+- Establish transparent author bylines with professional credentials.
+- Provide visible publication and modification timestamps.
+- Include outbound reference links to primary sources, standards, and studies.
+
+---
+
+## AI Overview Opportunity Audit
+
+Audits user queries to identify where conversational search engines synthesize direct answers.
+
+### Opportunity Classification
+- **Direct Definition:** Informational queries seeking quick conceptual clarity.
+- **Comparative Evaluation:** "X vs Y" or "best alternatives to X" queries.
+- **Procedural Guidance:** Step-by-step troubleshooting or implementation workflows.
+- **Pricing & Eligibility:** Commercial terms, costs, timelines, and prerequisites.
+
+### Remediation Workflow
+1. Audit query intent against existing page headings.
+2. If missing, draft an explicit H2/H3 question heading.
+3. Insert a 25-50 word direct answer block followed by bulleted evidence.
+4. Verify JSON-LD FAQPage or Article markup.
+
+---
+
+## Entity-Oriented SEO
+
+AI search engines index entities (things) rather than merely strings (keywords).
+
+### Core Entity Types
+- `Organization` / `Corporation` / `LocalBusiness`: Publisher identity.
+- `Person`: Authors, founders, verified contributors.
+- `Article` / `NewsArticle` / `BlogPosting`: Main topical documents.
+- `Product` / `Service` / `SoftwareApplication`: Commercial offers.
+- `FAQPage` / `QAPage`: Question and answer repositories.
+
+### Entity Disambiguation Rules
+- Maintain identical entity naming across all pages.
+- Avoid contradictory publisher or author names.
+- Connect related entities through `author`, `publisher`, `brand`, and `provider` schema relationships.

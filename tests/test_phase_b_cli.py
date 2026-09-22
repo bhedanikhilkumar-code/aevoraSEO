@@ -102,7 +102,7 @@ class TestPhaseBCLI(unittest.TestCase):
         parsed = json.loads(buf.getvalue())
         self.assertEqual(parsed["summary"]["changed"], 1)
 
-        # Test CSV output format
+        # Test CSV output format with status filter
         buf = io.StringIO()
         with redirect_stdout(buf):
             ret = main([
@@ -111,12 +111,32 @@ class TestPhaseBCLI(unittest.TestCase):
                 "--after", str(snap_b),
                 "--out", str(diff_out),
                 "--format", "csv",
+                "--status", "changed",
             ])
         self.assertEqual(ret, 0)
         csv_out = buf.getvalue()
         self.assertIn("url,state,field,before,after", csv_out)
         self.assertIn("CHANGED", csv_out)
 
+        # Test CLI error handling on invalid regex
+        buf_err = io.StringIO()
+        import sys
+        old_stderr = sys.stderr
+        sys.stderr = buf_err
+        try:
+            ret_err = main([
+                "compare",
+                "--before", str(snap_a),
+                "--after", str(snap_b),
+                "--out", str(diff_out),
+                "--filter", "[invalid",
+            ])
+        finally:
+            sys.stderr = old_stderr
+        self.assertEqual(ret_err, 2)
+        self.assertIn("Invalid URL filter regular expression", buf_err.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()
+

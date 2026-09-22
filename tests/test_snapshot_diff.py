@@ -159,6 +159,60 @@ class TestSnapshotDiff(unittest.TestCase):
         self.assertEqual(result["summary"]["unchanged"], 1)
         self.assertEqual(result["unchanged_urls"], ["https://example.com/products/1"])
 
+    def test_status_filter_csv_and_result(self):
+        snap_a = self.tmp / "snap_a"
+        snap_b = self.tmp / "snap_b"
+        diff_out = self.tmp / "diff_status"
+
+        p_home = {"url": "https://example.com/", "status": 200, "data": {"title": "Home", "content_sha256": "h1"}}
+        p_old = {"url": "https://example.com/old", "status": 200, "data": {"title": "Old", "content_sha256": "h2"}}
+        p_new = {"url": "https://example.com/new", "status": 200, "data": {"title": "New", "content_sha256": "h3"}}
+        make_snapshot(snap_a, "https://example.com/", "snap1", [p_home, p_old])
+        make_snapshot(snap_b, "https://example.com/", "snap2", [p_home, p_new])
+
+        # Filter by added
+        res_added = compare(snap_a, snap_b, diff_out / "added", status_filter="added")
+        self.assertEqual(res_added["filtered_urls"], ["https://example.com/new"])
+        with (diff_out / "added" / "comparison.csv").open(encoding="utf-8-sig") as f:
+            rows = list(csv.DictReader(f))
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]["state"], "ADDED")
+            self.assertEqual(rows[0]["url"], "https://example.com/new")
+
+        # Filter by removed
+        res_removed = compare(snap_a, snap_b, diff_out / "removed", status_filter="removed")
+        self.assertEqual(res_removed["filtered_urls"], ["https://example.com/old"])
+        with (diff_out / "removed" / "comparison.csv").open(encoding="utf-8-sig") as f:
+            rows = list(csv.DictReader(f))
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]["state"], "REMOVED")
+            self.assertEqual(rows[0]["url"], "https://example.com/old")
+
+    def test_invalid_url_filter_regex_raises_value_error(self):
+        snap_a = self.tmp / "snap_a"
+        snap_b = self.tmp / "snap_b"
+        diff_out = self.tmp / "diff_regex"
+        p1 = {"url": "https://example.com/", "status": 200, "data": {"title": "Home"}}
+        make_snapshot(snap_a, "https://example.com/", "snap1", [p1])
+        make_snapshot(snap_b, "https://example.com/", "snap2", [p1])
+
+        with self.assertRaises(ValueError) as ctx:
+            compare(snap_a, snap_b, diff_out, url_filter="[invalid")
+        self.assertIn("Invalid URL filter regular expression", str(ctx.exception))
+
+    def test_invalid_status_filter_raises_value_error(self):
+        snap_a = self.tmp / "snap_a"
+        snap_b = self.tmp / "snap_b"
+        diff_out = self.tmp / "diff_sf"
+        p1 = {"url": "https://example.com/", "status": 200, "data": {"title": "Home"}}
+        make_snapshot(snap_a, "https://example.com/", "snap1", [p1])
+        make_snapshot(snap_b, "https://example.com/", "snap2", [p1])
+
+        with self.assertRaises(ValueError) as ctx:
+            compare(snap_a, snap_b, diff_out, status_filter="unknown_state")
+        self.assertIn("Invalid status filter", str(ctx.exception))
+
 
 if __name__ == "__main__":
     unittest.main()
+
