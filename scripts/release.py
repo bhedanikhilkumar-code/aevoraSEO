@@ -50,6 +50,7 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="Build assets without creating git tag or GitHub release")
     parser.add_argument("--skip-push", action="store_true", help="Do not push git commits/tags to origin")
     parser.add_argument("-y", "--yes", action="store_true", help="Automatically confirm prompts (non-interactive mode)")
+    parser.add_argument("-f", "--force", action="store_true", help="Force recreate tag at HEAD and update GitHub release notes")
     args = parser.parse_args()
 
     version = args.version or get_current_version()
@@ -114,7 +115,12 @@ def main():
     # Check if tag already exists locally
     existing_tags = run_cmd(["git", "tag", "-l", tag]).stdout.strip()
     if existing_tags:
-        print(f"Tag {tag} already exists locally.")
+        if args.force:
+            print(f"Tag {tag} already exists locally. Recreating at current HEAD due to --force...")
+            run_cmd(["git", "tag", "-f", "-a", tag, "-m", f"Release {tag}"])
+            print(f"Recreated git tag {tag}")
+        else:
+            print(f"Tag {tag} already exists locally.")
     else:
         run_cmd(["git", "tag", "-a", tag, "-m", f"Release {tag}"])
         print(f"Created git tag {tag}")
@@ -123,7 +129,10 @@ def main():
     if not args.skip_push:
         print("5. Pushing to origin...")
         run_cmd(["git", "push", "origin", "main"])
-        run_cmd(["git", "push", "origin", tag])
+        if args.force:
+            run_cmd(["git", "push", "origin", tag, "--force"])
+        else:
+            run_cmd(["git", "push", "origin", tag])
 
     # 6. Extract release notes
     notes = extract_changelog(version)
@@ -135,7 +144,19 @@ def main():
         # Check if release already exists on GitHub
         check_rel = subprocess.run(["gh", "release", "view", tag], capture_output=True, text=True)
         if check_rel.returncode == 0:
-            print(f"6. Release {tag} exists on GitHub. Updating assets with clobber...")
+            print(f"7. Release {tag} exists on GitHub. Updating assets and notes...")
+            if args.force:
+                print(f"Updating release title and notes for {tag}...")
+                run_cmd([
+                    "gh",
+                    "release",
+                    "edit",
+                    tag,
+                    "--title",
+                    f"AevoraSEO {tag}",
+                    "--notes-file",
+                    str(notes_file),
+                ])
             gh_cmd = [
                 "gh",
                 "release",
@@ -148,7 +169,7 @@ def main():
             gh_res = run_cmd(gh_cmd)
             print("Release assets updated successfully.")
         else:
-            print(f"6. Creating GitHub Release via gh CLI for {tag}...")
+            print(f"7. Creating GitHub Release via gh CLI for {tag}...")
             gh_cmd = [
                 "gh",
                 "release",
