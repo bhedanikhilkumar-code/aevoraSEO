@@ -103,7 +103,33 @@ Traffic & Query Gap: [calculated deficit]
 
 ---
 
-## 7. Execution Rules
+## 8. Phased 30 / 60 / 90-Day Execution Framework
 
-- Never promise guaranteed rankings or static traffic numbers without empirical conversion tracking.
-- Every growth model must balance content creation, technical health, internal links, and CRO.
+Moves deterministically from technical foundations and critical blockers into cluster expansion, answer depth, and authority compounding:
+
+### Month 1 (Days 1–30): Foundations, Tracking & Critical Blockers
+- **Measurement**: GSC & GA4 verification, form submit/call event tracking, GBP UTM tagging.
+- **Technical Blockers**: Eliminate unintentional `noindex` or `robots.txt` disallows, fix canonical mismatches, redirect chains, and critical 404/5xx errors.
+- **Winner Optimization**: Queries in positions 4–20; high-impression low-CTR snippet rewrites; high-traffic low-conversion CTA and proof improvements.
+- **Highest-Value Money Pages**: Core service and commercial landing pages; single H1 enforcement and sequential H2/H3 nesting.
+- **Local & Authority Foundations**: Complete GBP profiles, audit NAP parity, clean citation listings and partner/brand entity references.
+
+### Month 2 (Days 31–60): Content Architecture, Answer Depth & Internal Linking
+- **Missing Money Pages**: Build dedicated service/solution pages with trust proof, FAQs, and schema.
+- **Topic Cluster Expansion**: Publish supporting informational guides with strict spoke-to-hub linking hierarchy.
+- **Internal Link Optimization**: Flatten crawl depth ($\le 3$ clicks), recover orphan pages, and link spokes to money pages with descriptive anchors.
+- **AEO & Answer Boxes**: Add 40–60 word direct-answer summaries under question headings with `FAQPage` and `Service` schema markup.
+
+### Month 3 (Days 61–90): Authority Compounding, CTR Refinement & Gap Closure
+- **Authority Acquisition**: Industry association listings, high-relevance editorial placements, partner roundups.
+- **Performance Refresh**: Split-test titles/descriptions for positions 1–5; refresh aging pages ($\le 2023$) with new statistics and expanded definitions.
+- **CRO & Friction Testing**: Form friction audits, high-intent CTA wording adjustments, and guarantee/SLA objection answers on conversion URLs.
+
+---
+
+## 9. Execution Rules
+
+1. Every growth model must balance technical health, content creation, internal links, authority, and CRO.
+2. Every task must specify **What**, **Why**, **Owner**, **Priority**, and **KPI**.
+3. Never promise guaranteed rankings or static traffic numbers without empirical conversion tracking.
+

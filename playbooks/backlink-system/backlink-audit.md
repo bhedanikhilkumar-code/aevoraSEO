@@ -156,3 +156,19 @@ Which competitor links can be replicated
 ### Risk Notes
 [spam/anchor/paid link risk]
 ```
+
+---
+
+## 8. Guest Posting & Outreach System
+
+Safe guest posting workflow for backlinks and authority:
+
+### Prospecting
+Find relevant niche, local, industry, and editorial sites with authentic topical authority.
+
+### Quality Checks
+Verify relevance, organic traffic, indexability, outbound link pattern, editorial standards, author attribution, and anchor risk.
+
+### Outreach Output
+Record prospect URL, proposed topic, natural anchor text, target landing page, risk assessment, and editorial verdict.
+
