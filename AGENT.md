@@ -403,7 +403,7 @@ Reference commit:
 
 All 11 architectural phases (A through K) of AevoraSEO are completely implemented, thoroughly tested locally, defensively audited, and committed to `origin/main`.
 Current tagged release on GitHub remains `v1.0.0` (`f6958aa`).
-The v1.1.0 release is code-ready on `main`. Formal release tagging and npm/PyPI distribution await resolution of the GitHub Actions runner-level pre-execution block (`steps: null`, `logs_url: null` on private repo CI).
+The v1.1.0 release is code-ready on `main`. Formal release tagging and npm/PyPI distribution await resolution of the GitHub Actions account billing limit (GitHub annotation: *"The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings"*).
 
 ---
 
@@ -879,7 +879,7 @@ Current operational status:
 - Tag release `v1.0.0`: **COMPLETE** (Tagged at `f6958aa`, pushed to `origin`, GitHub Release synchronized with `aevoraseo-1.0.0-skill.zip` and SHA-256 sidecar).
 - Phase K code state: **FROZEN / MERGED TO MAIN** (All Phase K code, tests, and documentation committed and pushed to `origin/main` up to `548c7c8`).
 - Local quality gates: 554 tests passing, 2 skipped, 0 failures, 22 subtests passed, 270 files release hygiene passed, 196 files / 197 archive files strictly $\le 200$ upload limit (240 local references).
-- CI infrastructure status: Remote GitHub Actions runner execution is currently failing before step execution (`steps: null`, `logs_url: null` on all 6 matrix jobs) due to account/repository-level Actions permissions or billing/minutes limits. Code-level changes are suspended.
+- CI infrastructure status: Remote GitHub Actions runner execution is blocked across all 6 matrix jobs by account billing limit (GitHub annotation: *"The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings"*). Code-level changes are suspended.
 - Next release (`v1.1.0`): Code is frozen and ready on `main`. Official Git tagging `v1.1.0`, GitHub Release creation, and npm/PyPI publishing will proceed once GitHub Actions infrastructure is unblocked.
 
 ---
