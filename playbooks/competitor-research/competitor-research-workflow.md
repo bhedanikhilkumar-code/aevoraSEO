@@ -42,3 +42,28 @@ For each proposed improvement, specify:
 A competitor having a feature is not itself a reason to add it. Never infer search authority, traffic volume, conversion rates, rankings, or AI citations from page appearance alone.
 
 Use [the profile and selection contract](../../docs/discovery-and-competitors.md) and [audit delivery standard](../../references/audit-delivery.md).
+
+---
+
+## 3. Authority Gap Analysis
+
+Compare observed backlink and reputation evidence between client and competitors.
+
+**Metrics:** Referring domains, AevoraSEO reputation estimate, range and coverage, organic keyword footprint, traffic estimate, link relevance, anchors, link quality.
+
+**Caution:** Use comparable search queries, page budgets, locales and dates for the AevoraSEO sample. Report the range and capture imbalance. Traffic and keyword footprint require separate dated evidence; the reputation score cannot supply them. Compare observed source groups without claiming a complete web-wide referring-domain count.
+
+**Output:** Competitor, authority advantage, link gap, required link strategy.
+
+---
+
+## 4. Service Page Gap Analysis
+
+Find service, product, course, and location pages competitors have but the client lacks.
+
+**Checks:** Dedicated service pages, sub-service pages, cost pages, comparison pages, location pages, FAQs, schema, CTAs.
+
+**Action:** Build or improve missing high-intent pages.
+
+**Output:** Missing page, target keyword, competitor proof, priority.
+
