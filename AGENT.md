@@ -386,8 +386,8 @@ Forensic audit evidence:
 - 0 failed
 - 556 collected
 - 22 subtests passed
-- release hygiene: 268 files checked, 0 findings, PASSED
-- upload package validation: 196 files, 197 archive files (<= 200 ceiling), 238 local references, format check PASSED
+- release hygiene: 270 files checked, 0 findings, PASSED
+- upload package validation: 196 files, 197 archive files (<= 200 ceiling), 240 local references, format check PASSED
 - zero `TODO`, `FIXME`, `NotImplementedError`, or stub placeholders
 - cross-platform connection handling verified on Windows
 
@@ -398,11 +398,12 @@ Reference commit:
 
 ## 3. CURRENT PHASE
 
-### All Roadmap Phases (A through K) — COMPLETE
-**STATUS: PRODUCTION READY / RELEASE VERIFIED**
+### All Roadmap Phases (A through K) — IMPLEMENTED & LOCALLY VERIFIED
+**STATUS: PHASE K CODE FROZEN / PENDING CI RUNNER INFRASTRUCTURE RESOLUTION**
 
-All 11 architectural phases (A through K) of AevoraSEO are completely implemented, thoroughly tested, defensively audited, and empirically verified.
-The platform is fully ready for public release v1.1.0 and distribution across npm, PyPI, and supported AI coding-agent skill hosts.
+All 11 architectural phases (A through K) of AevoraSEO are completely implemented, thoroughly tested locally, defensively audited, and committed to `origin/main`.
+Current tagged release on GitHub remains `v1.0.0` (`f6958aa`).
+The v1.1.0 release is code-ready on `main`. Formal release tagging and npm/PyPI distribution await resolution of the GitHub Actions runner-level pre-execution block (`steps: null`, `logs_url: null` on private repo CI).
 
 ---
 
@@ -535,9 +536,9 @@ Forensic evidence:
 - 2 skipped
 - 0 failed
 - 22 subtests passed
-- release hygiene: 268 files checked, 0 findings
+- release hygiene: 270 files checked, 0 findings
 - bundle validation: 196 files / 197 archive files (<= 200 ceiling)
-- 238 local references checked
+- 240 local references checked
 - compileall clean
 - Node `version`, `--help`, `doctor`, and `remediate` verified
 
@@ -859,7 +860,7 @@ All 10 architectural phases (Phases A through J) of AevoraSEO are **COMPLETE** a
 
 The product status is:
 
-## FULL ROADMAP COMPLETE (PHASES A — J) — PRODUCTION READY
+## FULL ROADMAP COMPLETE (PHASES A — K) — IMPLEMENTED & LOCALLY VERIFIED
 
 Summary of verified capabilities:
 - **Phase A**: Open-source engine reconciliation, hybrid Node runner, release hygiene
@@ -872,15 +873,14 @@ Summary of verified capabilities:
 - **Phase H**: Multi-agent platform compatibility across 18 target AI agent/CLI environments
 - **Phase I**: Unified client reporting (HTML/PDF/MD/JSON/CSV), acceptance checks, progress tracking
 - **Phase J**: Adversarial security penetration, formula injection defense, zero stubs, upload ceiling compliance
+- **Phase K**: Automated remediation & code patch engine, deterministic AST/HTML patches, atomic backups, tamper-evident receipts, verified rollback, SQLite persistence, CLI/Node parity
 
 Current operational status:
-- Tag release `v1.0.0`: **COMPLETE** (Tagged at HEAD, pushed to `origin`, GitHub Release synchronized with `aevoraseo-1.0.0-skill.zip` and SHA-256 sidecar).
-- Quality gates: 526 tests passing, 0 failures, 268 files release hygiene passed, 197 files / 198 archive files strictly $\le 200$ upload limit.
-
-Next operational distribution steps:
-- Publish package to npm (`npm publish --access public`)
-- Publish package to PyPI (`python -m build && twine upload dist/*`)
-- Register skill across supported AI coding-agent platforms (`scripts/install_skill.py --host <platform>`)
+- Tag release `v1.0.0`: **COMPLETE** (Tagged at `f6958aa`, pushed to `origin`, GitHub Release synchronized with `aevoraseo-1.0.0-skill.zip` and SHA-256 sidecar).
+- Phase K code state: **FROZEN / MERGED TO MAIN** (All Phase K code, tests, and documentation committed and pushed to `origin/main` up to `548c7c8`).
+- Local quality gates: 554 tests passing, 2 skipped, 0 failures, 22 subtests passed, 270 files release hygiene passed, 196 files / 197 archive files strictly $\le 200$ upload limit (240 local references).
+- CI infrastructure status: Remote GitHub Actions runner execution is currently failing before step execution (`steps: null`, `logs_url: null` on all 6 matrix jobs) due to account/repository-level Actions permissions or billing/minutes limits. Code-level changes are suspended.
+- Next release (`v1.1.0`): Code is frozen and ready on `main`. Official Git tagging `v1.1.0`, GitHub Release creation, and npm/PyPI publishing will proceed once GitHub Actions infrastructure is unblocked.
 
 ---
 
