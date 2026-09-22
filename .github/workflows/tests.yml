@@ -29,8 +29,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip setuptools wheel
-          pip install -e ".[dev,reports]"
+          python -m pip install --upgrade pip "setuptools==77.0.3" wheel
+          python -m pip install --no-build-isolation -e ".[dev,reports]"
           pip install playwright pytest
           playwright install chromium
 
@@ -64,8 +64,8 @@ jobs:
 
       - name: Install Python engine in editable mode
         run: |
-          python -m pip install --upgrade pip setuptools wheel
-          python -m pip install -e .
+          python -m pip install --upgrade pip "setuptools==77.0.3" wheel
+          python -m pip install --no-build-isolation -e .
 
       - name: Verify NPM package metadata & tarball contents
         run: npm pack --dry-run
