@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import sqlite3
 import sys
@@ -56,9 +57,17 @@ def verify_audit_acceptance(audit_report: Dict[str, Any], current_crawl_dir: Pat
     for item in prior_items:
         title = item.get("title", "")
         # Check if identical issue exists in current report
-        matching_current = any(
-            title.lower() in ct or ct in title.lower() for ct in current_issue_titles
-        )
+        t_tokens = set(re.findall(r"\w+", title.lower()))
+        matching_current = False
+        for ct in current_issue_titles:
+            if title.lower() in ct or ct in title.lower():
+                matching_current = True
+                break
+            ct_tokens = set(re.findall(r"\w+", ct.lower()))
+            common = t_tokens & ct_tokens - {"and", "the", "in", "of", "to", "a", "an", "pages", "page", "detected"}
+            if len(common) >= 2 or ("5xx" in common) or ("404" in common):
+                matching_current = True
+                break
 
         if not matching_current:
             status = "RESOLVED"
