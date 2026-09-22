@@ -43,6 +43,12 @@ Start with the task you want to complete. Each guide connects the commands, evid
 |---|---|
 | [AEO & GEO methodology](../references/aeo-geo.md) | Scoring dimensions, direct answers, entity clarity, bot accessibility matrix, SQLite schema, and snapshot diffing |
 
+## Entity and authority intelligence
+
+| Guide | Covers |
+|---|---|
+| [Entity & Authority methodology](../references/entity-authority.md) | Schema.org entity extraction, knowledge graph topology, sameAs authority discovery, consistency conflicts, scoring, and diffing |
+
 ## Strategy, content and follow-up
 
 | Guide | Covers |

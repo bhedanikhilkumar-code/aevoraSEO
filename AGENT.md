@@ -165,30 +165,55 @@ Forensic audit evidence:
 
 ---
 
+### Phase E — Entity, Authority & Knowledge Intelligence
+**STATUS: COMPLETE — PASS**
+
+Verified scope:
+- native Entity, Authority & Knowledge Intelligence subsystem (`aevoraseo.entity`)
+- multi-source entity extraction parsing Schema.org JSON-LD, Microdata, OpenGraph, and meta tags with recursive cycle guards (`max_depth=25`)
+- typed entity models: `Organization`, `Person`, `Product`, `Service`, `Place`, `LocalBusiness`, and `Article` with attribute mapping
+- `sameAs` authority discovery classifying external profiles across Wikidata, Wikipedia, LinkedIn, Crunchbase, GitHub, ORCID, Google Business, Trustpilot, etc., and identifying missing standard corporate profiles
+- cross-page entity consistency auditor detecting organization name contradictions, NAP (Name, Address, Phone) mismatches, broken sameAs URLs, and missing core entity pages (`/about`, `/team`, `/contact`, `/reviews`)
+- directed knowledge graph builder (`EntityKnowledgeGraph`) computing graph topology metrics (degree centrality, density, central entity) and exporting standard D3/Cytoscape format (`entity-graph.json`)
+- deterministic AevoraSEO Entity & Authority Score (0–100) evaluated across four 25-point dimensions: Identity Completeness, Entity Consistency & Integrity, SameAs & Authority Footprint, and Topical/Expert Depth
+- SQLite persistence across `entities.sqlite3` (`entity_snapshots`, `entity_nodes`, `entity_edges`, `entity_same_as`, `entity_conflicts`, `entity_diffs`) with Windows-safe connection cleanup (`try/finally conn.close()`)
+- temporal entity diff engine (`compare_entity_snapshots`, `aevoraseo entity-compare`) tracking added/removed/modified entities, resolved/new conflicts, added/lost sameAs profiles, and score deltas
+- CLI commands: `aevoraseo entity <target>` and `aevoraseo entity-compare` with multi-format presentation (`terminal`, `json`, `csv`, `markdown`)
+- security hardening: sanitized all exported CSV files (`entities.csv`, `entity-conflicts.csv`) against spreadsheet formula injection attacks with `sanitize_csv_cell`
+- upload boundary compliance: consolidated unreferenced playbooks into indexed README resources (196 files <= 200 limit)
+- comprehensive unit, consistency, graph, comparison, adversarial, and CLI test suites (18 new tests, 412 tests passing across the suite)
+
+Forensic audit evidence:
+- 412 passed
+- 2 skipped
+- 0 failed
+- 414 collected
+- upload package validation: 196 files, 197 archive files (<= 200 limit), 216 local references, format check PASSED
+- zero `TODO`, `FIXME`, `NotImplementedError`, or stub placeholders
+- cross-platform connection handling verified on Windows
+
+---
+
 ## 3. CURRENT PHASE
 
-### Phase E — Entity, Authority & Knowledge Intelligence
+### Phase F — Search, Local & Commercial Intelligence
 **STATUS: NEXT / READY FOR IMPLEMENTATION**
 
-Phase D has passed all verification gates and forensic audits. Phase E is the next implementation phase.
+Phase E has passed all verification gates and forensic audits. Phase F is the next implementation phase.
 
 Required areas:
-- organization identity modeling & schema verification
-- brand & entity consistency across pages and metadata
-- person, product, service, and place entity extraction
-- `sameAs` relationship discovery and validation
-- organization, publisher, and author relationship mapping
-- cross-page entity conflict and contradiction detection
-- first-party vs independent authority evidence
-- topical authority signals and subject matter expert footprint
-- observed entity knowledge graph stored in SQLite
-- entity evolution and snapshot diffing engine
+- search intent discovery & taxonomy (informational, commercial investigation, transactional, navigational)
+- keyword/query-to-page mapping and cannibalization detection
+- local search visibility signals (NAP consistency, service-area coverage, local business schema)
+- commercial conversion journeys and call-to-action friction audits
+- comparison, alternatives, and buyer question page templates
+- local business citation and review strategy tracking
+- search & commercial intelligence diffing across crawl snapshots
 - deterministic and adversarial test suites
 
 Critical boundary:
-- Never invent knowledge-graph facts or claim unobserved relationships.
-- Clearly distinguish self-declared schema entities from independently corroborated entities.
-- Entity graphs must reflect strictly observed page evidence.
+- Actual search rankings and Search Console metrics remain external measurements unless supplied by authenticated exports.
+- Do not invent demand volume or claim rank positions without verified SERP observations.
 
 ---
 
@@ -217,25 +242,26 @@ Answer readiness, question/intent coverage, direct answers, entity clarity, cita
 Native backlink discovery, anchor/context extraction, source classification, ownership proof boundary, Model 1.1 reputation scoring, 206-site opportunity tracking, SQLite persistence, snapshot comparison, CSV formula injection defense.
 
 ## Phase E — Entity, Authority & Knowledge Intelligence
-**NEXT**
+**COMPLETE**
 
-Build:
-- organization identity
-- brand/entity consistency
-- person/product/service/place entities
-- sameAs relationships
-- organization/publisher/author relationships
-- entity conflicts
-- authority evidence
-- topical authority signals
-- first-party vs independent proof
-- entity graph stored from observed evidence
-- entity changes across snapshots
-
-Do not invent knowledge-graph facts.
+Typed entity extraction, sameAs authority discovery, knowledge graph topology, cross-page consistency audits, AevoraSEO Entity & Authority Score (0-100), SQLite persistence, entity-compare diff engine, and bundle limit compliance.
 
 ## Phase F — Search, Local & Commercial Intelligence
-**PLANNED**
+**NEXT**
+
+Build evidence-driven analysis for:
+- search intent
+- keyword/query mapping
+- local visibility signals
+- business/service/location relationships
+- commercial investigation pages
+- comparison pages
+- buyer questions
+- conversion journeys
+- local business evidence
+- sitemap/content coverage
+
+Actual search rankings remain external measurements unless supplied.
 
 Build evidence-driven analysis for:
 - search intent

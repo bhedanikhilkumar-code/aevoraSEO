@@ -234,6 +234,32 @@ def parser():
         default="terminal",
         help="Output presentation format.",
     )
+    p = sub.add_parser(
+        "entity",
+        help="Extract Schema.org entities, knowledge graph, authority signals, and consistency conflicts.",
+    )
+    p.add_argument("target", help="Crawl snapshot directory or target website URL.")
+    p.add_argument("--out", type=Path, default=None, help="Directory to save entity outputs.")
+    p.add_argument("--brand", default="", help="Brand name to guide identity resolution.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
+    p = sub.add_parser(
+        "entity-compare",
+        help="Compare entity snapshots for entity evolution, score deltas, and resolved conflicts.",
+    )
+    p.add_argument("--before", type=Path, required=True, help="Baseline entity snapshot directory or JSON.")
+    p.add_argument("--after", type=Path, required=True, help="Subsequent entity snapshot directory or JSON.")
+    p.add_argument("--out", type=Path, default=None, help="Directory to save comparison outputs.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
     p = sub.add_parser("backlinks", help="Check supplied source pages for links to a website.")
     p.add_argument("target_domain", nargs="?", default=None, help="Target website URL or domain.")
     p.add_argument("--sources", type=Path, default=None, help="Path to sources CSV.")
@@ -417,6 +443,8 @@ def main(argv=None):
             "compare",
             "aeo",
             "aeo-compare",
+            "entity",
+            "entity-compare",
             "backlinks",
             "edit",
             "reputation",
@@ -549,6 +577,72 @@ def main(argv=None):
                         print(csv_file.read_text(encoding="utf-8-sig").strip())
                     else:
                         print("url,metric,before,after,delta,state,evidence")
+                elif fmt == "json":
+                    print(json.dumps(diff.to_dict(), ensure_ascii=False, indent=2))
+                return 0
+            elif args.command == "entity":
+                from urllib.parse import urlsplit
+                from .entity.analyzer import analyze_target_entities
+                from .entity.reporter import generate_terminal_report, generate_markdown_report
+
+                target = args.target
+                out_dir = args.out
+                if not out_dir:
+                    target_path = Path(target)
+                    if target_path.exists() and target_path.is_dir():
+                        out_dir = target_path
+                    else:
+                        host_slug = urlsplit(target if "://" in target else f"https://{target}").hostname or "entity"
+                        out_dir = Path(f"entity_{host_slug.removeprefix('www.').replace('.', '_')}")
+
+                result = analyze_target_entities(target, out_dir=out_dir, brand=args.brand)
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "terminal":
+                    print(generate_terminal_report(result, use_color=not getattr(args, "no_color", False)))
+                elif fmt == "markdown":
+                    print(generate_markdown_report(result))
+                elif fmt == "csv":
+                    csv_file = out_dir / "entities.csv"
+                    if csv_file.exists():
+                        print(csv_file.read_text(encoding="utf-8-sig").strip())
+                    else:
+                        print("entity_id,entity_type,canonical_name,alternate_names,is_first_party,source_pages_count")
+                elif fmt == "json":
+                    print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
+                return 0
+            elif args.command == "entity-compare":
+                from .entity.comparison import compare_entity_snapshots
+
+                out_dir = args.out or Path("entity_comparison")
+                diff = compare_entity_snapshots(args.before, args.after, out_dir=out_dir)
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "terminal":
+                    print(f"AevoraSEO Entity Evolution Diff — Target: {diff.target_url}")
+                    print(f"Before: {diff.before_snapshot_id} ({diff.score_before:.1f}/100, {diff.confidence_before})")
+                    print(f"After : {diff.after_snapshot_id} ({diff.score_after:.1f}/100, {diff.confidence_after})")
+                    print(f"Score Delta: {diff.score_delta:+.1f} points")
+                    print("\nTransition Summary:")
+                    for k, v in diff.transition_summary.items():
+                        print(f"  - {k}: {v}")
+                    if diff.resolved_conflicts:
+                        print(f"\nResolved Conflicts ({len(diff.resolved_conflicts)}):")
+                        for c in diff.resolved_conflicts:
+                            print(f"  [✓] {c.get('conflict_type')}: {c.get('description')}")
+                    if diff.new_conflicts:
+                        print(f"\nNew Conflicts ({len(diff.new_conflicts)}):")
+                        for c in diff.new_conflicts:
+                            print(f"  [!] {c.get('conflict_type')}: {c.get('description')}")
+                    print(f"\nComparison outputs saved to: {out_dir}")
+                elif fmt == "markdown":
+                    md_file = out_dir / "entity-diff.md"
+                    if md_file.exists():
+                        print(md_file.read_text(encoding="utf-8"))
+                    else:
+                        print(json.dumps(diff.to_dict(), ensure_ascii=False, indent=2))
+                elif fmt == "csv":
+                    print("metric,count")
+                    for k, v in diff.transition_summary.items():
+                        print(f"{k},{v}")
                 elif fmt == "json":
                     print(json.dumps(diff.to_dict(), ensure_ascii=False, indent=2))
                 return 0

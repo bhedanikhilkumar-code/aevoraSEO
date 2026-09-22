@@ -83,6 +83,23 @@ The native AEO/GEO intelligence engine evaluates answer readiness, question cove
 
 See [AEO & GEO methodology](aeo-geo.md) for detailed scoring formulas and boundary definitions.
 
+## Entity, Authority and Knowledge Intelligence: implemented
+
+The native entity intelligence engine extracts, models, and audits entity identities, semantic relationships, cross-page brand consistency, and external authority signals.
+
+| Function | What it does |
+|---|---|
+| Typed entity extraction | Extracts Organization, Person, Product, Service, Place, and Article entities from Schema.org JSON-LD, Microdata, and meta tags |
+| SameAs authority discovery | Classifies external profiles across Wikidata, Wikipedia, LinkedIn, Crunchbase, GitHub, etc., and flags missing standard profiles |
+| Knowledge graph construction | Maps directed semantic relationships (`FOUNDED_BY`, `WORKS_FOR`, `AUTHORED_BY`, `PUBLISHED_BY`, `SAME_AS`) and calculates network density and central entities |
+| Cross-page consistency audit | Flags contradictory organization names, NAP mismatches, broken sameAs targets, and missing recommended entity pages (`/about`, `/team`, `/contact`, `/reviews`) |
+| AevoraSEO Entity & Authority Score | Evaluates 0–100 headline score across Identity Completeness, Entity Consistency, Authority Footprint, and Topical/Expert Depth |
+| SQLite persistence | Persists snapshots, nodes, edges, sameAs profiles, conflicts, and diffs to `entities.sqlite3` |
+| Snapshot diff engine (`entity-compare`) | Compares temporal entity snapshots for entity evolution, score deltas, added/lost sameAs, and resolved conflicts |
+| Export & security hardening | Formats Terminal, JSON, Markdown, and CSV outputs with formula injection neutralization |
+
+See [Entity & Authority methodology](entity-authority.md) for detailed technical specifications.
+
 ## SEO workflows included
 
 These are agent workflows supported by the reference library. They are available for analysis and planning; their presence does not mean the standalone Python script automatically completes every task.

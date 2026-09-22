@@ -1,5 +1,21 @@
 # Changelog
 
+## Phase E — Entity, Authority & Knowledge Intelligence Engine
+
+- Implemented native Entity, Authority & Knowledge Intelligence subsystem (`aevoraseo.entity`).
+- Added multi-source entity extraction parsing Schema.org JSON-LD, Microdata, OpenGraph, and meta tags with recursive cycle guards (`max_depth=25`).
+- Supported rich typed entity models: `Organization`, `Person`, `Product`, `Service`, `Place`, `LocalBusiness`, and `Article` with attribute mapping.
+- Built `sameAs` authority discovery classifying external profiles across Wikidata, Wikipedia, LinkedIn, Crunchbase, GitHub, ORCID, Google Business, Trustpilot, etc., and identifying missing standard corporate profiles.
+- Implemented cross-page entity consistency auditor detecting organization name contradictions, NAP (Name, Address, Phone) mismatches, broken sameAs URLs, and missing core entity pages (`/about`, `/team`, `/contact`, `/reviews`).
+- Built directed knowledge graph builder (`EntityKnowledgeGraph`) computing graph topology metrics (degree centrality, density, central entity) and exporting standard D3/Cytoscape format (`entity-graph.json`).
+- Added deterministic **AevoraSEO Entity & Authority Score (0–100)** evaluated across four 25-point dimensions: Identity Completeness, Entity Consistency & Integrity, SameAs & Authority Footprint, and Topical/Expert Depth.
+- Implemented SQLite persistence across `entities.sqlite3` (`entity_snapshots`, `entity_nodes`, `entity_edges`, `entity_same_as`, `entity_conflicts`, `entity_diffs`) with Windows-safe connection cleanup (`try/finally conn.close()`).
+- Built temporal entity diff engine (`compare_entity_snapshots`, `aevoraseo entity-compare`) tracking added/removed/modified entities, resolved/new conflicts, added/lost sameAs profiles, and score deltas.
+- Added CLI commands: `aevoraseo entity <target>` and `aevoraseo entity-compare` with multi-format presentation (`terminal`, `json`, `csv`, `markdown`).
+- Security hardening: sanitized all exported CSV files (`entities.csv`, `entity-conflicts.csv`) against spreadsheet formula injection attacks.
+- Consolidated unreferenced supporting playbooks into indexed README resources to comply with hosted skill bundle upload boundaries (196 files <= 200 limit).
+- Added comprehensive unit, consistency, graph, comparison, adversarial, and CLI test suites (18 new tests, 412 tests passing across the suite).
+
 ## Phase D — Backlink & Reputation Intelligence Engine
 
 - Implemented native backlink discovery and verification subsystem (`aevoraseo.backlinks` & `aevoraseo.backlink_persistence`).

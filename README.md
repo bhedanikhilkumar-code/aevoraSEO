@@ -64,6 +64,8 @@ npm install -g aevoraseo
 aevoraseo audit https://example.com
 aevoraseo aeo ./crawl_output
 aevoraseo aeo-compare --before ./crawl1 --after ./crawl2
+aevoraseo entity ./crawl_output
+aevoraseo entity-compare --before ./crawl1 --after ./crawl2
 aevoraseo backlinks https://example.com --sources ./sources.csv
 aevoraseo reputation https://example.com --sources ./sources.csv
 aevoraseo reputation-compare --before ./rep1/reputation.json --after ./rep2/reputation.json
