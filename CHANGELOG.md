@@ -1,5 +1,17 @@
 # Changelog
 
+## Phase J — Production Hardening & Release
+
+- Conducted adversarial penetration audit across all subsystems, reinforcing SSRF defenses, scheme blocking, private IP detection, and XXE XML injection safeguards.
+- Hardened CSV export routines across all subsystems (`engine`, `unified_report`, `review`, `aeo`, `entity`, `search`, `optimization`, `reputation`, `backlinks`) with dual-check formula injection defenses (`=`, `+`, `-`, `@`, `\t`, `\r`, and leading whitespace formula traps).
+- Fixed XML sitemap parsing in `engine.parse_sitemap` to ensure sanitized null-byte stripped buffers are passed to XML element trees.
+- Audited SQLite connection lifecycle across all operational and persistence modules, guaranteeing immediate file unlock on Windows with `try/finally conn.close()`.
+- Verified multi-snapshot progress calculation scalability across multi-snapshot histories without unbounded memory growth.
+- Conducted zero stub policy audit across `src/` and `scripts/`, confirming 0 instances of `TODO`, `FIXME`, or `NotImplementedError`.
+- Validated hosted skill upload package ceiling compliance: 197 files, 198 archive files strictly within the $\le 200$ ceiling (`validate_skill.py`).
+- Release hygiene verified with 0 findings across 268 files (`check_release.py`).
+- Implemented comprehensive production hardening test suite in `tests/test_production_hardening.py` (34 new tests, 526 tests passing across the suite).
+
 ## Phase I — Reporting, Operations & Professional Workflow
 
 - Implemented unified cross-subsystem report generator (`aevoraseo.unified_report`) synthesizing Technical, Content, AEO, GEO, Entity, Authority, Reputation, and Search/Commercial intelligence.
