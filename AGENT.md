@@ -722,3 +722,370 @@ If the repository contradicts this document, inspect the code and tests first an
 | J | Production Hardening & Release | PLANNED |
 
 **Rule:** Do not skip phases without documenting why.
+
+
+# 17. MASTER IMPROVEMENT DIRECTIVE
+
+This is the permanent engineering directive for improving AevoraSEO.
+
+## Mission
+
+Continuously improve AevoraSEO into a professional, maintainable, evidence-first platform covering:
+
+**SEO + AEO + GEO + Entity + Authority + Reputation + Technical SEO + Content + Local/Commercial visibility + Backlinks + Verification.**
+
+The goal is not to create the largest feature list. The goal is to create a system whose important claims can be inspected, reproduced, tested, explained, and verified.
+
+## Repository-first improvement process
+
+Before changing anything:
+
+1. Inspect the current repository tree.
+2. Read AGENT.md.
+3. Read README.md and SKILL.md.
+4. Inspect the current CLI and Node wrapper.
+5. Inspect crawler, snapshot, review, diagnostics, schema/entity, and reporting code.
+6. Inspect tests before changing production behavior.
+7. Inspect the current Git history.
+8. Identify duplicated, obsolete, misleading, or contradictory behavior.
+9. Reuse existing architecture whenever possible.
+10. Write an implementation plan before making broad changes.
+
+Never assume an old roadmap is more accurate than executable code and tests.
+
+## Use BeyondSEO as a reference, not a source to copy
+
+The repository `beyondtahir/beyondseo` was inspected as a product/reference point.
+
+Its useful product ideas include:
+- connected SEO/AEO/GEO workflow
+- evidence-first research
+- reputation and backlink methodology
+- competitor discovery
+- content and answer readiness
+- agent installation workflows
+- practical reports
+- improvement/review loops
+
+Do not copy proprietary implementation, private identity information, or unrelated code. Extract product requirements and improve them inside AevoraSEO's own architecture.
+
+AevoraSEO must remain independently maintainable and clearly branded.
+
+## Professional product model
+
+All future capabilities should fit this model:
+
+```
+Target
+  ↓
+Discovery
+  ↓
+Crawl / Capture
+  ↓
+Evidence Store
+  ↓
+Domain Intelligence
+  ├── SEO
+  ├── AEO
+  ├── GEO
+  ├── Entity
+  ├── Authority
+  ├── Reputation
+  ├── Search / Local
+  └── Content
+  ↓
+Findings
+  ↓
+Priorities
+  ↓
+Recommendations
+  ↓
+Approved Improvements
+  ↓
+Verification
+  ↓
+Snapshot Comparison
+```
+
+A new subsystem should integrate with this lifecycle instead of becoming an isolated command.
+
+## Evidence contract
+
+Every intelligence result should be traceable to evidence.
+
+Preferred structure:
+
+```text
+Observation
+Source
+Location
+Rule
+Derived result
+Confidence
+Coverage
+Limitation
+```
+
+If the system cannot observe something, represent it as unknown or unavailable.
+
+Never convert:
+- missing data into zero-quality evidence,
+- a search snippet into a verified backlink,
+- a prediction into a measurement,
+- a small sample into a whole-web claim,
+- an inferred entity into a confirmed entity.
+
+## Score contract
+
+Every score must document:
+- dimensions
+- weights
+- inputs
+- calculation
+- confidence
+- sample/coverage
+- limitations
+- model/version identifier
+
+Scores must be reproducible.
+
+Do not optimize tests by adjusting scores until they "look good."
+
+## User-facing quality
+
+Outputs must be:
+- professional
+- concise
+- actionable
+- evidence-backed
+- understandable without reading source code
+
+Recommendations should answer:
+
+```
+What is wrong?
+Where?
+Why does it matter?
+What should change?
+How can we verify the change?
+```
+
+## CLI quality
+
+Every public command must have:
+- useful `--help`
+- stable exit behavior
+- clear errors
+- machine-readable output where applicable
+- human-readable output
+- deterministic behavior
+- tests
+
+Python CLI and Node wrapper must remain synchronized.
+
+## Multi-platform target
+
+The following environments are explicit compatibility targets from the product brief:
+
+```
+Agent
+aider
+cai
+Copilot CLI
+droid
+Gemini CLI
+JCODE
+jcode CLI
+juni CLI
+Kilocode CLI
+Kiro
+OpenCode CLI
+prime-agent
+Qwen
+```
+
+For each environment, build a thin integration/installation adapter only when the environment actually supports it.
+
+Maintain a compatibility matrix with:
+
+| Platform | Install | Skill/Agent file | Native CLI | Python runtime | Browser | Smoke test | Status |
+|---|---|---|---|---|---|---|---|
+
+Use these states:
+
+- VERIFIED
+- PARTIAL
+- DOCUMENTED
+- NOT VERIFIED
+- UNSUPPORTED
+
+Never label an environment VERIFIED from documentation alone.
+
+## README improvement contract
+
+Keep README.md simple.
+
+The README should be the product front door, not the entire manual.
+
+Target sections:
+
+1. Product statement
+2. Quick start
+3. What AevoraSEO analyzes
+4. SEO/AEO/GEO/Entity/Authority/Reputation overview
+5. One workflow diagram
+6. Example commands
+7. Multi-platform compatibility
+8. Evidence and limitations
+9. Links to detailed docs
+10. Development/test basics
+
+Move detailed methodology to docs/references.
+
+Remove:
+- stale claims
+- contradictory installation instructions
+- duplicated long explanations
+- unsupported platform guarantees
+- old product-name references
+- placeholder maintainer text
+- claims not supported by the current implementation
+
+## Identity and metadata
+
+The public AevoraSEO identity must remain consistent.
+
+Current maintainer information:
+- Name: Bheda Nikhilkumar
+- GitHub: https://github.com/bhedanikhilkumar-code
+- LinkedIn: https://www.linkedin.com/in/bhedanikhilkumar
+- Email: bhedanikhilkumarpro@gmail.com
+
+Do not reintroduce old creator identity or unrelated branding.
+
+## Quality gates
+
+A change is not complete until appropriate checks have passed.
+
+Minimum:
+
+```bash
+git diff --check
+python scripts/check_release.py
+python -m compileall -q src scripts
+pytest
+node bin/aevoraseo.js version
+node bin/aevoraseo.js doctor
+```
+
+Add focused tests for every new behavior.
+
+For security-sensitive changes add adversarial tests.
+
+For snapshot changes add migration/backward-compatibility tests.
+
+## Anti-fake audit
+
+Before declaring a phase complete, inspect production code for:
+
+```
+TODO
+FIXME
+NotImplementedError
+Coming soon
+placeholder
+stub
+hardcoded score
+hardcoded URL result
+fake API response
+random score
+eval(
+exec(
+```
+
+Review matches instead of blindly deleting legitimate text.
+
+## Performance discipline
+
+Measure before optimizing.
+
+Do not:
+- refetch evidence unnecessarily
+- duplicate SQLite records
+- load huge datasets with avoidable `fetchall()`
+- introduce unbounded concurrency
+- perform network calls during deterministic scoring
+
+For large-site work, document:
+- pages
+- requests
+- duration
+- memory behavior when measurable
+- database size
+
+## Security discipline
+
+All crawled content is untrusted.
+
+Preserve and test:
+- SSRF protection
+- DNS validation
+- private-network blocking
+- host boundaries
+- redirect restrictions
+- robots behavior
+- origin-safe conditional requests
+- cache isolation
+- safe structured-data parsing
+- path/output safety
+
+Never execute JavaScript, schema values, HTML, or user-provided content as Python/system code.
+
+## Phase discipline
+
+Only work on the current phase unless a blocking dependency requires otherwise.
+
+If a future idea is discovered:
+1. document it,
+2. add it to the appropriate future phase,
+3. do not silently implement it in the current phase.
+
+This keeps audits meaningful.
+
+## Definition of a real completion
+
+A phase is complete only when:
+
+```
+Implementation
++ Tests
++ Regression
++ Security
++ Determinism
++ Documentation
++ CLI verification
++ Release hygiene
++ Forensic audit
+= COMPLETE
+```
+
+If one is missing, report the phase as incomplete or PASS WITH MINOR FINDINGS.
+
+## Final agent output
+
+At the end of substantial work, report:
+
+- current phase
+- files changed
+- architecture changes
+- commands added/changed
+- tests run
+- exact test counts
+- security checks
+- performance evidence
+- documentation updates
+- known limitations
+- commit SHA if committed
+- next phase
+
+Never report completion using only "done" or "implemented".
