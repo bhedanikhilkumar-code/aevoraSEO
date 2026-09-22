@@ -26,9 +26,14 @@ class IssuePriority(enum.Enum):
 
 def sanitize_csv_cell(value: Any) -> str:
     """Sanitize CSV cells to prevent formula injection attacks (=, +, -, @, \\t, \\r)."""
-    s = str(value if value is not None else "")
-    if s and s[0] in ("=", "+", "-", "@", "\t", "\r"):
-        return "'" + s
+    if value is None:
+        return ""
+    s = str(value)
+    if s.startswith(("=", "+", "-", "@", "\t", "\r")):
+        return f"'{s}"
+    stripped = s.lstrip()
+    if stripped.startswith(("=", "+", "-", "@")):
+        return f"'{s}"
     return s
 
 

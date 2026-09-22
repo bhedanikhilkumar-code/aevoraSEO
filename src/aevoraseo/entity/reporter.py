@@ -17,8 +17,10 @@ def sanitize_csv_cell(value: Any) -> str:
     if value is None:
         return ""
     val_str = str(value)
+    if val_str.startswith(("=", "+", "-", "@", "\t", "\r")):
+        return f"'{val_str}"
     stripped = val_str.lstrip()
-    if stripped and stripped[0] in ("=", "+", "-", "@", "\t", "\r"):
+    if stripped.startswith(("=", "+", "-", "@")):
         return f"'{val_str}"
     return val_str
 

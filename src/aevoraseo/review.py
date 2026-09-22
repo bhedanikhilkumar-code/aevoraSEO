@@ -439,10 +439,21 @@ def compare(before, after, out, format="terminal", status_filter="all", url_filt
                 {"url": u, "state": "UNCHANGED", "field": "all", "before": "matched", "after": "matched"}
             )
 
+    def _sanitize_csv_cell(val):
+        if val is None:
+            return ""
+        s = str(val)
+        if s.startswith(("=", "+", "-", "@", "\t", "\r")):
+            return f"'{s}"
+        stripped = s.lstrip()
+        if stripped.startswith(("=", "+", "-", "@")):
+            return f"'{s}"
+        return s
+
     with (out / "comparison.csv").open("w", newline="", encoding="utf-8-sig") as f:
         writer = csv.DictWriter(f, fieldnames=["url", "state", "field", "before", "after"])
         writer.writeheader()
         if csv_rows:
-            writer.writerows(csv_rows)
+            writer.writerows([{k: _sanitize_csv_cell(v) for k, v in r.items()} for r in csv_rows])
 
     return save_report(out, "comparison", result, lines)

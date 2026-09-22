@@ -44,10 +44,11 @@ def write_csv(path, fields, rows):
 
 
 def parse_sitemap(body):
-    sanitized = body.replace(b"\0", b"").upper()
-    if b"<!DOCTYPE" in sanitized or b"<!ENTITY" in sanitized:
+    clean_body = body.replace(b"\0", b"")
+    check_str = clean_body.upper()
+    if b"<!DOCTYPE" in check_str or b"<!ENTITY" in check_str:
         raise ValueError("Sitemap DTD/entities are not supported")
-    root = ET.fromstring(body)
+    root = ET.fromstring(clean_body)
     kind = root.tag.rsplit("}", 1)[-1]
     if kind not in ("urlset", "sitemapindex"):
         raise ValueError("Expected sitemap urlset or sitemapindex")
