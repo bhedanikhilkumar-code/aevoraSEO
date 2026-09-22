@@ -399,11 +399,11 @@ Reference commit:
 ## 3. CURRENT PHASE
 
 ### All Roadmap Phases (A through K) — IMPLEMENTED & LOCALLY VERIFIED
-**STATUS: PHASE K CODE FROZEN / PENDING CI RUNNER INFRASTRUCTURE RESOLUTION**
+**STATUS: PHASE K CODE FROZEN / TAG v1.1.0 PUBLISHED / PENDING CI RUNNER BILLING RESOLUTION**
 
 All 11 architectural phases (A through K) of AevoraSEO are completely implemented, thoroughly tested locally, defensively audited, and committed to `origin/main`.
-Current tagged release on GitHub remains `v1.0.0` (`f6958aa`).
-The v1.1.0 release is code-ready on `main`. Formal release tagging and npm/PyPI distribution await resolution of the GitHub Actions account billing limit (GitHub annotation: *"The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings"*).
+Current tagged releases on GitHub: `v1.0.0` (`f6958aa`) and `v1.1.0` (`a0384e0`).
+The v1.1.0 release is tagged on `main` and published as a GitHub Release (https://github.com/bhedanikhilkumar-code/aevoraSEO/releases/tag/v1.1.0). Remote GitHub Actions CI execution remains blocked before runner startup by an account billing/spending limit (GitHub annotation: *"The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings"*).
 
 ---
 
