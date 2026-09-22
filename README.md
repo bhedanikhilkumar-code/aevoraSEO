@@ -72,6 +72,12 @@ npx aevoraseo audit-verify --audit ./audit.json --crawl ./crawl_output
 # Track multi-snapshot score trajectory across historical crawls
 npx aevoraseo progress --crawls ./snap1 ./snap2 ./snap3
 
+# Generate, preview, and apply automated code patches with atomic backups
+npx aevoraseo remediate generate --crawl ./crawl_output --site ./site --out ./remediation
+npx aevoraseo remediate preview --plan ./remediation/remediation-plan.json
+npx aevoraseo remediate apply --plan ./remediation/remediation-plan.json
+npx aevoraseo remediate rollback --receipt ./remediation/remediation-receipt.json
+
 # Inspect engine health and local environment readiness
 npx aevoraseo doctor
 ```
@@ -97,6 +103,9 @@ aevoraseo reputation-compare --before ./rep1/reputation.json --after ./rep2/repu
 aevoraseo report ./crawl_output --format html --out ./deliverables
 aevoraseo audit-verify --audit ./audit.json --crawl ./crawl_output
 aevoraseo progress --crawls ./snap1 ./snap2 ./snap3
+aevoraseo remediate generate --crawl ./crawl_output --site ./site
+aevoraseo remediate preview --plan ./remediation/remediation-plan.json
+aevoraseo remediate apply --plan ./remediation/remediation-plan.json
 aevoraseo doctor
 ```
 
@@ -558,6 +567,39 @@ python3 scripts/run.py present \
 ```
 
 Report design guidance is documented in [branded reports](docs/branded-reports.md).
+
+---
+
+# Automated Remediation & Code Patches
+
+AevoraSEO converts diagnostic findings and optimization roadmaps into concrete, syntax-safe HTML and metadata code patches with guaranteed atomic rollback:
+
+```text
+Crawl & Audit ──► Generate Plan ──► Preview Diff ──► Apply (with Backup) ──► Verify Fix
+```
+
+### Key Capabilities
+- **Deterministic AST Patches:** Safe BeautifulSoup manipulation preserving document formatting for `<title>`, `<meta name="description">`, `<h1>`–`<h6>` hierarchy, Schema.org JSON-LD, canonical tags, and contextual internal links.
+- **Direct Answer Engineering:** Automated injection of semantic 40–60 word answer boxes and procedural lists beneath question headings for AEO/GEO engine discovery.
+- **Atomic Safety & Backups:** Automatic pre-patch byte backup to `.aevora/backups/`, cryptographic SHA-256 pre/post digests, and tamper-evident `remediation-receipt.json`.
+- **Verified Rollback:** Restore exact original file bytes with verified checksum validation (`aevoraseo remediate rollback`).
+- **SQLite Persistence:** Audit-trail tracking across `remediations.sqlite3`.
+
+```bash
+# Generate remediation plan from crawl findings targeting local site
+aevoraseo remediate generate --crawl ./crawl_output --site ./site --out ./remediation
+
+# Preview colorized unified diffs without modifying files
+aevoraseo remediate preview --plan ./remediation/remediation-plan.json
+
+# Apply patches with automatic backup and receipt creation
+aevoraseo remediate apply --plan ./remediation/remediation-plan.json
+
+# Rollback applied changes back to exact pre-patch state
+aevoraseo remediate rollback --receipt ./remediation/remediation-receipt.json
+```
+
+Detailed guides: [Remediation User Guide](docs/remediation.md) and [Methodology Reference](references/remediation-engine.md).
 
 ---
 

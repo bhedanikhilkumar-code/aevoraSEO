@@ -15,6 +15,22 @@ AevoraSEO 1.0.0 represents the complete, production-ready release of the evidenc
 - **Phase H — Multi-Agent & Platform Compatibility**: Empirical platform registry cataloging 18 target environments (Agent, Claude Code, Codex, Hermes, OpenClaw, aider, Copilot CLI, Gemini CLI, Factory Droid, Kilocode CLI, OpenCode CLI, Qwen, JCODE, jcode CLI, juni CLI, Kiro, prime-agent, cai), runtime environment detection, profile validation, platform adapter generation, fixture verification, and `aevoraseo agent` CLI.
 - **Phase I — Reporting, Operations & Professional Workflow**: Unified cross-subsystem report generator synthesizing all intelligence dimensions into executive HTML, terminal, markdown, JSON, and CSV reports, calibrated overall scorecard (0–100), P0/P1/P2 issue prioritization with acceptance criteria, audit verification (`audit-verify`), multi-snapshot progress tracking (`progress`), and SQLite database integrity diagnostics.
 - **Phase J — Production Hardening & Security**: Dual-check formula injection defense across all CSV exports, XML sitemap null-byte sanitization, deterministic SQLite connection lifecycle (`try/finally conn.close()`) for Windows lock safety, multi-snapshot scaling, zero stub policy compliance, and strictly validated hosted skill package ceiling ($\le 200$ archive files).
+- **Phase K — Automated Remediation & Code Patch Engine**: Deterministic AST/HTML patch generators (`patch_title`, `patch_meta_description`, `patch_headings`, `patch_direct_answer`, `patch_schema`, `patch_canonical`, `patch_internal_link`), remediation planning, pre-flight verification, atomic backups, tamper-evident receipts with SHA-256 digests, verified atomic rollback, SQLite persistence (`remediations.sqlite3`), colorized unified diff previews, CSV formula injection sanitization, CLI parity (`aevoraseo remediate`), and Node launcher parity.
+
+## Phase K — Automated Remediation & Code Patch Engine
+
+- Implemented native Automated Remediation & Code Patch Engine (`aevoraseo.remediation`).
+- Built deterministic AST/HTML patcher (`aevoraseo.remediation.patcher`) supporting title tag optimization, meta description generation, heading hierarchy normalization, direct answer block injection (40–60 words with procedural lists), Schema.org JSON-LD structured data, canonical tag repair, and contextual internal link insertion.
+- Created Remediation Planner (`aevoraseo.remediation.planner`) mapping P0, P1, and P2 audit issues from crawl databases or local HTML trees to actionable patch blueprints with estimated score recoveries.
+- Built Execution and Rollback Engine (`aevoraseo.remediation.executor`) with atomic pre-patch backups to `.aevora/backups/`, pre/post SHA-256 cryptographic verification, dry-run simulation, and tamper-evident `remediation-receipt.json`.
+- Implemented verified atomic rollback restoring original file bytes with verified digest checking.
+- Built SQLite persistence in `remediations.sqlite3` (`remediation_plans`, `remediation_patches`, `remediation_receipts`) with deterministic `try/finally conn.close()` connection lifecycle.
+- Implemented multi-format reporter (`aevoraseo.remediation.reporter`) supporting colorized unified diff previews, markdown reports, JSON plans, and sanitized CSV exports (`sanitize_csv_cell`).
+- Added CLI parity for `aevoraseo remediate` (`generate`, `preview`, `apply`, `rollback`, `list`) across terminal, markdown, and JSON formats.
+- Synchronized Node launcher parity in `bin/aevoraseo.js` with `remediate` command routing and help text.
+- Authored methodology reference (`references/remediation-engine.md`) and user guide (`docs/remediation.md`).
+- Consolidated 7 backlink strategy playbooks into `playbooks/backlink-system/README.md`, keeping hosted skill bundle safely within limits (196 files, 197 archive files $\le 200$ ceiling).
+- Built comprehensive unit, workflow, and adversarial test suites in `tests/test_remediation_*.py` (28 new tests, 554 tests passing across the suite).
 
 ## Phase J — Production Hardening & Release
 

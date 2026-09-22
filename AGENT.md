@@ -362,13 +362,47 @@ Reference commit:
 
 ---
 
+### Phase K — Automated Remediation & Code Patch Engine
+**STATUS: COMPLETE — PASS**
+
+Verified scope:
+- native Automated Remediation & Code Patch Engine (`aevoraseo.remediation`)
+- deterministic AST/HTML patch generators in `aevoraseo.remediation.patcher`: `patch_title`, `patch_meta_description`, `patch_headings`, `patch_direct_answer` (40–60 word answer boxes and procedural lists), `patch_schema` (Schema.org JSON-LD), `patch_canonical`, and `patch_internal_link`
+- remediation planner (`aevoraseo.remediation.planner`) mapping P0, P1, and P2 findings from crawl snapshot databases (`crawl.sqlite3`, `content_optimization.sqlite3`, `search_commercial.sqlite3`) or local HTML directory trees to concrete patch blueprints
+- execution and rollback engine (`aevoraseo.remediation.executor`) with atomic pre-patch file backups to `.aevora/backups/<plan_id>/`, pre- and post-application SHA-256 cryptographic verification, dry-run simulation mode, and tamper-evident `remediation-receipt.json`
+- verified atomic rollback engine restoring original file bytes with verified digest checking
+- SQLite persistence in `remediations.sqlite3` (`remediation_plans`, `remediation_patches`, `remediation_receipts`) with deterministic `try/finally conn.close()` connection lifecycle ensuring Windows lock safety
+- multi-format reporter (`aevoraseo.remediation.reporter`) supporting colorized terminal unified diff previews, markdown reports, machine-readable JSON plans, and CSV exports
+- dual-check formula injection defense across CSV exports (`sanitize_csv_cell`)
+- CLI parity via `aevoraseo remediate` (`generate`, `preview`, `apply`, `rollback`, `list`)
+- Node launcher parity in `bin/aevoraseo.js` with synchronized command routing and help text
+- technical methodology reference in `references/remediation-engine.md` and user guide in `docs/remediation.md`
+- consolidated backlink strategy playbooks into `playbooks/backlink-system/README.md`, maintaining hosted skill bundle strictly below upload ceiling (196 bundle files, 197 archive files <= 200 limit)
+- comprehensive unit, workflow, and adversarial test suites in `tests/test_remediation_*.py` (28 new tests, 554 tests passing across the suite)
+
+Forensic audit evidence:
+- 554 passed
+- 2 skipped
+- 0 failed
+- 556 collected
+- 22 subtests passed
+- release hygiene: 268 files checked, 0 findings, PASSED
+- upload package validation: 196 files, 197 archive files (<= 200 ceiling), 238 local references, format check PASSED
+- zero `TODO`, `FIXME`, `NotImplementedError`, or stub placeholders
+- cross-platform connection handling verified on Windows
+
+Reference commit:
+- `44d9cb0` — `feat(remediation): implement Phase K automated remediation and code patch engine, CLI parity, and tests`
+
+---
+
 ## 3. CURRENT PHASE
 
-### All Roadmap Phases (A through J) — COMPLETE
+### All Roadmap Phases (A through K) — COMPLETE
 **STATUS: PRODUCTION READY / RELEASE VERIFIED**
 
-All 10 architectural phases (A through J) of AevoraSEO are completely implemented, thoroughly tested, defensively audited, and empirically verified.
-The platform is fully ready for public release v1.0.0 and distribution across npm, PyPI, and supported AI coding-agent skill hosts.
+All 11 architectural phases (A through K) of AevoraSEO are completely implemented, thoroughly tested, defensively audited, and empirically verified.
+The platform is fully ready for public release v1.1.0 and distribution across npm, PyPI, and supported AI coding-agent skill hosts.
 
 ---
 
@@ -487,6 +521,26 @@ Forensic evidence:
 - compileall clean
 - Node `version`, `--help`, `doctor`, `report`, `audit-verify`, and `progress` verified
 
+## Phase K — Automated Remediation & Code Patch Engine
+**COMPLETE — PASS**
+
+Deterministic AST/HTML patch generation (`patch_title`, `patch_meta_description`, `patch_headings`, `patch_direct_answer`, `patch_schema`, `patch_canonical`, `patch_internal_link`), remediation planning from crawl/report databases, pre-flight safety verification, atomic backup storage, SHA-256 cryptographic verification receipts, verified atomic rollback, SQLite persistence (`remediations.sqlite3`), colorized unified diff previews, formula-injection-safe CSV exports, CLI parity (`aevoraseo remediate`), and Node launcher parity.
+
+Reference commit:
+- `44d9cb0` — `feat(remediation): implement Phase K automated remediation and code patch engine, CLI parity, and tests`
+
+Forensic evidence:
+- 556 collected
+- 554 passed
+- 2 skipped
+- 0 failed
+- 22 subtests passed
+- release hygiene: 268 files checked, 0 findings
+- bundle validation: 196 files / 197 archive files (<= 200 ceiling)
+- 238 local references checked
+- compileall clean
+- Node `version`, `--help`, `doctor`, and `remediate` verified
+
 ---
 
 # 5. PHASE DEPENDENCY ORDER
@@ -513,6 +567,8 @@ H  COMPLETE
 I  COMPLETE
  ↓
 J  COMPLETE
+ ↓
+K  COMPLETE
 ```
 
 A phase may use existing capabilities from a later conceptual area only when the functionality already exists. Do not duplicate it just to satisfy a phase label.
