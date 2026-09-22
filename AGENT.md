@@ -280,35 +280,27 @@ Native backlink discovery, anchor/context extraction, source classification, own
 Typed entity extraction, sameAs authority discovery, knowledge graph topology, cross-page consistency audits, AevoraSEO Entity & Authority Score (0-100), SQLite persistence, entity-compare diff engine, and bundle limit compliance.
 
 ## Phase F — Search, Local & Commercial Intelligence
-**NEXT**
+**COMPLETE — PASS**
 
-Build evidence-driven analysis for:
-- search intent
-- keyword/query mapping
-- local visibility signals
-- business/service/location relationships
-- commercial investigation pages
-- comparison pages
-- buyer questions
-- conversion journeys
-- local business evidence
-- sitemap/content coverage
+Search intent, query mapping, cannibalization, local visibility, commercial journeys, comparison/buyer support, deterministic scoring, SQLite persistence, snapshot comparison, CLI parity, and CSV security hardening are implemented and verified.
 
-Actual search rankings remain external measurements unless supplied.
+Reference commit:
+- `060d1f4` — `feat(search): complete Phase F search, local & commercial intelligence, persistence, comparisons, and tests`
 
-Build evidence-driven analysis for:
-- search intent
-- keyword/query mapping
-- local visibility signals
-- business/service/location relationships
-- commercial investigation pages
-- comparison pages
-- buyer questions
-- conversion journeys
-- local business evidence
-- sitemap/content coverage
+Forensic evidence:
+- 436 collected
+- 434 passed
+- 2 skipped
+- 0 failed
+- 22 subtests passed
+- release hygiene: 267 files checked, 0 findings
+- bundle validation: 194 files / 195 archive files
+- 216 local references checked
+- compileall clean
+- Node `version`, `--help`, and `doctor` verified
 
-Actual search rankings remain external measurements unless supplied.
+Known boundary:
+- actual search rankings and Search Console metrics remain external measurements unless supplied by authenticated/verified data.
 
 ## Phase G — Content & Optimization Intelligence
 **PLANNED**
