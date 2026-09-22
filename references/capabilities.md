@@ -119,6 +119,29 @@ The native Search, Local & Commercial intelligence engine analyzes search intent
 
 See [Search & Commercial methodology](search-commercial.md) for detailed technical specifications.
 
+## Content & Optimization Intelligence: implemented
+
+The native Content & Optimization intelligence engine audits content quality, title tags, meta descriptions, single H1 and heading hierarchies, direct answer definitions, FAQ objection opportunities, topic clusters, intent-matched schema recommendations, content briefs, and 30/60/90-day roadmaps.
+
+| Function | What it does |
+|---|---|
+| Title tag optimization | Audits length (45–65 chars optimal), brand placement, primary query alignment, and repetitive keyword stuffing |
+| Meta description optimization | Audits length (120–160 chars optimal), action-oriented CTA verb detection, and query relevance |
+| Heading hierarchy audit | Enforces single H1, validates sequential nesting without skipped levels (e.g. H1 -> H3), detects question headings and empty headings |
+| Direct answer & definition engineering | Identifies definition phrases (`is a`, `refers to`) and prescribes 40–60 word answer boxes, procedural lists, and comparison tables |
+| FAQ & buyer objection handling | Discovers missing pricing transparency, guarantee/SLA terms, and support details on transactional pages |
+| Internal link & orphan optimization | Maps global internal link graph, detects orphan pages (0 inbound links), crawl depth, and flags generic anchors (`click here`) |
+| Topic cluster analysis | Groups pages by path and topic, maps pillar hubs to supporting spokes, and computes cluster health scores (0–100) |
+| Intent-matched schema recommender | Suggests `Article`, `Service`, `Product`, `LocalBusiness`, `FAQPage`, `Course`, and `HowTo` structured data |
+| Content briefs & editorial outlines | Generates grounded briefs and heading-by-heading outlines with 40–60 word answer box targets, bullet points, and CTA placement |
+| Content gap & refresh prioritization | Identifies thin content (< 250w, < 500w), aging year references ($\le 2023$), and missing comparison/FAQ sections |
+| AevoraSEO Content Optimization Score | Evaluates 0–100 headline score across Metadata & Headings, Content Depth & Answers, Link & Cluster Health, and Schema Coverage |
+| SQLite persistence | Persists snapshots, page audits, answer opportunities, clusters, briefs, and diffs to `content_optimization.sqlite3` |
+| Snapshot diff engine (`optimize-compare`) | Compares temporal snapshots for score deltas, resolved deficiencies, new regressions, and cluster evolution |
+| Export & security hardening | Emits Terminal, JSON, Markdown, and CSV outputs with CSV formula injection neutralization |
+
+See [Content & Optimization methodology](content-optimization.md) for detailed technical specifications.
+
 ## SEO workflows included
 
 These are agent workflows supported by the reference library. They are available for analysis and planning; their presence does not mean the standalone Python script automatically completes every task.

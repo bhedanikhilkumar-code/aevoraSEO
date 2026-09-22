@@ -299,6 +299,58 @@ def parser():
         default="terminal",
         help="Output presentation format.",
     )
+    p = sub.add_parser(
+        "optimize",
+        help="Audit content quality, titles, meta descriptions, headings, answer opportunities, and topic clusters.",
+    )
+    p.add_argument("target", help="Crawl snapshot directory or target website URL.")
+    p.add_argument("--out", type=Path, default=None, help="Directory to save optimization outputs.")
+    p.add_argument("--brand", default="", help="Brand name to guide analysis.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
+    p = sub.add_parser(
+        "content",
+        help="Alias for content & optimization intelligence.",
+    )
+    p.add_argument("target", help="Crawl snapshot directory or target website URL.")
+    p.add_argument("--out", type=Path, default=None, help="Directory to save optimization outputs.")
+    p.add_argument("--brand", default="", help="Brand name to guide analysis.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
+    p = sub.add_parser(
+        "optimize-compare",
+        help="Compare content optimization snapshots across crawls for score deltas and resolved deficiencies.",
+    )
+    p.add_argument("--before", type=Path, required=True, help="Baseline optimization snapshot directory or JSON.")
+    p.add_argument("--after", type=Path, required=True, help="Subsequent optimization snapshot directory or JSON.")
+    p.add_argument("--out", type=Path, default=None, help="Directory to save comparison outputs.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
+    p = sub.add_parser(
+        "content-compare",
+        help="Alias for content optimization comparison.",
+    )
+    p.add_argument("--before", type=Path, required=True, help="Baseline optimization snapshot directory or JSON.")
+    p.add_argument("--after", type=Path, required=True, help="Subsequent optimization snapshot directory or JSON.")
+    p.add_argument("--out", type=Path, default=None, help="Directory to save comparison outputs.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
     p = sub.add_parser("backlinks", help="Check supplied source pages for links to a website.")
     p.add_argument("target_domain", nargs="?", default=None, help="Target website URL or domain.")
     p.add_argument("--sources", type=Path, default=None, help="Path to sources CSV.")
@@ -487,6 +539,10 @@ def main(argv=None):
             "search",
             "commercial",
             "search-compare",
+            "optimize",
+            "content",
+            "optimize-compare",
+            "content-compare",
             "backlinks",
             "edit",
             "reputation",
@@ -753,6 +809,54 @@ def main(argv=None):
                         print(csv_file.read_text(encoding="utf-8-sig").strip())
                     else:
                         print("metric,value")
+                elif fmt == "json":
+                    print(json.dumps(diff.to_dict(), ensure_ascii=False, indent=2))
+                return 0
+            elif args.command in ("optimize", "content"):
+                from urllib.parse import urlsplit
+                from .optimization.analyzer import analyze_target_optimization
+                from .optimization.reporter import generate_terminal_report, generate_markdown_report
+
+                target = args.target
+                out_dir = args.out
+                if not out_dir:
+                    target_path = Path(target)
+                    if target_path.exists() and target_path.is_dir():
+                        out_dir = target_path
+                    else:
+                        host_slug = urlsplit(target if "://" in target else f"https://{target}").hostname or "optimization"
+                        out_dir = Path(f"optimization_{host_slug.removeprefix('www.').replace('.', '_')}")
+
+                result = analyze_target_optimization(target, out_dir=out_dir, brand=args.brand)
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "terminal":
+                    print(generate_terminal_report(result, use_color=not getattr(args, "no_color", False)))
+                elif fmt == "markdown":
+                    print(generate_markdown_report(result))
+                elif fmt == "csv":
+                    csv_file = out_dir / "content-recommendations.csv"
+                    if csv_file.exists():
+                        print(csv_file.read_text(encoding="utf-8-sig").strip())
+                    else:
+                        print("url,title_status,title_rec,meta_status,meta_rec,h1_count,heading_rec")
+                elif fmt == "json":
+                    print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
+                return 0
+            elif args.command in ("optimize-compare", "content-compare"):
+                from .optimization.comparison import compare_optimization_snapshots
+                from .optimization.reporter import generate_diff_terminal_report, generate_diff_markdown_report
+
+                out_dir = args.out or Path("optimization_comparison")
+                diff = compare_optimization_snapshots(args.before, args.after, out_dir=out_dir)
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "terminal":
+                    print(generate_diff_terminal_report(diff))
+                elif fmt == "markdown":
+                    print(generate_diff_markdown_report(diff))
+                elif fmt == "csv":
+                    print("metric,value")
+                    for k, v in diff.transition_summary.items():
+                        print(f"{k},{v}")
                 elif fmt == "json":
                     print(json.dumps(diff.to_dict(), ensure_ascii=False, indent=2))
                 return 0

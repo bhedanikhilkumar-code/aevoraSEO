@@ -1,5 +1,29 @@
 # Changelog
 
+## Phase G — Content & Optimization Intelligence Engine
+
+- Implemented native Content & Optimization Intelligence subsystem (`aevoraseo.optimization`).
+- Built title tag optimization analyzing character lengths (45–65 chars optimal), trailing/leading brand placement, primary query alignment, and repetitive keyword stuffing.
+- Added meta description optimization auditing character limits (120–160 chars optimal), actionable CTA verb detection (`discover`, `explore`, `book`, `call`, `learn`), and query relevance.
+- Implemented heading structure audits verifying single H1 presence, logical consecutive nesting, skipped-level detection (e.g. H1 -> H3, H2 -> H4), question headings, and empty heading cleanup.
+- Built direct-answer and definition opportunity engine detecting definition phrases (`is a`, `refers to`, `is defined as`) and prescribing 40–60 word answer boxes, procedural lists, and comparison tables.
+- Added FAQ and buyer objection opportunity engine discovering pricing transparency, guarantee/SLA, and customer support friction gaps on transactional pages.
+- Built site-wide internal link graph auditing in-degree and out-degree, detecting orphan pages (0 incoming internal links), crawl depth, and generic anchor warnings (`click here`, `read more`).
+- Implemented topic cluster and pillar-spoke analysis grouping pages by path and topic, mapping pillar hubs to supporting spokes, and calculating cluster health scores (0–100).
+- Built intent-matched schema recommendation engine mapping pages to `Article`, `Service`, `Product`, `LocalBusiness`, `FAQPage`, `Course`, and `HowTo` schemas.
+- Added grounded content brief generator synthesizing target queries, intent-scaled target word counts, required sections, direct answer targets, internal links, and editorial guidance.
+- Implemented editorial outline generator producing structured heading blueprints with 40–60 word answer box targets, bullet points, FAQ blueprints, and CTA placement.
+- Built content gap and refresh candidate prioritization detecting thin content (< 250w, < 500w), aging year references ($\le 2023$), and missing comparison/FAQ pages.
+- Synthesized prioritized 30/60/90-day optimization roadmaps across Foundation (Days 1–30), Answer Depth & Schema (Days 31–60), and Cluster Compounding (Days 61–90).
+- Added deterministic **AevoraSEO Content Optimization Score (0–100)** across four 25-point dimensions: Metadata & Heading Architecture, Content Quality & Answer Depth, Topic Cluster & Internal Link Health, and Structured Data & Schema Coverage.
+- Implemented SQLite persistence in `content_optimization.sqlite3` (`optimization_snapshots`, `optimization_page_audits`, `optimization_answer_opportunities`, `optimization_topic_clusters`, `optimization_content_briefs`, `optimization_diffs`) with Windows-safe connection cleanup (`try/finally conn.close()`).
+- Built temporal snapshot comparison engine (`compare_optimization_snapshots`, `aevoraseo optimize-compare`) calculating score deltas, resolved deficiencies, new regressions, and cluster evolution.
+- Added CLI parity: `aevoraseo optimize <target>` (alias `aevoraseo content`) and `aevoraseo optimize-compare` across terminal, markdown, JSON, and CSV formats.
+- Maintained Node launcher parity in `bin/aevoraseo.js`.
+- Security hardening: sanitized all exported CSV files (`content-recommendations.csv`, `content-briefs.csv`, `direct-answers.csv`, `internal-links.csv`) against spreadsheet formula injection attacks.
+- Consolidated unreferenced single-topic playbooks (`growth-plans.md`, `growth-models.md`, `competitor-research-workflow.md`, `site-audit-workflow.md`, `backlink-evaluation.md`), maintaining hosted skill bundle file count strictly below ceiling (197 bundle files, 198 archive files $\le 200$ limit).
+- Added comprehensive unit, metadata, answer, cluster, brief, persistence, comparison, and CLI test suites (20 new tests, 454 tests passing across the suite).
+
 ## Phase F — Search, Local & Commercial Intelligence Engine
 
 - Implemented native Search, Local & Commercial Intelligence subsystem (`aevoraseo.search`).

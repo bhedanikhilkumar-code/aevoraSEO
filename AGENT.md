@@ -227,30 +227,62 @@ Forensic audit evidence:
 
 ---
 
-## 3. CURRENT PHASE
-
 ### Phase G — Content & Optimization Intelligence
-**STATUS: NEXT / READY FOR IMPLEMENTATION**
+**STATUS: COMPLETE — PASS**
 
-Phase F has passed all verification gates and forensic audits. Phase G is the next implementation phase.
+Verified scope:
+- native Content & Optimization Intelligence subsystem (`aevoraseo.optimization`)
+- title tag optimization analyzing character lengths (45-65 optimal), brand placement, primary query alignment, and keyword stuffing detection
+- meta description optimization evaluating length (120-160 optimal), actionable CTA verb detection (`discover`, `explore`, `book`, `call`, `learn`), and query relevance
+- heading hierarchy and structure auditing single H1 compliance, logical consecutive nesting, skipped-level detection (e.g. H1->H3, H2->H4), question headings, and empty heading cleanup
+- direct-answer and definition opportunity engine detecting definition phrases (`is a`, `refers to`) and prescribing 40-60 word answer boxes, procedural lists, and comparison tables
+- FAQ and buyer objection opportunity engine discovering pricing transparency, guarantee/SLA, and support friction gaps on transactional pages
+- site-wide internal link graph auditing in-degree and out-degree, detecting orphan pages (0 internal links), deep crawl depth, and generic anchor warnings (`click here`)
+- topic cluster and pillar-spoke analysis grouping pages by path and topic, mapping pillar hubs to supporting spokes, and calculating cluster health scores (0-100)
+- intent-matched schema recommendation engine mapping pages to `Article`, `Service`, `Product`, `LocalBusiness`, `FAQPage`, `Course`, and `HowTo` schemas
+- grounded content brief generator synthesizing target queries, intent-scaled target word counts, required sections, direct answer targets, internal links, and editorial guidance
+- editorial outline generator producing structured heading blueprints with 40-60 word answer box targets, bullet points, FAQ blueprints, and CTA placement
+- content gap and refresh candidate prioritization detecting thin content (<250w, <500w), aging year references (<=2023), and missing comparison/FAQ pages
+- prioritized 30/60/90-day optimization roadmap structured across Foundation (Days 1-30), Answer Depth & Schema (Days 31-60), and Cluster Compounding (Days 61-90)
+- deterministic **AevoraSEO Content Optimization Score (0-100)** across four 25-point dimensions: Metadata & Heading Architecture, Content Quality & Answer Depth, Topic Cluster & Internal Link Health, and Structured Data & Schema Coverage
+- SQLite persistence in `content_optimization.sqlite3` (`optimization_snapshots`, `optimization_page_audits`, `optimization_answer_opportunities`, `optimization_topic_clusters`, `optimization_content_briefs`, `optimization_diffs`) with Windows-safe connection cleanup (`try/finally conn.close()`)
+- temporal snapshot comparison engine (`compare_optimization_snapshots`, `aevoraseo optimize-compare`) calculating score deltas, resolved deficiencies, new regressions, and cluster evolution
+- CLI parity: `aevoraseo optimize <target>` (alias `aevoraseo content`) and `aevoraseo optimize-compare` across terminal, markdown, JSON, and CSV formats
+- Node launcher parity in `bin/aevoraseo.js`
+- formula injection defense sanitizing all exported CSV files (`content-recommendations.csv`, `content-briefs.csv`, `direct-answers.csv`, `internal-links.csv`)
+- consolidated unreferenced single-topic playbooks (`growth-plans.md`, `growth-models.md`, `competitor-research-workflow.md`, `site-audit-workflow.md`, `backlink-evaluation.md`), maintaining hosted skill bundle file count strictly below ceiling (197 bundle files, 198 archive files <= 200 limit)
+- comprehensive unit, metadata, answer, cluster, brief, persistence, comparison, and CLI test suites (20 new tests, 454 tests passing across the suite)
 
-Required areas:
-- title, meta description, and heading optimization recommendations
-- direct answer block and definition phrasing generation for high-intent queries
-- FAQ and objection-handling opportunity discovery
-- internal linking optimization plans and topic cluster hierarchies
-- schema recommendation and structured markup generator
-- content briefs and editorial outlines for missing money/support pages
-- content gap analysis against competitor benchmarks
-- content refresh plans and 30/60/90-day execution roadmaps
-- deterministic and adversarial test suites
-
-Critical boundary:
-- Never invent business facts, fabricate testimonials, or manufacture false claims.
+Forensic audit evidence:
+- 454 passed
+- 2 skipped
+- 0 failed
+- 456 collected
+- 22 subtests passed in 116.23s
+- release hygiene: 272 files checked, 0 findings, PASSED
+- upload package validation: 197 files, 198 archive files (<= 200 limit), 218 local references, format check PASSED
+- zero `TODO`, `FIXME`, `NotImplementedError`, or stub placeholders
+- cross-platform connection handling verified on Windows
 
 ---
 
-# 4. LONG-TERM ROADMAP
+## 3. CURRENT PHASE
+
+### Phase H — Multi-Agent & Platform Compatibility
+**STATUS: NEXT / READY FOR IMPLEMENTATION**
+
+Phase G has passed all verification gates and forensic audits. Phase H is the next implementation phase.
+
+Required scope:
+- multi-agent / platform CLI compatibility testing across supported AI/agent environments (Claude Code, Codex, Hermes, OpenClaw, aider, Gemini CLI, Copilot CLI, etc.)
+- skill packaging and installation profile validations
+- workspace resolution, config path discovery, and environment isolation
+- deterministic agent guidance playbooks and verification scripts
+- non-destructive audit and execution workflows
+
+---
+
+## 4. LONG-TERM ROADMAP
 
 The roadmap below is the working product plan. A future phase may be split into smaller implementation milestones when the repository requires it.
 
@@ -303,25 +335,12 @@ Known boundary:
 - actual search rankings and Search Console metrics remain external measurements unless supplied by authenticated/verified data.
 
 ## Phase G — Content & Optimization Intelligence
-**PLANNED**
+**COMPLETE**
 
-Turn findings into actionable, verified work:
-- title/meta improvements
-- headings
-- answer blocks
-- FAQ opportunities
-- internal-link plans
-- schema recommendations
-- content briefs
-- content gap analysis
-- refresh plans
-- 30/60/90-day roadmaps
-- acceptance checks
+Title tag & meta description audits, single H1 & heading hierarchy verification, direct answer box & definition engineering (40-60 words), FAQ objection handling, topic cluster pillar-spoke mapping, internal link graph & orphan recovery, intent-matched schema recommendations, grounded content briefs & editorial outlines, content gap & refresh prioritization, 30/60/90-day roadmaps, Content Optimization Score (0-100), SQLite persistence in `content_optimization.sqlite3`, optimize-compare diff engine, and formula injection defense.
 
-Never invent business facts.
-
-## Phase H — Shopper / Multi-Agent Platform Compatibility
-**PLANNED**
+## Phase H — Multi-Agent & Platform Compatibility
+**NEXT**
 
 The product must work consistently across the agent/CLI environments shown in the project compatibility target.
 

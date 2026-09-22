@@ -55,6 +55,12 @@ Start with the task you want to complete. Each guide connects the commands, evid
 |---|---|
 | [Search & Commercial methodology](../references/search-commercial.md) | Search intent taxonomy, query extraction, keyword cannibalization, local visibility signals, commercial conversion journeys, CTA friction, and comparison support |
 
+## Content and optimization intelligence
+
+| Guide | Covers |
+|---|---|
+| [Content & Optimization methodology](../references/content-optimization.md) | Title/meta audits, single H1/hierarchy checks, 40-60w answer boxes, topic clusters, briefs & 30/60/90d roadmaps |
+
 ## Strategy, content and follow-up
 
 | Guide | Covers |

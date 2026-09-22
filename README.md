@@ -288,6 +288,18 @@ aevoraseo aeo ./runs/deep-audit --out ./runs/deep-audit/aeo --format terminal
 # Compare AEO/GEO score evolution and state transitions between snapshots
 aevoraseo aeo-compare --before ./runs/baseline --after ./runs/recheck --out ./runs/aeo-diff --format terminal
 
+# Analyze search intent, cannibalization, local visibility, and commercial CTAs
+aevoraseo search ./runs/deep-audit --out ./runs/deep-audit/search --format terminal
+
+# Compare search intent shifts and cannibalization deltas across snapshots
+aevoraseo search-compare --before ./runs/baseline --after ./runs/recheck --out ./runs/search-diff --format terminal
+
+# Audit content quality, title/heading hierarchy, answer boxes, topic clusters & schemas
+aevoraseo optimize ./runs/deep-audit --out ./runs/deep-audit/optimization --format terminal
+
+# Compare content optimization scores, resolved deficiencies, and cluster evolution
+aevoraseo optimize-compare --before ./runs/baseline --after ./runs/recheck --out ./runs/opt-diff --format terminal
+
 # One page with browser rendering
 aevoraseo scrape https://example.com/article \
   --out ./runs/article \
@@ -318,7 +330,9 @@ AevoraSEO is intentionally broader than a basic metadata checker.
 |---|---|
 | Technical SEO | Crawlability, metadata, canonicals, redirects, status codes, sitemaps and access behavior |
 | Content | Main content extraction, headings, descriptions, readable Markdown/text and content gaps |
-| Schema / entities | JSON-LD observations, organization identity and entity consistency |
+| Content Optimization | Title/meta audits, single H1/hierarchy checks, 40-60w answer boxes, topic clusters, briefs & 30/60/90d roadmaps (`optimize`, `optimize-compare`) |
+| Search & Commercial | Search intent taxonomy, target query extraction, keyword cannibalization, and CTA friction audits (`search`, `search-compare`) |
+| Schema / entities | JSON-LD observations, organization identity, entity consistency, and intent-matched schema recommendations |
 | AEO | AevoraSEO AEO Readiness Score (0–100), direct answers, question coverage, heading hierarchy, and AI bot accessibility |
 | GEO | AevoraSEO GEO Signal Score (0–100), entity clarity, author/source readiness, factual density, and extractability |
 | AEO/GEO Trajectory | Snapshot-aware score comparisons (`aeo-compare`), state transitions (ADDED, REMOVED, IMPROVED, REGRESSED, UNCHANGED), and attributed evidence |

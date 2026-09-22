@@ -53,6 +53,8 @@ function showHelp() {
   console.log(`  ${c.cyan}entity-compare${c.reset}           Compare entity snapshots for evolution & conflict deltas`);
   console.log(`  ${c.cyan}search${c.reset} <target>          Analyze search intent, cannibalization, local & commercial CTAs`);
   console.log(`  ${c.cyan}search-compare${c.reset}           Compare search & commercial snapshots across crawls`);
+  console.log(`  ${c.cyan}optimize${c.reset} <target>        Audit content quality, titles, headings, answer boxes & clusters`);
+  console.log(`  ${c.cyan}optimize-compare${c.reset}         Compare content optimization snapshots across crawls`);
   console.log(`  ${c.cyan}reputation${c.reset} <domain>      Calculate Aevora Reputation & Entity score`);
   console.log(`  ${c.cyan}backlinks${c.reset} <domain>       Discover and score high-authority backlink sources`);
   console.log(`  ${c.cyan}crawl${c.reset} <target-url>        Crawl website structure and discover search links`);
@@ -73,6 +75,8 @@ function showHelp() {
   console.log(`  $ npx aevoraseo entity-compare --before ./crawl1 --after ./crawl2 --out ./entity_diff`);
   console.log(`  $ npx aevoraseo search ./crawl1 --format terminal`);
   console.log(`  $ npx aevoraseo search-compare --before ./crawl1 --after ./crawl2 --out ./search_diff`);
+  console.log(`  $ npx aevoraseo optimize ./crawl1 --format terminal`);
+  console.log(`  $ npx aevoraseo optimize-compare --before ./crawl1 --after ./crawl2 --out ./opt_diff`);
   console.log(`  $ npx aevoraseo compare --before ./crawl1 --after ./crawl2 --out ./diff`);
   console.log(`  $ npx aevoraseo reputation example.com`);
   console.log(`  $ npx aevoraseo doctor\n`);
