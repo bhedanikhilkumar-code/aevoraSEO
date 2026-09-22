@@ -16,11 +16,11 @@ Paths below are relative to `playbooks/`. Use the matching section of [industry 
 
 | Area | Review | Required decision/output | Specialist references |
 |---|---|---|---|
-| Technical SEO | Discovery, statuses, redirects, robots, noindex, canonical declarations, sitemaps, JavaScript and available performance evidence | Prioritized fixes by affected URL/template and a verification method | `audit/technical-seo-audit.md`, `audit/crawlability-indexing.md`, `audit/page-speed-core-web-vitals.md` |
+| Technical SEO | Discovery, statuses, redirects, robots, noindex, canonical declarations, sitemaps, JavaScript and available performance evidence | Prioritized fixes by affected URL/template and a verification method | `audit/technical-seo-audit.md`, `audit/README.md` |
 | On-page SEO | Titles, descriptions, headings, intent, page structure and relevance | Page-specific metadata/heading/content changes | `audit/on-page-seo-audit.md` |
-| Architecture and internal links | Navigation, commercial/support relationships, observed depth and orphan candidates | Pages to add, consolidate or improve; source-to-target internal links with reasons | `audit/internal-linking-audit.md`, `strategy/content-hub-strategy.md` |
+| Architecture and internal links | Navigation, commercial/support relationships, observed depth and orphan candidates | Pages to add, consolidate or improve; source-to-target internal links with reasons | `audit/README.md`, `strategy/content-hub-strategy.md` |
 | Keywords and intent | Existing topics, supplied query evidence, customer questions and business value | Keyword/question-to-page map with an action for each selected cluster | `keyword-research/keyword-discovery.md`, `keyword-research/keyword-to-page-map.md` |
-| Content and E-E-A-T | Completeness, original experience, expert proof, authorship, freshness and usefulness | Content briefs, proof to obtain and refresh/consolidation decisions | `audit/content-quality-audit.md`, `audit/eeat-ylym-audit.md` |
+| Content and E-E-A-T | Completeness, original experience, expert proof, authorship, freshness and usefulness | Content briefs, proof to obtain and refresh/consolidation decisions | `audit/content-quality-audit.md`, `audit/README.md` |
 | Structured data | Existing declarations, syntax and visible-content fit | Relevant schema recommendations and separate validation steps | `audit/schema-audit.md` |
 | AEO | Customer definitions, comparisons, costs, processes, risks and follow-up questions | Exact answer blocks mapped to relevant pages, supported by evidence | `aeo-geo/answer-engine-optimization.md`, `aeo-geo/conversation-seo-framework.md` |
 | GEO | Source-worthiness, original information, cited proof and captured answer-engine observations | Citation-readiness improvements; dated visibility observations only when collected | `aeo-geo/generative-engine-optimization.md`, `aeo-geo/geo-ai-citation-optimization.md` |
