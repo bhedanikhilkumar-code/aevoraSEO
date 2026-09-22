@@ -235,7 +235,9 @@ def test_track_progress_ten_snapshots_performance():
         base = Path(tmpdir)
         snap_dirs = []
 
-        # Create 10 mock snapshot directories with progressively fewer errors (improving trend)
+        # Build real minimal crawl snapshots matching the schema consumed by
+        # generate_unified_report().  Each snapshot has progressively fewer 5xx
+        # pages so the unified technical score improves chronologically.
         for i in range(10):
             s_dir = base / f"snap_{i:02d}"
             s_dir.mkdir()
@@ -247,11 +249,21 @@ def test_track_progress_ten_snapshots_performance():
                     "INSERT INTO meta VALUES ('config', ?)",
                     (json.dumps({"config": {"start_urls": ["https://scaling-test.com"]}}),),
                 )
-                cur.execute("CREATE TABLE pages (url TEXT, status_code INTEGER, robots_noindex INTEGER)")
-                cur.execute("INSERT INTO pages VALUES ('https://scaling-test.com', 200, 0)")
-                # Errors decrease from 9 down to 0
+                cur.execute(
+                    "CREATE TABLE pages ("
+                    "url TEXT PRIMARY KEY, status_code INTEGER, robots_noindex INTEGER"
+                    ")"
+                )
+                cur.execute(
+                    "INSERT INTO pages VALUES ('https://scaling-test.com', 200, 0)"
+                )
+                # Errors decrease from 9 down to 0, producing a strictly
+                # improving technical score in the unified report.
                 for err_idx in range(9 - i):
-                    cur.execute("INSERT INTO pages VALUES (?, 500, 0)", (f"https://scaling-test.com/err-{err_idx}",))
+                    cur.execute(
+                        "INSERT INTO pages VALUES (?, 500, 0)",
+                        (f"https://scaling-test.com/err-{err_idx}",),
+                    )
                 conn.commit()
             finally:
                 conn.close()
