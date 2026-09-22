@@ -134,9 +134,16 @@ function runPythonEngine() {
     banner();
   }
 
+  const sourceRoot = path.join(__dirname, '..', 'src');
+  const env = {
+    ...process.env,
+    PYTHONPATH: [sourceRoot, process.env.PYTHONPATH].filter(Boolean).join(path.delimiter),
+  };
+
   const child = spawn(pythonCmd, pythonArgs, {
     stdio: 'inherit',
     windowsHide: true,
+    env,
   });
 
   child.on('error', () => {
