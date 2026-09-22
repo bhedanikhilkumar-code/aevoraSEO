@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aevoraseo"
-version = "1.0.0"
+version = "1.1.0"
 description = "Autonomous SEO & AEO intelligence engine CLI — local crawler, Generative Engine Optimization (GEO), entity reputation scoring, and backlink audit."
 readme = "README.md"
 license = "MIT"

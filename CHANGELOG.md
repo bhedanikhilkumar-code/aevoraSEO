@@ -1,5 +1,35 @@
 # Changelog
 
+## 1.1.0 — Full Intelligence Platform Release (2026-09-23)
+
+AevoraSEO 1.1.0 completes the full 11-phase intelligence platform with automated remediation, production hardening, and multi-agent compatibility.
+
+### Highlights
+
+- **Phase K — Automated Remediation & Code Patch Engine**: Deterministic AST/HTML patch generators for title tags, meta descriptions, heading hierarchy, direct answer blocks, Schema.org JSON-LD, canonical tags, and internal links. Atomic backup/rollback with SHA-256 tamper-evident receipts. CLI: `aevoraseo remediate` (generate, preview, apply, rollback, list).
+- **Phase J — Production Hardening**: Adversarial penetration audits, dual-check CSV formula injection defense across all subsystems, XML sitemap null-byte sanitization, deterministic SQLite connection lifecycle for Windows lock safety, zero stub policy compliance.
+- **Phase I — Unified Reporting & Operations**: Cross-subsystem report generator (HTML/terminal/markdown/JSON/CSV), calibrated scorecard (0–100), P0/P1/P2 issue prioritization, audit acceptance verification, multi-snapshot progress tracking, SQLite database integrity diagnostics.
+- **Phase H — Multi-Agent Platform Compatibility**: Empirical registry of 18 target AI agent/CLI environments, runtime detection, profile validation, adapter generation, fixture verification, and `aevoraseo agent` CLI.
+- **Phase G — Content & Optimization Intelligence**: Title/meta audits, heading hierarchy, direct answer engineering (40–60 words), FAQ objection handling, topic cluster mapping, content briefs, 30/60/90-day roadmaps, Content Optimization Score (0–100).
+- **Phase F — Search, Local & Commercial Intelligence**: Search intent taxonomy, query extraction, cannibalization detection, local visibility auditing, commercial CTA friction analysis, buyer decision support, Search & Commercial Score (0–100).
+- **Phase E — Entity, Authority & Knowledge Intelligence**: Multi-source entity extraction, typed models, sameAs authority discovery, knowledge graph topology, cross-page consistency audits, Entity & Authority Score (0–100).
+- **Phase D — Backlink & Reputation Intelligence**: Native backlink discovery, source classification, ownership proof boundary, Model 1.1 reputation scoring, 206-site opportunity catalog.
+- **Phase C — AEO/GEO Intelligence Engine**: Answer readiness scoring, question coverage, Schema.org audits, AI crawler accessibility matrix, transparent AEO/GEO scores (0–100).
+
+### Quality & Security
+
+- 554 tests passed, 2 skipped, 0 failed
+- Release hygiene: 270 files checked, 0 findings
+- Zero TODO/FIXME/NotImplementedError stubs in production code
+- CSV formula injection defense across all subsystems
+- SSRF, XXE, private-IP, and path traversal protections verified
+- Cross-platform Windows SQLite lock safety verified
+
+### CLI Parity
+
+All commands available through both Python CLI (`aevoraseo`) and Node wrapper (`node bin/aevoraseo.js`):
+`crawl`, `aeo`, `aeo-compare`, `entity`, `entity-compare`, `search`, `search-compare`, `optimize`, `optimize-compare`, `backlinks`, `reputation`, `reputation-compare`, `report`, `audit-verify`, `progress`, `agent`, `remediate`, and `doctor`.
+
 ## 1.0.0 — Production Release (2026-09-22)
 
 AevoraSEO 1.0.0 represents the complete, production-ready release of the evidence-first SEO, AEO, GEO, Entity, Authority, Reputation, Search/Commercial, and Content Optimization intelligence engine.
