@@ -509,6 +509,37 @@ def parser():
         default="terminal",
         help="Output presentation format.",
     )
+    # Remediate subparser (Phase K)
+    rem_p = sub.add_parser("remediate", help="Automated SEO/AEO/GEO remediation and code patch engine.")
+    rem_sub = rem_p.add_subparsers(dest="action", required=True)
+
+    gen_p = rem_sub.add_parser("generate", help="Generate prioritized remediation plan.")
+    gen_p.add_argument("--site", required=True, type=Path, help="Local website root directory containing HTML files.")
+    gen_p.add_argument("--crawl", type=Path, default=None, help="Crawl directory containing snapshot databases.")
+    gen_p.add_argument("--target", default=None, help="Target website hostname.")
+    gen_p.add_argument("--out", type=Path, default=None, help="Output directory to save plan JSON and CSV.")
+    gen_p.add_argument("--format", choices=["terminal", "json", "markdown", "csv"], default="terminal")
+
+    prev_p = rem_sub.add_parser("preview", help="Preview unified diffs for a remediation plan.")
+    prev_p.add_argument("--plan", required=True, help="Path to plan JSON file or plan ID.")
+    prev_p.add_argument("--site", type=Path, default=None, help="Override site root directory.")
+    prev_p.add_argument("--format", choices=["terminal", "json", "diff"], default="terminal")
+
+    app_p = rem_sub.add_parser("apply", help="Apply remediation patches with atomic backup.")
+    app_p.add_argument("--plan", required=True, help="Path to plan JSON file or plan ID.")
+    app_p.add_argument("--site", type=Path, default=None, help="Override site root directory.")
+    app_p.add_argument("--dry-run", action="store_true", help="Simulate patch application without writing to disk.")
+    app_p.add_argument("--format", choices=["terminal", "json"], default="terminal")
+
+    rb_p = rem_sub.add_parser("rollback", help="Roll back applied patches using receipt.")
+    rb_p.add_argument("--receipt", required=True, type=Path, help="Path to receipt.json.")
+    rb_p.add_argument("--site", type=Path, default=None, help="Override site root directory.")
+    rb_p.add_argument("--format", choices=["terminal", "json"], default="terminal")
+
+    list_p = rem_sub.add_parser("list", help="List stored remediation plans.")
+    list_p.add_argument("--db", type=Path, default=None, help="Path to remediations.sqlite3 or workspace directory.")
+    list_p.add_argument("--format", choices=["terminal", "json"], default="terminal")
+
     return root
 
 
@@ -610,6 +641,7 @@ def main(argv=None):
             "report",
             "audit-verify",
             "progress",
+            "remediate",
         ):
             if args.command == "readiness":
                 from .review import export_readiness
@@ -1339,6 +1371,138 @@ def main(argv=None):
                         sc = f"{t.get('overall_score', 'N/A')}"
                         print(f"  [{Path(t['directory']).name}] Overall: {sc}/100 | Issues: {t.get('issues_count', 'N/A')}")
                 return 0
+            elif args.command == "remediate":
+                from .remediation import (
+                    generate_remediation_plan,
+                    preview_plan,
+                    apply_remediation_plan,
+                    rollback_remediation_plan,
+                    save_plan,
+                    load_plan,
+                    list_plans,
+                    save_receipt,
+                    get_db_path,
+                    render_terminal_plan,
+                    render_markdown_plan,
+                    render_diff_previews,
+                    export_patches_csv,
+                    render_receipt_terminal,
+                    render_rollback_terminal,
+                    RemediationPlan,
+                )
+
+                if args.action == "generate":
+                    plan = generate_remediation_plan(
+                        site_root=args.site,
+                        crawl_dir=args.crawl,
+                        target=args.target,
+                    )
+                    out_dir = args.out or (Path(args.crawl) if args.crawl else Path(args.site) / ".aevora")
+                    out_dir.mkdir(parents=True, exist_ok=True)
+                    plan_file = out_dir / f"{plan.plan_id}.json"
+                    plan_file.write_text(json.dumps(plan.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8")
+                    csv_file = out_dir / f"{plan.plan_id}_patches.csv"
+                    export_patches_csv(plan, csv_file)
+                    save_plan(plan, get_db_path(out_dir))
+
+                    fmt = getattr(args, "format", "terminal")
+                    if fmt == "json":
+                        print(json.dumps(plan.to_dict(), ensure_ascii=False, indent=2))
+                    elif fmt == "markdown":
+                        print(render_markdown_plan(plan))
+                    elif fmt == "csv":
+                        print(csv_file.read_text(encoding="utf-8-sig").strip())
+                    else:
+                        print(render_terminal_plan(plan))
+                        print(f"\nPlan saved to: {plan_file}")
+                        print(f"Patches CSV:   {csv_file}")
+                    return 0
+
+                elif args.action == "preview":
+                    plan_data = None
+                    plan = None
+                    if Path(args.plan).is_file():
+                        plan_data = json.loads(Path(args.plan).read_text(encoding="utf-8"))
+                        plan = RemediationPlan.from_dict(plan_data)
+                    else:
+                        # Try loading from db
+                        db_candidate = get_db_path(Path("."))
+                        loaded = load_plan(args.plan, db_candidate)
+                        if loaded:
+                            plan = loaded
+                    if not plan:
+                        raise ValueError(f"Could not load plan from file or ID: {args.plan}")
+                    if args.site:
+                        plan.site_root = str(Path(args.site).resolve())
+
+                    previews = preview_plan(plan)
+                    fmt = getattr(args, "format", "terminal")
+                    if fmt == "json":
+                        print(json.dumps(previews, ensure_ascii=False, indent=2))
+                    elif fmt == "diff":
+                        for p in previews:
+                            if p.get("diff"):
+                                print(p["diff"])
+                    else:
+                        print(render_diff_previews(previews))
+                    return 0
+
+                elif args.action == "apply":
+                    plan_data = None
+                    plan = None
+                    if Path(args.plan).is_file():
+                        plan_data = json.loads(Path(args.plan).read_text(encoding="utf-8"))
+                        plan = RemediationPlan.from_dict(plan_data)
+                    else:
+                        db_candidate = get_db_path(Path("."))
+                        loaded = load_plan(args.plan, db_candidate)
+                        if loaded:
+                            plan = loaded
+                    if not plan:
+                        raise ValueError(f"Could not load plan from file or ID: {args.plan}")
+                    if args.site:
+                        plan.site_root = str(Path(args.site).resolve())
+
+                    receipt = apply_remediation_plan(plan, dry_run=args.dry_run)
+                    if not args.dry_run and receipt.backup_dir:
+                        save_receipt(receipt, get_db_path(Path(receipt.backup_dir).parent.parent))
+
+                    fmt = getattr(args, "format", "terminal")
+                    if fmt == "json":
+                        print(json.dumps(receipt.to_dict(), ensure_ascii=False, indent=2))
+                    else:
+                        print(render_receipt_terminal(receipt))
+                    return 0
+
+                elif args.action == "rollback":
+                    receipt_path = Path(args.receipt)
+                    if not receipt_path.is_file():
+                        raise ValueError(f"Receipt file does not exist: {receipt_path}")
+                    site_root = Path(args.site).resolve() if args.site else None
+                    rollback = rollback_remediation_plan(receipt_path, site_root=site_root)
+                    fmt = getattr(args, "format", "terminal")
+                    if fmt == "json":
+                        print(json.dumps(rollback.to_dict(), ensure_ascii=False, indent=2))
+                    else:
+                        print(render_rollback_terminal(rollback))
+                    return 0
+
+                elif args.action == "list":
+                    db_dir = args.db or Path(".")
+                    db_path = get_db_path(db_dir)
+                    plans = list_plans(db_path)
+                    fmt = getattr(args, "format", "terminal")
+                    if fmt == "json":
+                        print(json.dumps(plans, ensure_ascii=False, indent=2))
+                    else:
+                        print("AevoraSEO Stored Remediation Plans")
+                        print("=" * 64)
+                        if not plans:
+                            print("No remediation plans found in database.")
+                        else:
+                            for p in plans:
+                                print(f"[{p['status']}] {p['plan_id']} — {p['target_host']} ({p['total_patches']} patches, +{p['estimated_score_impact']:.1f} pts) — {p['created_at'][:19]}")
+                    return 0
             else:
                 from .publishing import apply_change, open_store, stage
 
