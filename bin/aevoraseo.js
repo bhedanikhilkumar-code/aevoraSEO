@@ -124,12 +124,11 @@ function runPythonEngine() {
     pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
   }
 
-  const cliPath = path.join(__dirname, '..', 'src', 'aevoraseo', 'cli.py');
-  if (fs.existsSync(cliPath)) {
-    pythonArgs = [cliPath, ...args];
-  } else {
-    pythonArgs = ['-m', 'aevoraseo', ...args];
-  }
+  // Always launch the package module instead of executing cli.py directly.
+  // Direct script execution breaks relative imports (e.g. "from . import __version__")
+  // on Unix/macOS fallback runners. Keep src/ on PYTHONPATH so a source checkout
+  // works even when the package has not been installed yet.
+  pythonArgs = ['-m', 'aevoraseo', ...args];
 
   if (args.length === 0) {
     banner();
