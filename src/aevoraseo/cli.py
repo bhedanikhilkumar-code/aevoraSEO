@@ -139,8 +139,25 @@ def parser():
         )
         p.add_argument("--quiet", action="store_true")
         p.add_argument("--no-color", action="store_true")
-    p = sub.add_parser("report", help="Regenerate reports from an existing local crawl database.")
-    p.add_argument("--out", type=Path, required=True)
+    p = sub.add_parser("report", help="Generate unified client audit report across all SEO dimensions.")
+    p.add_argument("crawl_dir", nargs="?", type=Path, default=None, help="Crawl directory containing snapshots.")
+    p.add_argument("--out", type=Path, default=None, help="Output directory or crawl folder.")
+    p.add_argument("--target", default=None, help="Target website URL or client name.")
+    p.add_argument("--brand", default=None, help="Brand name.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "html", "markdown", "json", "csv"],
+        default="terminal",
+        help="Report presentation and export format.",
+    )
+    p = sub.add_parser("audit-verify", help="Verify if prior audit recommendations are resolved in a subsequent crawl.")
+    p.add_argument("--audit", type=Path, required=True, help="Path to prior audit report JSON.")
+    p.add_argument("--crawl", type=Path, required=True, help="Path to new crawl directory.")
+    p.add_argument("--format", choices=["terminal", "json", "markdown"], default="terminal")
+
+    p = sub.add_parser("progress", help="Track multi-snapshot score trajectory across historical crawls.")
+    p.add_argument("--crawls", nargs="+", type=Path, required=True, help="Chronological crawl directories.")
+    p.add_argument("--format", choices=["terminal", "json", "markdown"], default="terminal")
     p = sub.add_parser(
         "present", help="Export an offline AevoraSEO-branded HTML/PDF client report."
     )
@@ -590,6 +607,9 @@ def main(argv=None):
             "search-plan",
             "search-import",
             "agent",
+            "report",
+            "audit-verify",
+            "progress",
         ):
             if args.command == "readiness":
                 from .review import export_readiness
@@ -1214,6 +1234,111 @@ def main(argv=None):
                         total_f = sum(r.failed for r in results)
                         print(f"\nTotal: {total_p} passed, {total_f} failed across {len(results)} platforms")
                     return 0
+            elif args.command == "report":
+                from .unified_report import (
+                    generate_unified_report,
+                    render_terminal_report,
+                    render_markdown_report,
+                    render_html_report,
+                    render_json_report,
+                    export_evidence_csv,
+                )
+
+                crawl_target = args.crawl_dir or args.out
+                if not crawl_target:
+                    print("Error: Specify a crawl directory (e.g. aevoraseo report ./crawl_dir)", file=sys.stderr)
+                    return 1
+                report = generate_unified_report(crawl_target, target=args.target, brand=args.brand)
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "html":
+                    html_content = render_html_report(report)
+                    if args.out and args.out != crawl_target:
+                        args.out.mkdir(parents=True, exist_ok=True)
+                        dest = args.out / "audit-report.html"
+                        dest.write_text(html_content, encoding="utf-8")
+                        print(f"HTML report saved to: {dest}")
+                    else:
+                        print(html_content)
+                    return 0
+                elif fmt == "markdown":
+                    print(render_markdown_report(report))
+                    return 0
+                elif fmt == "json":
+                    print(render_json_report(report))
+                    return 0
+                elif fmt == "csv":
+                    out_dir = args.out if (args.out and args.out != crawl_target) else crawl_target
+                    files = export_evidence_csv(report, out_dir)
+                    print(f"Exported {len(files)} CSV files to: {out_dir}")
+                    for f in files:
+                        print(f"  - {f}")
+                    return 0
+                else:
+                    print(render_terminal_report(report))
+                    return 0
+
+            elif args.command == "audit-verify":
+                from .workflow import verify_audit_acceptance
+                from .review import read_json
+
+                audit_data = read_json(args.audit)
+                result = verify_audit_acceptance(audit_data, args.crawl)
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "json":
+                    print(json.dumps(result, ensure_ascii=False, indent=2))
+                elif fmt == "markdown":
+                    lines = [
+                        f"# Audit Acceptance Verification: {result['target']}\n",
+                        f"**Overall Status:** `{result['overall_status']}` | **Current Health:** `{result['current_health_score']}/100`",
+                        f"**Resolved:** {result['resolved_count']}/{result['total_items']} | **Unresolved:** {result['unresolved_count']}\n",
+                        "| ID | Issue Title | Status | Detail |",
+                        "|---|---|---|---|",
+                    ]
+                    for item in result["items"]:
+                        lines.append(f"| `{item['id']}` | {item['title']} | **{item['status']}** | {item['detail']} |")
+                    print("\n".join(lines))
+                else:
+                    print("AevoraSEO Audit Acceptance Verification")
+                    print(f"Target:         {result['target']}")
+                    print(f"Status:         {result['overall_status']}")
+                    score_str = f"{result['current_health_score']}/100" if result['current_health_score'] is not None else "N/A"
+                    print(f"Current Health: {score_str}")
+                    print(f"Progress:       {result['resolved_count']}/{result['total_items']} items resolved")
+                    print("-" * 64)
+                    for item in result["items"]:
+                        mark = "[RESOLVED]" if item["status"] == "RESOLVED" else "[UNRESOLVED]"
+                        print(f"  {mark:<13} {item['id']} - {item['title']}")
+                return 0
+
+            elif args.command == "progress":
+                from .workflow import track_progress
+
+                result = track_progress(args.crawls)
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "json":
+                    print(json.dumps(result, ensure_ascii=False, indent=2))
+                elif fmt == "markdown":
+                    delta_str = f"{result['score_delta']:+.1f}" if result["score_delta"] is not None else "N/A"
+                    lines = [
+                        f"# Historical SEO Progress Tracking\n",
+                        f"**Snapshots:** {result['snapshots_evaluated']} | **Trajectory:** `{result['trajectory']}` | **Delta:** `{delta_str}`\n",
+                        "| Directory | Created | Overall Score | Issues Count |",
+                        "|---|---|---|---|",
+                    ]
+                    for t in result["timeline"]:
+                        sc = f"{t.get('overall_score', 'N/A')}"
+                        lines.append(f"| `{Path(t['directory']).name}` | {t.get('created_at', '')[:19]} | {sc} | {t.get('issues_count', 'N/A')} |")
+                    print("\n".join(lines))
+                else:
+                    print("AevoraSEO Historical Progress Tracking")
+                    delta_str = f"{result['score_delta']:+.1f}" if result["score_delta"] is not None else "N/A"
+                    print(f"Trajectory: {result['trajectory']} (Score Delta: {delta_str})")
+                    print(f"Snapshots:  {result['snapshots_evaluated']}")
+                    print("-" * 64)
+                    for t in result["timeline"]:
+                        sc = f"{t.get('overall_score', 'N/A')}"
+                        print(f"  [{Path(t['directory']).name}] Overall: {sc}/100 | Issues: {t.get('issues_count', 'N/A')}")
+                return 0
             else:
                 from .publishing import apply_change, open_store, stage
 

@@ -55,6 +55,9 @@ function showHelp() {
   console.log(`  ${c.cyan}search-compare${c.reset}           Compare search & commercial snapshots across crawls`);
   console.log(`  ${c.cyan}optimize${c.reset} <target>        Audit content quality, titles, headings, answer boxes & clusters`);
   console.log(`  ${c.cyan}optimize-compare${c.reset}         Compare content optimization snapshots across crawls`);
+  console.log(`  ${c.cyan}report${c.reset} <snapshot-dir>     Generate unified multi-dimensional audit report (HTML, PDF, MD, CSV)`);
+  console.log(`  ${c.cyan}audit-verify${c.reset}               Verify if prior audit recommendations are resolved in new crawl`);
+  console.log(`  ${c.cyan}progress${c.reset}                   Track multi-snapshot score trajectory across historical crawls`);
   console.log(`  ${c.cyan}agent${c.reset} <action>           Multi-agent platform compatibility: detect, list, inspect, adapt, verify`);
   console.log(`  ${c.cyan}reputation${c.reset} <domain>      Calculate Aevora Reputation & Entity score`);
   console.log(`  ${c.cyan}backlinks${c.reset} <domain>       Discover and score high-authority backlink sources`);
@@ -78,6 +81,10 @@ function showHelp() {
   console.log(`  $ npx aevoraseo search-compare --before ./crawl1 --after ./crawl2 --out ./search_diff`);
   console.log(`  $ npx aevoraseo optimize ./crawl1 --format terminal`);
   console.log(`  $ npx aevoraseo optimize-compare --before ./crawl1 --after ./crawl2 --out ./opt_diff`);
+  console.log(`  $ npx aevoraseo report ./crawl1 --format terminal`);
+  console.log(`  $ npx aevoraseo report ./crawl1 --format html --out ./client_report`);
+  console.log(`  $ npx aevoraseo audit-verify --audit ./audit.json --crawl ./crawl2`);
+  console.log(`  $ npx aevoraseo progress --crawls ./crawl1 ./crawl2 ./crawl3`);
   console.log(`  $ npx aevoraseo agent list`);
   console.log(`  $ npx aevoraseo agent detect`);
   console.log(`  $ npx aevoraseo agent inspect claude-code`);
