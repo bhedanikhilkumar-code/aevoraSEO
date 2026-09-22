@@ -100,6 +100,25 @@ The native entity intelligence engine extracts, models, and audits entity identi
 
 See [Entity & Authority methodology](entity-authority.md) for detailed technical specifications.
 
+## Search, Local & Commercial Intelligence: implemented
+
+The native Search, Local & Commercial intelligence engine analyzes search intent taxonomy, target query extraction, keyword cannibalization, local search visibility signals (LocalBusiness schema, uniform NAP, clickable tel, map embeds), commercial conversion journeys, CTA friction, and comparison decision support.
+
+| Function | What it does |
+|---|---|
+| Search intent taxonomy | Classifies pages deterministically into Informational, Commercial Investigation, Transactional, Navigational, and Local intents |
+| Query extraction & mapping | Extracts 2-to-5 word primary target queries and secondary candidate phrases from H1, Title, meta description, and URL slugs |
+| Keyword cannibalization detection | Detects internal pages competing for identical queries and intents with Jaccard token similarity and assigns High/Medium/Low risk levels |
+| Local visibility audit | Validates Schema.org `LocalBusiness` and specialized sub-types (`Dentist`, `Store`, etc.), audits NAP uniformity, clickable telephone (`tel:`), Google Maps embeds, and service-area declarations |
+| Commercial journey & CTA audit | Classifies high-intent specific CTAs vs generic buttons, detects trust proof proximity (reviews, credentials, guarantees), and audits form friction |
+| Decision & comparison support | Audits head-to-head comparison pages, structured feature matrices (`<table>`), evaluated alternatives, and buyer question (FAQ) objection coverage |
+| AevoraSEO Search & Commercial Score | Evaluates 0–100 headline score across Intent & Query Targeting, Commercial Journey & CTAs, Local Visibility Signals, and Comparison & Buyer Decisions |
+| SQLite persistence | Persists snapshots, page intents, cannibalizations, local signals, commercial audits, and diffs to `search_commercial.sqlite3` |
+| Snapshot diff engine (`search-compare`) | Compares temporal snapshots for score deltas, intent shifts, resolved/new cannibalizations, and commercial improvements |
+| Export & security hardening | Emits Terminal, JSON, Markdown, and CSV outputs with CSV formula injection neutralization |
+
+See [Search & Commercial methodology](search-commercial.md) for detailed technical specifications.
+
 ## SEO workflows included
 
 These are agent workflows supported by the reference library. They are available for analysis and planning; their presence does not mean the standalone Python script automatically completes every task.

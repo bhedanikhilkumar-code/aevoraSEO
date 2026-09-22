@@ -1,5 +1,22 @@
 # Changelog
 
+## Phase F — Search, Local & Commercial Intelligence Engine
+
+- Implemented native Search, Local & Commercial Intelligence subsystem (`aevoraseo.search`).
+- Built search intent taxonomy classifying pages into Informational, Commercial Investigation, Transactional, Navigational, and Local intents.
+- Added deterministic target query extraction identifying 2-to-5 word primary queries and secondary candidate phrases from H1, Title, meta description, and URL slugs.
+- Implemented keyword cannibalization detector using Jaccard token similarity to identify internal page competition, assigning High/Medium/Low risk levels and actionable remediation.
+- Built local search visibility auditor validating Schema.org `LocalBusiness` and specialized sub-types (`Dentist`, `Store`, etc.), verifying uniform NAP consistency, clickable telephone links (`<a href="tel:...">`), Google Maps embeds, and service-area declarations.
+- Implemented commercial conversion journey and CTA friction engine classifying high-intent action buttons vs generic links, checking trust proof proximity (reviews, doctor/expert credentials, guarantees), and auditing form field friction.
+- Added comparison and buyer decision support auditing head-to-head comparison pages, structured feature matrices (`<table>`), evaluated alternatives, and objection-handling buyer FAQs.
+- Added deterministic **AevoraSEO Search & Commercial Visibility Score (0–100)** across four 25-point dimensions: Intent & Query Targeting, Commercial Journey & CTAs, Local Visibility Signals, and Comparison & Buyer Decisions.
+- Implemented SQLite persistence across `search_commercial.sqlite3` (`search_snapshots`, `search_page_intents`, `search_cannibalization`, `search_local_signals`, `search_commercial_audits`, `search_diffs`) with Windows-safe connection cleanup (`try/finally conn.close()`).
+- Built temporal snapshot diff engine (`compare_search_snapshots`, `aevoraseo search-compare`) calculating score deltas, intent shifts, resolved/new cannibalizations, and commercial improvements.
+- Added CLI commands: `aevoraseo search <target>`, `aevoraseo commercial <target>`, and `aevoraseo search-compare` with multi-format presentation (`terminal`, `json`, `csv`, `markdown`).
+- Security hardening: sanitized all exported CSV files (`page-intents.csv`, `cannibalization.csv`, `commercial-friction.csv`, `search_comparison.csv`) against spreadsheet formula injection attacks.
+- Consolidated unreferenced templates and keyword research playbooks into indexed README files, maintaining hosted skill bundle file count strictly below the ceiling (194 files, 195 archive files <= 200 limit).
+- Added comprehensive unit, intent, cannibalization, local, commercial, comparison, adversarial, and CLI test suites (22 new tests, 434 tests passing across the suite).
+
 ## Phase E — Entity, Authority & Knowledge Intelligence Engine
 
 - Implemented native Entity, Authority & Knowledge Intelligence subsystem (`aevoraseo.entity`).

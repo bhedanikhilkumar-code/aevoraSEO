@@ -45,6 +45,18 @@ npx aevoraseo aeo ./crawl_output --format terminal
 # Compare AEO/GEO readiness trajectory between two snapshots
 npx aevoraseo aeo-compare --before ./crawl1 --after ./crawl2 --format terminal
 
+# Extract Schema.org entities, knowledge graph & authority
+npx aevoraseo entity ./crawl_output --format terminal
+
+# Compare entity snapshots for evolution & conflict deltas
+npx aevoraseo entity-compare --before ./crawl1 --after ./crawl2 --format terminal
+
+# Analyze search intent, keyword cannibalization, local & commercial CTAs
+npx aevoraseo search ./crawl_output --format terminal
+
+# Compare search & commercial snapshots across crawls
+npx aevoraseo search-compare --before ./crawl1 --after ./crawl2 --format terminal
+
 # Calculate brand entity authority & reputation score
 npx aevoraseo reputation example.com
 
@@ -66,6 +78,8 @@ aevoraseo aeo ./crawl_output
 aevoraseo aeo-compare --before ./crawl1 --after ./crawl2
 aevoraseo entity ./crawl_output
 aevoraseo entity-compare --before ./crawl1 --after ./crawl2
+aevoraseo search ./crawl_output
+aevoraseo search-compare --before ./crawl1 --after ./crawl2
 aevoraseo backlinks https://example.com --sources ./sources.csv
 aevoraseo reputation https://example.com --sources ./sources.csv
 aevoraseo reputation-compare --before ./rep1/reputation.json --after ./rep2/reputation.json

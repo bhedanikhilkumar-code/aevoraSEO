@@ -49,6 +49,12 @@ Start with the task you want to complete. Each guide connects the commands, evid
 |---|---|
 | [Entity & Authority methodology](../references/entity-authority.md) | Schema.org entity extraction, knowledge graph topology, sameAs authority discovery, consistency conflicts, scoring, and diffing |
 
+## Search, local and commercial intelligence
+
+| Guide | Covers |
+|---|---|
+| [Search & Commercial methodology](../references/search-commercial.md) | Search intent taxonomy, query extraction, keyword cannibalization, local visibility signals, commercial conversion journeys, CTA friction, and comparison support |
+
 ## Strategy, content and follow-up
 
 | Guide | Covers |

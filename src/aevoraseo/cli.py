@@ -260,6 +260,45 @@ def parser():
         default="terminal",
         help="Output presentation format.",
     )
+    p = sub.add_parser(
+        "search",
+        help="Analyze search intent, keyword cannibalization, local visibility signals, and commercial CTA friction.",
+    )
+    p.add_argument("target", help="Crawl snapshot directory or target website URL.")
+    p.add_argument("--out", type=Path, default=None, help="Directory to save search & commercial outputs.")
+    p.add_argument("--brand", default="", help="Brand name to guide analysis.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
+    p = sub.add_parser(
+        "commercial",
+        help="Alias for search & commercial intelligence.",
+    )
+    p.add_argument("target", help="Crawl snapshot directory or target website URL.")
+    p.add_argument("--out", type=Path, default=None, help="Directory to save commercial outputs.")
+    p.add_argument("--brand", default="", help="Brand name to guide analysis.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
+    p = sub.add_parser(
+        "search-compare",
+        help="Compare search and commercial snapshots for intent shifts, cannibalization deltas, and friction fixes.",
+    )
+    p.add_argument("--before", type=Path, required=True, help="Baseline search snapshot directory or JSON.")
+    p.add_argument("--after", type=Path, required=True, help="Subsequent search snapshot directory or JSON.")
+    p.add_argument("--out", type=Path, default=None, help="Directory to save comparison outputs.")
+    p.add_argument(
+        "--format",
+        choices=["terminal", "json", "csv", "markdown"],
+        default="terminal",
+        help="Output presentation format.",
+    )
     p = sub.add_parser("backlinks", help="Check supplied source pages for links to a website.")
     p.add_argument("target_domain", nargs="?", default=None, help="Target website URL or domain.")
     p.add_argument("--sources", type=Path, default=None, help="Path to sources CSV.")
@@ -445,6 +484,9 @@ def main(argv=None):
             "aeo-compare",
             "entity",
             "entity-compare",
+            "search",
+            "commercial",
+            "search-compare",
             "backlinks",
             "edit",
             "reputation",
@@ -643,6 +685,74 @@ def main(argv=None):
                     print("metric,count")
                     for k, v in diff.transition_summary.items():
                         print(f"{k},{v}")
+                elif fmt == "json":
+                    print(json.dumps(diff.to_dict(), ensure_ascii=False, indent=2))
+                return 0
+            elif args.command in ("search", "commercial"):
+                from urllib.parse import urlsplit
+                from .search.analyzer import analyze_target_search
+                from .search.reporter import generate_terminal_report, generate_markdown_report
+
+                target = args.target
+                out_dir = args.out
+                if not out_dir:
+                    target_path = Path(target)
+                    if target_path.exists() and target_path.is_dir():
+                        out_dir = target_path
+                    else:
+                        host_slug = urlsplit(target if "://" in target else f"https://{target}").hostname or "search"
+                        out_dir = Path(f"search_{host_slug.removeprefix('www.').replace('.', '_')}")
+
+                result = analyze_target_search(target, out_dir=out_dir, brand=args.brand)
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "terminal":
+                    print(generate_terminal_report(result, use_color=not getattr(args, "no_color", False)))
+                elif fmt == "markdown":
+                    print(generate_markdown_report(result))
+                elif fmt == "csv":
+                    csv_file = out_dir / "page-intents.csv"
+                    if csv_file.exists():
+                        print(csv_file.read_text(encoding="utf-8-sig").strip())
+                    else:
+                        print("url,primary_intent,target_query,secondary_queries,confidence")
+                elif fmt == "json":
+                    print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
+                return 0
+            elif args.command == "search-compare":
+                from .search.comparison import compare_search_snapshots
+
+                out_dir = args.out or Path("search_comparison")
+                diff = compare_search_snapshots(args.before, args.after, out_dir=out_dir)
+                fmt = getattr(args, "format", "terminal")
+                if fmt == "terminal":
+                    print(f"AevoraSEO Search & Commercial Evolution Diff — Target: {diff.target_url}")
+                    print(f"Before: {diff.before_snapshot_id} ({diff.score_before:.1f}/100, {diff.confidence_before})")
+                    print(f"After : {diff.after_snapshot_id} ({diff.score_after:.1f}/100, {diff.confidence_after})")
+                    print(f"Score Delta: {diff.score_delta:+.1f} points")
+                    print("\nTransition Summary:")
+                    for k, v in diff.transition_summary.items():
+                        print(f"  - {k}: {v}")
+                    if diff.resolved_cannibalizations:
+                        print(f"\nResolved Cannibalizations ({len(diff.resolved_cannibalizations)}):")
+                        for rc in diff.resolved_cannibalizations:
+                            print(f"  [✓] {rc.get('query')}: {rc.get('recommendation')}")
+                    if diff.new_cannibalizations:
+                        print(f"\nNew Cannibalizations ({len(diff.new_cannibalizations)}):")
+                        for nc in diff.new_cannibalizations:
+                            print(f"  [!] {nc.get('query')}: {nc.get('recommendation')}")
+                    print(f"\nComparison outputs saved to: {out_dir}")
+                elif fmt == "markdown":
+                    md_file = out_dir / "search_comparison.md"
+                    if md_file.exists():
+                        print(md_file.read_text(encoding="utf-8"))
+                    else:
+                        print(json.dumps(diff.to_dict(), ensure_ascii=False, indent=2))
+                elif fmt == "csv":
+                    csv_file = out_dir / "search_comparison.csv"
+                    if csv_file.exists():
+                        print(csv_file.read_text(encoding="utf-8-sig").strip())
+                    else:
+                        print("metric,value")
                 elif fmt == "json":
                     print(json.dumps(diff.to_dict(), ensure_ascii=False, indent=2))
                 return 0

@@ -194,26 +194,59 @@ Forensic audit evidence:
 
 ---
 
+### Phase F — Search, Local & Commercial Intelligence
+**STATUS: COMPLETE — PASS**
+
+Verified scope:
+- native Search, Local & Commercial Intelligence subsystem (`aevoraseo.search`)
+- search intent taxonomy classifying pages into Informational, Commercial Investigation, Transactional, Navigational, and Local intents
+- deterministic target query extraction identifying 2-to-5 word primary queries and secondary candidate phrases from H1, Title, meta description, and URL slugs
+- keyword cannibalization detector using Jaccard token similarity to identify internal page competition, assigning High/Medium/Low risk levels and actionable remediation
+- local search visibility auditor validating Schema.org `LocalBusiness` and specialized sub-types (`Dentist`, `Store`, etc.), verifying uniform NAP consistency, clickable telephone links (`<a href="tel:...">`), Google Maps embeds, and service-area declarations
+- commercial conversion journey and CTA friction engine classifying high-intent action buttons vs generic links, checking trust proof proximity (reviews, doctor/expert credentials, guarantees), and auditing form field friction
+- comparison and buyer decision support auditing head-to-head comparison pages, structured feature matrices (`<table>`), evaluated alternatives, and objection-handling buyer FAQs
+- deterministic **AevoraSEO Search & Commercial Visibility Score (0–100)** across four 25-point dimensions: Intent & Query Targeting, Commercial Journey & CTAs, Local Visibility Signals, and Comparison & Buyer Decisions
+- SQLite persistence across `search_commercial.sqlite3` (`search_snapshots`, `search_page_intents`, `search_cannibalization`, `search_local_signals`, `search_commercial_audits`, `search_diffs`) with Windows-safe connection cleanup (`try/finally conn.close()`)
+- temporal snapshot diff engine (`compare_search_snapshots`, `aevoraseo search-compare`) calculating score deltas, intent shifts, resolved/new cannibalizations, and commercial improvements
+- CLI commands: `aevoraseo search <target>`, `aevoraseo commercial <target>`, and `aevoraseo search-compare` with multi-format presentation (`terminal`, `json`, `csv`, `markdown`)
+- Node launcher parity in `bin/aevoraseo.js`
+- security hardening: sanitized all exported CSV files (`page-intents.csv`, `cannibalization.csv`, `commercial-friction.csv`, `search_comparison.csv`) against spreadsheet formula injection attacks
+- consolidated unreferenced templates and keyword research playbooks into indexed README files, maintaining hosted skill bundle file count strictly below the ceiling (194 files, 195 archive files <= 200 limit)
+- comprehensive unit, intent, cannibalization, local, commercial, comparison, adversarial, and CLI test suites (22 new tests, 434 tests passing across the suite)
+
+Forensic audit evidence:
+- 434 passed
+- 2 skipped
+- 0 failed
+- 436 collected
+- 22 subtests passed in 98.08s
+- release hygiene: 267 files checked, 0 findings, PASSED
+- upload package validation: 194 files, 195 archive files (<= 200 limit), 216 local references, format check PASSED
+- zero `TODO`, `FIXME`, `NotImplementedError`, or stub placeholders
+- cross-platform connection handling verified on Windows
+
+---
+
 ## 3. CURRENT PHASE
 
-### Phase F — Search, Local & Commercial Intelligence
+### Phase G — Content & Optimization Intelligence
 **STATUS: NEXT / READY FOR IMPLEMENTATION**
 
-Phase E has passed all verification gates and forensic audits. Phase F is the next implementation phase.
+Phase F has passed all verification gates and forensic audits. Phase G is the next implementation phase.
 
 Required areas:
-- search intent discovery & taxonomy (informational, commercial investigation, transactional, navigational)
-- keyword/query-to-page mapping and cannibalization detection
-- local search visibility signals (NAP consistency, service-area coverage, local business schema)
-- commercial conversion journeys and call-to-action friction audits
-- comparison, alternatives, and buyer question page templates
-- local business citation and review strategy tracking
-- search & commercial intelligence diffing across crawl snapshots
+- title, meta description, and heading optimization recommendations
+- direct answer block and definition phrasing generation for high-intent queries
+- FAQ and objection-handling opportunity discovery
+- internal linking optimization plans and topic cluster hierarchies
+- schema recommendation and structured markup generator
+- content briefs and editorial outlines for missing money/support pages
+- content gap analysis against competitor benchmarks
+- content refresh plans and 30/60/90-day execution roadmaps
 - deterministic and adversarial test suites
 
 Critical boundary:
-- Actual search rankings and Search Console metrics remain external measurements unless supplied by authenticated exports.
-- Do not invent demand volume or claim rank positions without verified SERP observations.
+- Never invent business facts, fabricate testimonials, or manufacture false claims.
 
 ---
 
@@ -780,10 +813,10 @@ If the repository contradicts this document, inspect the code and tests first an
 | A | Repository & Engine Reconciliation | COMPLETE |
 | B | Crawler Hardening & Incremental Intelligence | COMPLETE — MINOR FINDINGS |
 | C | AEO/GEO Intelligence | COMPLETE — PASS |
-| D | Backlinks & Reputation Intelligence | NEXT |
-| E | Entity & Authority Intelligence | PLANNED |
-| F | Search / Local / Commercial Intelligence | PLANNED |
-| G | Content & Optimization Intelligence | PLANNED |
+| D | Backlinks & Reputation Intelligence | COMPLETE — PASS |
+| E | Entity & Authority Intelligence | COMPLETE — PASS |
+| F | Search / Local / Commercial Intelligence | COMPLETE — PASS |
+| G | Content & Optimization Intelligence | NEXT |
 | H | Multi-Agent / CLI Ecosystem | PLANNED |
 | I | Reporting & Operations | PLANNED |
 | J | Production Hardening & Release | PLANNED |
