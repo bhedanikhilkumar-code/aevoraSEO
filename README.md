@@ -5,959 +5,604 @@
 <h1 align="center">AevoraSEO</h1>
 
 <p align="center">
-  <strong>Evidence-first SEO intelligence for websites, content, reputation and search visibility.</strong><br>
-  Crawl the real site. Understand the evidence. Build useful improvements. Verify the result.
+  <strong>Autonomous SEO, AEO & GEO intelligence platform for modern search, answer engines, and generative discovery.</strong><br>
+  Crawl the real site. Verify the evidence. Diagnose search foundations. Remediate with deterministic code patches.
 </p>
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-111827?style=for-the-badge" alt="MIT License"></a>
   <a href="https://www.npmjs.com/package/aevoraseo"><img src="https://img.shields.io/badge/npm-aevoraseo-CB3837?style=for-the-badge&logo=npm&logoColor=white" alt="NPM Package"></a>
-  <a href="https://github.com/bhedanikhilkumar-code/aevoraSEO/actions"><img src="https://img.shields.io/badge/build-passing-16A34A?style=for-the-badge&logo=githubactions&logoColor=white" alt="Build Status"></a>
-  <a href="https://github.com/bhedanikhilkumar-code/aevoraSEO/releases"><img src="https://img.shields.io/badge/release-1.1.0-2563EB?style=for-the-badge" alt="Release 1.1.0"></a>
+  <a href="https://github.com/bhedanikhilkumar-code/aevoraSEO/releases/tag/v1.1.0"><img src="https://img.shields.io/badge/release-1.1.0-2563EB?style=for-the-badge" alt="Release 1.1.0"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10+"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/node-%3E%3D16.0.0-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js 16+"></a>
+  <a href="#development--testing"><img src="https://img.shields.io/badge/tests-554%20passed-16A34A?style=for-the-badge&logo=pytest&logoColor=white" alt="Test Suite: 554 passed"></a>
   <a href="docs/setup.md"><img src="https://img.shields.io/badge/API_keys-not_required-16A34A?style=for-the-badge" alt="Native engine does not require an SEO API key"></a>
 </p>
 
 <p align="center">
-  <a href="#npm-quick-start">NPM Quick Start</a> ·
-  <a href="#why-aevoraseo">Why AevoraSEO</a> ·
-  <a href="#quick-start">Python Setup</a> ·
-  <a href="#architecture">Architecture</a> ·
-  <a href="#capabilities">Capabilities</a> ·
-  <a href="#development">Development</a> ·
-  <a href="#roadmap">Roadmap</a>
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#windows-quick-start">Windows Setup</a> ·
+  <a href="#linux--macos-quick-start">Linux Setup</a> ·
+  <a href="#cli-command-reference">CLI Reference</a> ·
+  <a href="#the-connected-search-model">Intelligence Model</a> ·
+  <a href="#automated-remediation">Automated Remediation</a> ·
+  <a href="#architecture--how-it-works">Architecture</a> ·
+  <a href="#documentation">Documentation</a>
 </p>
 
 ---
 
-# NPM Quick Start
+## What AevoraSEO Is
 
-Run AevoraSEO instantly anywhere with **Node.js / NPX** — zero manual Python configuration or dependencies setup required:
+**AevoraSEO** is a professional, local-first search intelligence engine and autonomous audit toolkit. It combines an inspectable Python crawler, deterministic structured analyzers, and an automated HTML/metadata remediation engine to diagnose and improve website visibility across traditional search engines, answer engines (AEO), and generative AI discovery engines (GEO).
 
-### Run Instantly with NPX
-```bash
-# Run a full website SEO, AEO & performance audit
-npx aevoraseo audit https://example.com
+Instead of treating search optimization as a series of disconnected checklists, AevoraSEO executes one continuous, inspectable loop:
 
-# Analyze AEO answer readiness & GEO signals on a crawl snapshot
-npx aevoraseo aeo ./crawl_output --format terminal
-
-# Compare AEO/GEO readiness trajectory between two snapshots
-npx aevoraseo aeo-compare --before ./crawl1 --after ./crawl2 --format terminal
-
-# Extract Schema.org entities, knowledge graph & authority
-npx aevoraseo entity ./crawl_output --format terminal
-
-# Compare entity snapshots for evolution & conflict deltas
-npx aevoraseo entity-compare --before ./crawl1 --after ./crawl2 --format terminal
-
-# Analyze search intent, keyword cannibalization, local & commercial CTAs
-npx aevoraseo search ./crawl_output --format terminal
-
-# Compare search & commercial snapshots across crawls
-npx aevoraseo search-compare --before ./crawl1 --after ./crawl2 --format terminal
-
-# Calculate brand entity authority & reputation score
-npx aevoraseo reputation example.com
-
-# Discover high-authority backlink opportunities
-npx aevoraseo backlinks example.com
-
-# Generate holistic cross-subsystem client audit report (HTML/Terminal/Markdown/JSON/CSV)
-npx aevoraseo report ./crawl_output --format terminal
-
-# Verify if prior audit recommendations are resolved in subsequent crawl
-npx aevoraseo audit-verify --audit ./audit.json --crawl ./crawl_output
-
-# Track multi-snapshot score trajectory across historical crawls
-npx aevoraseo progress --crawls ./snap1 ./snap2 ./snap3
-
-# Generate, preview, and apply automated code patches with atomic backups
-npx aevoraseo remediate generate --crawl ./crawl_output --site ./site --out ./remediation
-npx aevoraseo remediate preview --plan ./remediation/remediation-plan.json
-npx aevoraseo remediate apply --plan ./remediation/remediation-plan.json
-npx aevoraseo remediate rollback --receipt ./remediation/remediation-receipt.json
-
-# Inspect engine health and local environment readiness
-npx aevoraseo doctor
+```text
+Discover ──► Crawl ──► Capture Evidence ──► Analyze ──► Prioritize ──► Remediate ──► Verify ──► Track Progress
 ```
 
-### Global Installation via NPM
-```bash
-# Install globally
-npm install -g aevoraseo
+### The Core Principle: Evidence First
 
-# Run directly from any terminal
-aevoraseo audit https://example.com
-aevoraseo aeo ./crawl_output
-aevoraseo aeo-compare --before ./crawl1 --after ./crawl2
-aevoraseo entity ./crawl_output
-aevoraseo entity-compare --before ./crawl1 --after ./crawl2
-aevoraseo search ./crawl_output
-aevoraseo search-compare --before ./crawl1 --after ./crawl2
-aevoraseo optimize ./crawl_output
-aevoraseo optimize-compare --before ./crawl1 --after ./crawl2
-aevoraseo backlinks https://example.com --sources ./sources.csv
-aevoraseo reputation https://example.com --sources ./sources.csv
-aevoraseo reputation-compare --before ./rep1/reputation.json --after ./rep2/reputation.json
-aevoraseo report ./crawl_output --format html --out ./deliverables
-aevoraseo audit-verify --audit ./audit.json --crawl ./crawl_output
-aevoraseo progress --crawls ./snap1 ./snap2 ./snap3
-aevoraseo remediate generate --crawl ./crawl_output --site ./site
-aevoraseo remediate preview --plan ./remediation/remediation-plan.json
-aevoraseo remediate apply --plan ./remediation/remediation-plan.json
-aevoraseo doctor
-```
+AevoraSEO enforces a strict architectural boundary between observed facts and derived metrics:
+
+* **Observed Facts** — Exact HTTP response headers, status codes, HTML markup, JSON-LD schemas, rendered DOM, and robots directives captured directly from the target.
+* **Derived Findings** — Deterministic audit findings computed strictly from observable evidence.
+* **Prioritized Recommendations** — Specific, actionable remediation steps ranked by impact (P0 / P1 / P2).
+* **Unknowns** — Unverified claims or unmeasured attributes explicitly marked as unknown rather than guessed.
+* **External Outcomes** — Empirical search rankings, traffic figures, and live AI model citations that require authenticated first-party data or independent measurement.
 
 > [!NOTE]
-> The NPM package bundles a high-performance native compiled runner. It executes completely locally with zero readable source code exposure and full isolated execution.
-
----
-
-## Project Evolution and Package Migration
-
-This release changes the public project identity from the previous product name to **AevoraSEO**.
-
-### Migration highlights
-
-- Python distribution renamed to `aevoraseo`.
-- NPM CLI package available via `aevoraseo`.
-- CLI command renamed to `aevoraseo`.
-- Source package moved to `src/aevoraseo/`.
-- Documentation, examples, tests and skill metadata updated.
-- Project assets replaced with the AevoraSEO visual identity.
-- Original creator identity and contact information removed.
-- Maintainer metadata now points to **Bheda Nikhilkumar**.
-- Public maintainer links verified (GitHub, LinkedIn, Portfolio, and Email).
-
-If you have an existing installation of the old package, treat this as a **breaking rename** and reinstall from a clean environment.
-
----
-
-## What is AevoraSEO?
-
-**AevoraSEO** is a local-first SEO intelligence and website-audit toolkit that combines a transparent Python crawler with reusable research, content, reputation and reporting workflows.
-
-Instead of treating SEO as a collection of disconnected checklists, AevoraSEO follows one evidence loop:
-
-> **Discover → Crawl → Capture → Analyze → Explain → Improve → Verify**
-
-The project is designed for developers, SEO practitioners, agencies, founders, researchers and AI-assisted workflows that need **inspectable evidence instead of black-box claims**.
-
-### Core idea
-
-AevoraSEO deliberately separates:
-
-- **Observed facts** — what the crawler actually captured.
-- **Derived findings** — conclusions calculated from that evidence.
-- **Recommendations** — proposed actions based on the findings.
-- **Unknowns** — things that could not be verified.
-- **Business outcomes** — rankings, traffic, conversions and AI citations that require independent measurement.
-
-That separation is a core product principle. A missing measurement stays missing; it is never silently turned into a confident claim.
+> AevoraSEO never manufactures false certainty. If a metric was not directly observed, it is recorded as unobserved — never converted into an unsupported ranking claim.
 
 ---
 
 ## Why AevoraSEO?
 
-### 01 — Transparent crawling
-
-The crawler is part of the repository. Request limits, URL discovery, rendering decisions, extraction logic and saved evidence can be inspected and tested.
-
-### 02 — One connected workflow
-
-Technical SEO, content quality, answer readiness, entity consistency, competitors, reputation and follow-up reviews share the same evidence model.
-
-### 03 — Browser-aware research
-
-The engine can work from normal HTTP responses and optionally use local Chromium for JavaScript-heavy pages. Browser mode supports bounded waits and scrolling rather than pretending that every interactive state is automatically captured.
-
-### 04 — Reputation with verification
-
-AevoraSEO distinguishes:
-
-- a real backlink from a search-result snippet,
-- a brand mention from a link,
-- an owned source from independent editorial recognition,
-- a discovered candidate from a verified source,
-- a small observed sample from a whole-web backlink index.
-
-### 05 — Reports that explain the work
-
-The report pipeline can produce PDF and HTML deliverables with evidence tables, source notes, findings, priorities and an action roadmap.
-
-### 06 — Local-first operation
-
-The native crawler does not require a proprietary SEO-data subscription or hosted scraping backend. Optional browser, SFTP/FTPS and report dependencies can be installed only when required.
+* **⚡ Transparent Local Crawler** — Full control over crawl profiles (`quick`, `standard`, `deep`), request concurrency, rate limits, robots enforcement, and ETag/304 conditional request caching.
+* **🧠 Multi-Engine Coverage** — Built from the ground up for traditional SEO, Answer Engine Optimization (AEO), and Generative Engine Optimization (GEO).
+* **🔍 Entity & Knowledge Graph Intelligence** — Multi-source Schema.org extraction (JSON-LD, Microdata, OpenGraph), `sameAs` authority footprint auditing, and cross-page entity conflict detection.
+* **📊 Conservative Reputation Scoring** — Rigorous classification distinguishing real backlinks from search snippets, verified mentions from noise, and owned assets from independent editorial recognition.
+* **🛠️ Automated Code Remediation (Phase K)** — Generates deterministic, syntax-safe HTML and metadata code patches with unified diff previews, pre-flight safety checks, atomic backups, SHA-256 receipts, and verified rollback.
+* **🚀 Zero-Key Local Operation** — The core engine requires no expensive commercial SEO subscription, third-party API key, or external cloud daemon.
 
 ---
 
-# Quick Start (Python Engine & Local Development)
-<a id="quick-start"></a>
+## The Connected Search Model
 
-## Requirements
+Modern search extends far beyond simple keyword density. AevoraSEO evaluates websites across seven interconnected dimensions:
 
-- Python **3.10+**
-- A network environment that permits the websites you intend to inspect
-- Optional: local Chromium for JavaScript rendering
-- Optional: ReportLab for PDF export
-- Optional: Paramiko for SFTP
-- Optional: pyftpdlib / pyOpenSSL for hosting tests
-
-Check the environment:
-
-```bash
-python3 scripts/run.py doctor
+```text
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                          AevoraSEO Intelligence Suite                           │
+├─────────────────┬─────────────────┬──────────────────┬──────────────────────────┤
+│ 1. SEO          │ 2. AEO          │ 3. GEO           │ 4. Entity & Authority    │
+│ Technical crawl,│ Direct answers, │ Factual density, │ Schema knowledge graph,  │
+│ status codes,   │ question intent,│ citation readiness, sameAs footprint,       │
+│ metadata, links │ bot access      │ extractability   │ consistency audits       │
+├─────────────────┴─────────────────┼──────────────────┴──────────────────────────┤
+│ 5. Reputation & Backlinks         │ 6. Search & Commercial Intelligence         │
+│ Verified sources, anchor context, │ Intent taxonomy, keyword cannibalization,   │
+│ conservative evidence scoring     │ local NAP visibility, CTA friction audits   │
+├───────────────────────────────────┴─────────────────────────────────────────────┤
+│ 7. Automated Remediation (Phase K)                                              │
+│ Deterministic AST/HTML code patches, unified diffs, atomic backups & rollback   │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-On Windows:
+### 1. Traditional Technical SEO
+Inspects crawlability, canonicals, redirect chains, HTTP status codes, XML sitemaps, robots.txt directives, title tags, meta descriptions, and internal link graph topology (including orphan page detection).
+
+### 2. AEO — Answer Engine Optimization
+Audits content readiness for conversational question-answering engines. Identifies 40–60 word direct-answer definitions, procedural step lists, question heading coverage (`H2`/`H3`), and evaluates crawler accessibility across 10 tracked AI bots (GPTBot, ClaudeBot, PerplexityBot, etc.).
+
+### 3. GEO — Generative Engine Optimization
+Measures content extractability, factual density, authoritative author bylines, publication timestamps, and structured knowledge representations that generative engines prioritize when synthesizing citations.
+
+### 4. Entity & Knowledge Graph Intelligence
+Parses typed Schema.org models (`Organization`, `Person`, `Product`, `LocalBusiness`, `Article`), resolves external `sameAs` authority links (Wikidata, Wikipedia, LinkedIn, Crunchbase), and detects cross-page consistency conflicts (name contradictions, telephone mismatches, broken profiles).
+
+### 5. Reputation & Backlinks
+Verifies backlinks through direct source-page inspection. Evaluates anchor text, `rel` attributes (dofollow, nofollow, ugc, sponsored), and surrounding 160-character sentence context. Separates owned platforms from independent third-party editorial citations.
+
+### 6. Search & Commercial Visibility
+Classifies search intent (Informational, Commercial Investigation, Transactional, Navigational, Local), extracts primary target queries, detects internal keyword cannibalization via token similarity, validates local NAP consistency, and audits commercial conversion paths.
+
+### 7. Automated Remediation Engine
+Bridges the gap between auditing and engineering by compiling findings into deterministic, syntax-safe HTML patches with colorized diff previews, automatic pre-patch backups, and instant rollback.
+
+---
+
+## Core Capabilities
+
+| Capability | Subsystem | Description | Output Artifacts |
+|---|---|---|---|
+| **Technical Crawling** | `crawl`, `scrape` | Multi-profile web crawler with incremental caching, ETag/304 reuse, and optional Chromium rendering | `crawl.sqlite3`, `pages.jsonl`, `links.csv` |
+| **Unified Client Audit** | `report` | Synthesizes technical, content, AEO, GEO, entity, and search metrics into one health scorecard | `audit-report.html`, `report.json`, `issues.csv` |
+| **AEO & GEO Scoring** | `aeo`, `aeo-compare` | Answer readiness, question coverage, direct-answer proximity, AI bot accessibility matrix | `aeo_report.json`, `aeo_pages.csv`, `aeo_diff.md` |
+| **Entity & Authority** | `entity`, `entity-compare` | Schema.org knowledge graph, typed entities, `sameAs` footprint, cross-page conflict audit | `entities.json`, `entity-graph.json`, `conflicts.csv` |
+| **Search & Commercial** | `search`, `commercial` | Search intent taxonomy, query extraction, cannibalization detection, local NAP and CTA audits | `page-intents.csv`, `cannibalization.csv` |
+| **Content Optimization** | `optimize`, `content` | Title/meta audits, heading hierarchy, 40-60w answer boxes, topic clusters, 30/60/90d roadmaps | `content-recommendations.csv`, `briefs.json` |
+| **Backlink Verification** | `backlinks` | Direct source-page verification, anchor text, dofollow resolution, context excerpts | `backlinks.json`, `backlinks.csv`, `sources.csv` |
+| **Reputation Assessment** | `reputation` | Evidence-based reputation score (0–100), brand mentions, unlinked outreach opportunities | `reputation.json`, `reputation-sources.csv` |
+| **Automated Remediation** | `remediate` | AST/HTML code patch engine: generate plans, preview diffs, apply with atomic backup, rollback | `remediation-plan.json`, `receipt.json` |
+| **Progress Tracking** | `progress` | Multi-snapshot trajectory tracking across historical crawls (score deltas, issue resolution) | `progress.json`, terminal scorecards |
+| **Audit Verification** | `audit-verify` | Verifies whether prior audit recommendations were resolved or persist in subsequent crawls | `verification.json`, verification reports |
+| **Branded Presentations** | `present` | Exports professional, offline client deliverables in standalone HTML or PDF format | Standalone HTML / PDF deliverables |
+| **Multi-Agent Runtime** | `agent` | Environment detector, adapter generator, and compatibility verifier across 18 agent platforms | Adapter configs, platform inspection specs |
+| **Runtime Diagnostics** | `doctor` | Verifies local Python environment, Playwright/Chromium dependencies, and network reachability | Diagnostics JSON / terminal status |
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+* **Python:** `3.10+` (verified on Python 3.10, 3.11, 3.12, 3.14)
+* **Node.js:** `>=16.0.0` (required only if using NPX or Node CLI runner)
+* **Git:** standard release
+* **Optional:** Chromium via Playwright (required only for JavaScript rendering mode)
+
+---
+
+### Windows Quick Start
+
+Open **PowerShell** and run:
 
 ```powershell
-py -3 scripts/run.py doctor
+# 1. Clone the repository
+git clone https://github.com/bhedanikhilkumar-code/aevoraSEO.git
+cd aevoraSEO
+
+# 2. Create and activate a Python virtual environment
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+
+# 3. Upgrade pip and install AevoraSEO in editable mode
+python -m pip install --upgrade pip
+pip install -e .
+
+# 4. Smoke test the CLI
+aevoraseo --help
+aevoraseo doctor
 ```
 
-## Install the project
+> [!TIP]
+> If your PowerShell restricts script execution, run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` before activating `.venv`.
 
-From the repository root:
+---
+
+### Linux & macOS Quick Start
+
+Open your terminal and run:
 
 ```bash
+# 1. Clone the repository
+git clone https://github.com/bhedanikhilkumar-code/aevoraSEO.git
+cd aevoraSEO
+
+# 2. Create and activate a virtual environment
 python3 -m venv .venv
-```
-
-Activate the environment:
-
-```bash
-# macOS / Linux
 source .venv/bin/activate
 
-# Windows PowerShell
-.venv\Scripts\Activate.ps1
+# 3. Upgrade pip and install AevoraSEO in editable mode
+python3 -m pip install --upgrade pip
+pip install -e .
+
+# 4. Smoke test the CLI
+aevoraseo --help
+aevoraseo doctor
 ```
-
-Install the package:
-
-```bash
-python3 -m pip install -e .
-```
-
-Install development dependencies:
-
-```bash
-python3 -m pip install -e ".[dev]"
-```
-
-Install browser support when JavaScript rendering is needed:
-
-```bash
-python3 -m pip install -e ".[browser]"
-python3 -m playwright install chromium
-```
-
-## Run a first crawl
-
-```bash
-python3 scripts/run.py crawl https://example.com \
-  --out ./client-runs/example \
-  --max-pages 25
-```
-
-Inspect the generated evidence:
-
-```text
-client-runs/example/
-├── report.md
-├── readiness.md
-├── summary.json
-├── access.json
-├── documents.jsonl
-├── content/
-├── pages.jsonl
-├── pages.csv
-├── links.csv
-├── issues.json
-├── html/
-├── screenshots/
-└── crawl.sqlite3
-```
-
-The exact files depend on the command and enabled features.
-
-## Crawl modes
-
-| Mode | Purpose |
-|---|---|
-| `auto` | HTTP first, with heuristic browser fallback |
-| `http` | Inspect the initial server response |
-| `browser` | Render JavaScript content with local Chromium |
-
-Examples:
-
-```bash
-# Rapid diagnostic crawl with the quick profile
-aevoraseo crawl https://example.com --profile quick --out ./runs/quick-check
-
-# Comprehensive crawl with the deep profile
-aevoraseo crawl https://example.com --profile deep --out ./runs/deep-audit
-
-# Incremental crawl (reusing unmodified pages via ETag/304 conditional HTTP requests)
-aevoraseo crawl https://example.com --incremental ./runs/baseline --out ./runs/recheck
-
-# Compare two crawl snapshots to detect added, removed, changed & unchanged pages
-aevoraseo compare --before ./runs/baseline --after ./runs/recheck --out ./runs/diff
-
-# Analyze AEO answer readiness and GEO signal strength on a crawl snapshot
-aevoraseo aeo ./runs/deep-audit --out ./runs/deep-audit/aeo --format terminal
-
-# Compare AEO/GEO score evolution and state transitions between snapshots
-aevoraseo aeo-compare --before ./runs/baseline --after ./runs/recheck --out ./runs/aeo-diff --format terminal
-
-# Analyze search intent, cannibalization, local visibility, and commercial CTAs
-aevoraseo search ./runs/deep-audit --out ./runs/deep-audit/search --format terminal
-
-# Compare search intent shifts and cannibalization deltas across snapshots
-aevoraseo search-compare --before ./runs/baseline --after ./runs/recheck --out ./runs/search-diff --format terminal
-
-# Audit content quality, title/heading hierarchy, answer boxes, topic clusters & schemas
-aevoraseo optimize ./runs/deep-audit --out ./runs/deep-audit/optimization --format terminal
-
-# Compare content optimization scores, resolved deficiencies, and cluster evolution
-aevoraseo optimize-compare --before ./runs/baseline --after ./runs/recheck --out ./runs/opt-diff --format terminal
-
-# One page with browser rendering
-aevoraseo scrape https://example.com/article \
-  --out ./runs/article \
-  --mode browser \
-  --wait-for-selector article \
-  --scroll-steps 5
-
-# Capture a browser screenshot
-aevoraseo scrape https://example.com \
-  --out ./runs/visual \
-  --screenshot
-
-# Resume an interrupted snapshot without repeating completed work
-aevoraseo crawl https://example.com \
-  --out ./runs/example \
-  --resume
-```
-
-Use a new output directory when you want a genuinely new observation.
 
 ---
 
-# Capabilities
+### Run Instantly with NPX (Node.js)
 
-AevoraSEO is intentionally broader than a basic metadata checker.
+If Node.js is installed, execute commands directly via NPX without manual setup:
 
-| Area | What it covers |
-|---|---|
-| Technical SEO | Crawlability, metadata, canonicals, redirects, status codes, sitemaps and access behavior |
-| Content | Main content extraction, headings, descriptions, readable Markdown/text and content gaps |
-| Content Optimization | Title/meta audits, single H1/hierarchy checks, 40-60w answer boxes, topic clusters, briefs & 30/60/90d roadmaps (`optimize`, `optimize-compare`) |
-| Search & Commercial | Search intent taxonomy, target query extraction, keyword cannibalization, and CTA friction audits (`search`, `search-compare`) |
-| Schema / entities | JSON-LD observations, organization identity, entity consistency, and intent-matched schema recommendations |
-| AEO | AevoraSEO AEO Readiness Score (0–100), direct answers, question coverage, heading hierarchy, and AI bot accessibility |
-| GEO | AevoraSEO GEO Signal Score (0–100), entity clarity, author/source readiness, factual density, and extractability |
-| AEO/GEO Trajectory | Snapshot-aware score comparisons (`aeo-compare`), state transitions (ADDED, REMOVED, IMPROVED, REGRESSED, UNCHANGED), and attributed evidence |
-| Competitors | Business-aware discovery, comparable pages, evidence-backed differences |
-| Reputation | Backlink discovery, source inspection, mentions and conservative evidence scoring |
-| Backlinks | Source catalog, eligibility checks, publishing routes and verification workflow |
-| Local SEO | Business profile and map-oriented audit playbooks |
-| Conversion | Journey-oriented findings and page improvement recommendations |
-| Reporting | Branded PDF and self-contained HTML reports |
-| Review loops | Saved snapshots, bounded watch runs and before/after evidence |
-| Hosting | Local, SFTP and FTPS workflows with guarded file changes |
-| Assistant skills | Portable `SKILL.md`, playbooks, references and host-specific setup |
+```bash
+# Run environment diagnostics
+npx aevoraseo doctor
 
-See the [capability map](references/capabilities.md) and [AEO & GEO methodology](references/aeo-geo.md) for the detailed workflow.
+# Crawl a target website
+npx aevoraseo crawl https://example.com --profile quick --out ./runs/quick-check
+
+# Generate a unified client audit report
+npx aevoraseo report ./runs/quick-check --format terminal
+```
 
 ---
 
-# Architecture
+## Simple "First Audit" Example
 
-AevoraSEO has two complementary layers.
+Execute a complete audit in three steps:
 
-```text
-┌──────────────────────────────────────────────────────────────┐
-│                    AevoraSEO Skill Layer                    │
-│  Research • Playbooks • Strategy • Writing • Reporting      │
-└───────────────────────────────┬──────────────────────────────┘
-                                │
-                                ▼
-┌──────────────────────────────────────────────────────────────┐
-│                    Native Python Engine                     │
-│  CLI • Crawl • Render • Extract • Evidence • Reports       │
-└───────────────────────────────┬──────────────────────────────┘
-                                │
-                                ▼
-┌──────────────────────────────────────────────────────────────┐
-│                       Website / Host                        │
-│  HTTP • Robots • Sitemap • HTML • JS • Links • Assets      │
-└──────────────────────────────────────────────────────────────┘
+### Step 1: Crawl the Website
+Run a fast diagnostic crawl to gather raw technical evidence:
+
+```bash
+aevoraseo crawl https://example.com --profile quick --out ./runs/example-baseline
 ```
 
-### Crawl pipeline
+*What it does:* Crawls within host boundaries, respects `robots.txt`, captures response headers and HTML, extracts links and metadata, and stores observations in `./runs/example-baseline/crawl.sqlite3`.
+
+### Step 2: Generate the Unified Report
+Compile raw evidence across technical, content, entity, and AEO dimensions:
+
+```bash
+aevoraseo report ./runs/example-baseline --format terminal
+```
+
+*What to expect:* A calibrated health scorecard (0–100), breakdown of critical P0 blockers, high-impact P1 opportunities, and P2 maintenance tasks.
+
+To export an executive HTML presentation for stakeholders:
+
+```bash
+aevoraseo report ./runs/example-baseline --format html --out ./deliverables
+```
+
+Inspect the generated deliverable at `./deliverables/audit-report.html`.
+
+### Step 3: Check Answer & Search Readiness
+Analyze AEO answer boxes and generative discovery signals:
+
+```bash
+aevoraseo aeo ./runs/example-baseline --format terminal
+```
+
+---
+
+## CLI Command Reference
+
+The AevoraSEO CLI exposes 36 real public commands and aliases across all intelligence systems:
+
+| Command | Category | Purpose | Typical Syntax |
+|---|---|---|---|
+| `crawl` | Core Crawler | Crawl website structure, discover links, and capture evidence | `aevoraseo crawl <url> --out <dir> [--profile quick\|standard\|deep]` |
+| `scrape` | Core Crawler | Inspect and capture a single web page with optional browser rendering | `aevoraseo scrape <url> --out <dir> [--mode browser] [--screenshot]` |
+| `watch` | Monitoring | Bounded change observation and re-crawling across set intervals | `aevoraseo watch <url> --out <dir> --cycles 3 --interval 3600` |
+| `report` | Reporting | Generate unified cross-subsystem audit report (HTML, terminal, MD, CSV) | `aevoraseo report <crawl-dir> --format html --out <dir>` |
+| `audit-verify` | Workflow | Verify whether prior audit recommendations are resolved in new crawl | `aevoraseo audit-verify --audit <audit.json> --crawl <crawl-dir>` |
+| `progress` | Workflow | Track multi-snapshot score trajectory across historical crawls | `aevoraseo progress --crawls <snap1> <snap2> <snap3>` |
+| `present` | Reporting | Export an offline branded HTML/PDF client deliverable from report JSON | `aevoraseo present --input <report.json> --out <dir> --format html` |
+| `doctor` | Diagnostics | Check CLI runtime, Playwright dependencies, and network health | `aevoraseo doctor [--target <url>]` |
+| `browser-setup`| Diagnostics | Check and install missing Playwright Chromium browser binaries | `aevoraseo browser-setup` |
+| `readiness` | Intelligence | Explain search and answer readiness from saved crawl evidence | `aevoraseo readiness --out <crawl-dir>` |
+| `compare` | Core Crawler | Compare two crawl snapshots for added, changed, and removed pages | `aevoraseo compare --before <snap1> --after <snap2> --out <dir>` |
+| `aeo` | AEO / GEO | Analyze answer readiness, question coverage, and AI bot access | `aevoraseo aeo <snapshot-dir> --format terminal` |
+| `aeo-compare` | AEO / GEO | Compare AEO/GEO score evolution and state transitions between crawls | `aevoraseo aeo-compare --before <snap1> --after <snap2>` |
+| `entity` | Entity / Graph | Extract Schema.org entities, knowledge graph, and authority conflicts | `aevoraseo entity <target> --format terminal` |
+| `entity-compare`| Entity / Graph | Track entity evolution, score deltas, and resolved schema conflicts | `aevoraseo entity-compare --before <snap1> --after <snap2>` |
+| `search` | Commercial | Analyze search intent taxonomy, cannibalization, and CTA friction | `aevoraseo search <target> --format terminal` |
+| `commercial` | Commercial | Alias for `search` (search & commercial intelligence) | `aevoraseo commercial <target> --format terminal` |
+| `search-compare`| Commercial | Compare search intent shifts and cannibalization deltas across crawls | `aevoraseo search-compare --before <snap1> --after <snap2>` |
+| `optimize` | Content | Audit content quality, title/meta tags, heading hierarchy, answer boxes | `aevoraseo optimize <target> --format terminal` |
+| `content` | Content | Alias for `optimize` (content & optimization intelligence) | `aevoraseo content <target> --format terminal` |
+| `optimize-compare`| Content | Compare content optimization scores and resolved deficiencies | `aevoraseo optimize-compare --before <snap1> --after <snap2>` |
+| `content-compare` | Content | Alias for `optimize-compare` | `aevoraseo content-compare --before <snap1> --after <snap2>` |
+| `backlinks` | Reputation | Inspect source pages for backlinks, anchor text, rel, and context | `aevoraseo backlinks <domain> --sources <sources.csv>` |
+| `reputation` | Reputation | Calculate evidence-based reputation score from verified sources | `aevoraseo reputation <domain> --sources <sources.csv>` |
+| `reputation-compare` | Reputation | Compare two reputation snapshots for gained/lost links and mentions | `aevoraseo reputation-compare --before <rep1> --after <rep2>` |
+| `compare-reputation` | Research | Compare reputation snapshots or cohort research manifest | `aevoraseo compare-reputation --before <rep1> --after <rep2>` |
+| `discover` | Research | Collect unverified search leads with bounded fallbacks | `aevoraseo discover --query "target query" --out <dir>` |
+| `profile` | Research | Prepare evidence or validate a reviewed business profile from crawl | `aevoraseo profile --crawl <crawl-dir> --out <dir>` |
+| `competitors` | Research | Select and evaluate comparable businesses from verified profiles | `aevoraseo competitors --profile <p1.json> --candidate-profile <p2.json> --out <dir>` |
+| `audit` | Research | Generate actionable findings from crawl and profile evidence | `aevoraseo audit --crawl <crawl-dir> --out <dir>` |
+| `search-plan` | Research | Prepare a bounded search discovery query plan | `aevoraseo search-plan --target <url> --brand <name> --out <dir>` |
+| `search-import`| Research | Extract candidate links from saved public search result HTML files | `aevoraseo search-import --html <file.html> --target <url> --query <q> --captured-at <iso> --out <dir>` |
+| `edit` | Publishing | Stage, apply, or roll back content changes locally or via SFTP/FTPS | `aevoraseo edit plan --site <dir> --file <path> --replacement <file> --out <dir>` |
+| `agent` | Multi-Agent | Platform compatibility: `detect`, `list`, `inspect`, `adapt`, `verify` | `aevoraseo agent detect`, `aevoraseo agent list`, `aevoraseo agent adapt <host>` |
+| `remediate` | Remediation | Automated code patching: `generate`, `preview`, `apply`, `rollback`, `list` | `aevoraseo remediate generate --site <dir> --crawl <dir>`, `preview`, `apply`, `rollback` |
+
+---
+
+## Detailed Command Workflows
+
+### 1. Incremental Crawling & Snapshot Diffing
+Re-crawl only modified pages using conditional HTTP headers (ETag / Last-Modified):
+
+```bash
+# Baseline crawl
+aevoraseo crawl https://example.com --out ./runs/snap1 --profile standard
+
+# Incremental crawl reusing unchanged assets
+aevoraseo crawl https://example.com --incremental ./runs/snap1 --out ./runs/snap2
+
+# Diff snapshots to identify added, removed, and changed pages
+aevoraseo compare --before ./runs/snap1 --after ./runs/snap2 --out ./runs/diff --format terminal
+```
+
+### 2. AEO & GEO Answer Engine Auditing
+Evaluate direct-answer feasibility and AI crawler accessibility:
+
+```bash
+# Audit answer readiness
+aevoraseo aeo ./runs/snap1 --format terminal
+
+# Track AEO score improvements after updating content
+aevoraseo aeo-compare --before ./runs/snap1 --after ./runs/snap2 --format terminal
+```
+
+### 3. Entity & Schema Consistency
+Extract typed Schema.org entities and verify cross-page consistency:
+
+```bash
+# Extract entities and build knowledge graph
+aevoraseo entity ./runs/snap1 --brand "Acme Corp" --format terminal
+
+# Compare entity evolution between crawl snapshots
+aevoraseo entity-compare --before ./runs/snap1 --after ./runs/snap2 --format terminal
+```
+
+### 4. Search Intent & Cannibalization
+Audit query targeting and internal page competition:
+
+```bash
+# Detect intent mismatches and internal keyword cannibalization
+aevoraseo search ./runs/snap1 --format terminal
+
+# Compare search intent shifts across crawl cycles
+aevoraseo search-compare --before ./runs/snap1 --after ./runs/snap2 --format terminal
+```
+
+### 5. Verified Reputation & Backlinks
+Analyze backlinks from inspected source pages:
+
+```bash
+# Verify live links and brand mentions from a candidate list
+aevoraseo backlinks example.com --sources ./candidates.csv --format terminal
+
+# Calculate evidence-based reputation score
+aevoraseo reputation example.com --sources ./candidates.csv --format terminal
+
+# Compare temporal reputation evolution
+aevoraseo reputation-compare --before ./rep1/reputation.json --after ./rep2/reputation.json
+```
+
+---
+
+## Automated Remediation
+
+**Phase K** equips AevoraSEO with a deterministic code patch engine that translates audit findings directly into syntax-safe HTML and metadata code patches:
+
+```text
+Crawl Audit ──► Generate Plan ──► Preview Diff ──► Apply Patches (Atomic Backup) ──► Verify Fix
+                                                              │
+                                                              └──► Instant Rollback (if needed)
+```
+
+### Key Safety Architecture
+* **Deterministic AST HTML Patching** — BeautifulSoup-powered transformations targeting `<title>`, `<meta name="description">`, `<h1>`–`<h6>` hierarchy, Schema.org JSON-LD scripts, canonical tags, and internal link anchors.
+* **Direct-Answer Injection** — Injects structured 40–60 word answer boxes and procedural lists directly beneath target question headings for AEO/GEO discovery.
+* **Pre-Flight Safety & Backups** — Backs up exact original file bytes to `.aevora/backups/<plan_id>/` with SHA-256 pre- and post-application cryptographic digests.
+* **Verified Rollback** — Restores the exact pre-patch byte state with verified checksum matching (`aevoraseo remediate rollback`).
+
+### Remediation CLI Workflow
+
+```bash
+# 1. Generate remediation plan from crawl findings targeting local codebase
+aevoraseo remediate generate --crawl ./runs/snap1 --site ./my-website --out ./remediation
+
+# 2. Preview colorized unified diffs without modifying files
+aevoraseo remediate preview --plan ./remediation/plan_*.json
+
+# 3. Simulate patch application in dry-run mode
+aevoraseo remediate apply --plan ./remediation/plan_*.json --dry-run
+
+# 4. Apply patches to disk with automatic atomic backup
+aevoraseo remediate apply --plan ./remediation/plan_*.json
+
+# 5. Rollback applied changes back to exact pre-patch state if needed
+aevoraseo remediate rollback --receipt ./remediation/receipt_*.json
+```
+
+See the [Remediation User Guide](docs/remediation.md) and [Methodology Reference](references/remediation-engine.md).
+
+---
+
+## Output Formats & Reports
+
+AevoraSEO supports five native output formats across all major commands:
+
+* **Terminal (`--format terminal`)** — Clean, colorized terminal summaries with tables, status markers, and issue severity highlights.
+* **HTML (`--format html`)** — Standalone, responsive, executive client presentations with interactive tables, KPI scorecards, and branded styling.
+* **Markdown (`--format markdown`)** — Portable markdown documents ideal for PR descriptions, documentation indexes, and coding agent context windows.
+* **JSON (`--format json`)** — Complete, machine-readable structured output adhering to strict schema contracts for pipeline automation.
+* **CSV (`--format csv`)** — Spreadsheets for client delivery, fortified with formula injection defenses against `=`, `+`, `-`, `@`, `\t`, and `\r` exploits.
+
+---
+
+## Desktop & Workspace Usage
+
+AevoraSEO is designed to operate seamlessly within modern coding workspaces:
+
+* **Integrated Terminals** — Run directly inside VS Code, Cursor, Windsurf, JetBrains, or Windows Terminal.
+* **Project Tooling** — Place crawl outputs in `.aevora/` or `runs/` within your project repository to track progress alongside code commits.
+* **Headless CI / Local Daemons** — Fully functional without interactive prompts, making it straightforward to invoke from scripts or task runners.
+
+---
+
+## Work-Agent & Coding Agent Workflow
+
+When collaborating with coding agents (such as Codex, Cowork, or other AI pair-programming environments), follow this standard 13-step operator loop:
+
+```text
+ 1. Open the repository in your agent workspace.
+ 2. Inspect AGENT.md for current status and operational guidelines.
+ 3. Run aevoraseo doctor to verify local runtime health.
+ 4. Run a diagnostic crawl: aevoraseo crawl <target> --profile quick --out ./runs/snap1.
+ 5. Generate unified findings: aevoraseo report ./runs/snap1 --format terminal.
+ 6. Review prioritized P0 / P1 / P2 issues.
+ 7. Generate a remediation plan: aevoraseo remediate generate --crawl ./runs/snap1 --site ./site.
+ 8. Preview unified diffs: aevoraseo remediate preview --plan ./remediation/plan.json.
+ 9. Simulate via dry-run: aevoraseo remediate apply --plan ./remediation/plan.json --dry-run.
+10. Apply verified patches: aevoraseo remediate apply --plan ./remediation/plan.json.
+11. Re-crawl the site and verify resolution: aevoraseo audit-verify --audit ./audit.json --crawl ./runs/snap2.
+12. Run the repository test suite to guarantee zero regressions.
+13. Commit only verified, tested changes to version control.
+```
+
+> [!NOTE]
+> AevoraSEO operates through standard CLI commands and workspace file structures. It does not require proprietary native vendor integrations.
+
+---
+
+## Architecture & How It Works
+
+AevoraSEO is built in two clean layers:
+
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│                          AevoraSEO Skill Layer                           │
+│     Research • Playbooks • Strategy • Writing • Multi-Agent Adapters     │
+└────────────────────────────────────┬─────────────────────────────────────┘
+                                     │
+                                     ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│                          Native Python Engine                            │
+│     CLI • Crawler • Extractor • Analyzers • Persistence • Patcher        │
+└────────────────────────────────────┬─────────────────────────────────────┘
+                                     │
+                                     ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│                            Target Website                                │
+│       HTTP Responses • DOM • Robots.txt • Sitemaps • Schema.org          │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+### Crawl Pipeline Flow
 
 ```mermaid
 flowchart LR
-    A[Target + Scope] --> B[Robots / Sitemaps]
-    B --> C[URL Queue]
-    C --> D[HTTP Capture]
-    D --> E{Render needed?}
-    E -->|No| F[Page Evidence]
-    E -->|Yes| G[Local Chromium]
+    A["Target URL"] --> B["Robots & Sitemaps"]
+    B --> C["URL Queue"]
+    C --> D["HTTP Capture"]
+    D --> E{"Render Needed?"}
+    E -->|"No"| F["Raw HTML Evidence"]
+    E -->|"Yes"| G["Playwright Chromium"]
     G --> F
-    F --> H[Extraction]
-    H --> I[Findings]
-    I --> J[Report / Strategy]
-    J --> K[Review]
+    F --> H["Extraction Engine"]
+    H --> I["Structured Snapshots"]
+    I --> J["Analyzers (AEO/GEO/Entity/Search)"]
+    J --> K["Unified Report & Remediation"]
 ```
 
-### Evidence lifecycle
+---
 
-1. **Discover** — identify URLs and permitted sources.
-2. **Capture** — store the response and access outcome.
-3. **Extract** — parse text, metadata, links, schema and related observations.
-4. **Normalize** — convert observations into consistent records.
-5. **Analyze** — generate findings using explicit rules.
-6. **Explain** — attach evidence and practical impact.
-7. **Recommend** — propose a fix and an acceptance check.
-8. **Verify** — recrawl or inspect the changed state.
+## Safety & Boundaries
 
-This makes an audit repeatable instead of turning it into a one-time screenshot of a website.
+AevoraSEO enforces strict operational safety guardrails:
+
+* **Robots Directives** — Evaluates and respects `robots.txt` rules by default. Authorized overrides (`--robots ignore`) are recorded explicitly in crawl metadata.
+* **SSRF & Private IP Protection** — Prohibits loopback (`127.0.0.1`), link-local (`169.254.x.x`), and internal private network IPs (`10.x`, `192.168.x`, `172.16.x`) unless explicitly permitted via `--allow-private`.
+* **Host Boundary Constraints** — Restricts crawling strictly to the seed domain unless additional hosts are authorized via `--allow-host` or `--include-www`.
+* **Formula Injection Defenses** — Automatically sanitizes all exported CSV spreadsheets against spreadsheet formula injection attacks.
+* **Resource Ceilings** — Enforces bounded response sizes (default 5 MB), maximum pages, and request timeouts to prevent memory exhaustion.
+
+Read the [Permissions Model](docs/permissions.md) and [Crawler Reference](references/crawler.md).
 
 ---
 
-# Robots, permissions and safety boundaries
+## Project Status
 
-AevoraSEO respects robots rules by default.
-
-An owner-authorized override can be recorded when appropriate, but it does **not** bypass:
-
-- authentication,
-- CAPTCHAs,
-- server-level denials,
-- access controls,
-- private resources without authorization.
-
-The crawler also applies URL and response-size boundaries to reduce accidental overreach.
-
-Read:
-
-- [Permissions model](docs/permissions.md)
-- [Security policy](SECURITY.md)
-- [Crawler reference](references/crawler.md)
-
-Keep client credentials, private reports, cookies and environment files outside the repository.
+* **Current Version:** `v1.1.0` ([Release Tag](https://github.com/bhedanikhilkumar-code/aevoraSEO/releases/tag/v1.1.0))
+* **Implementation Status:** Phases A through K are **100% complete and verified locally**.
+* **Local Test Suite:** **554 passed, 2 skipped, 22 subtests passed** across unit, workflow, and adversarial suites.
+* **CI Status:** The complete test matrix runs locally and in automated scripts. Remote GitHub Actions hosted runs are temporarily paused pending account-level billing limit resolution.
 
 ---
 
-# Reputation and backlink methodology
+## Documentation
 
-AevoraSEO does not pretend to be a complete commercial backlink index.
+The project maintains clear documentation boundaries across four areas:
 
-The workflow is:
+* `README.md` — User-facing overview, quick-start instructions, and CLI command reference.
+* `AGENT.md` — Agent operating plan, roadmap tracking, and verified phase history.
+* `SKILL.md` — Portable agent instructions and playbook integration guides.
+* `docs/` & `references/` — In-depth architectural guides, methodologies, and scoring models.
 
-```text
-Discovery
-   ↓
-Candidate source
-   ↓
-Source-page inspection
-   ↓
-Link / mention classification
-   ↓
-Ownership / independence checks
-   ↓
-Evidence quality
-   ↓
-Conservative assessment
-```
+### Key Documentation Links
 
-A search snippet can be useful for discovery, but it is not automatically a verified backlink.
-
-Likewise:
-
-- a directory listing is not automatically editorial recognition,
-- an owned property is not automatically independent authority,
-- a source-sheet metric is not automatically a current authority measurement,
-- a small inspected sample is not the entire web.
-
-The project can calculate its own evidence-based reputation measure, but that number should not be confused with a search-engine ranking factor or a proprietary provider's authority metric.
-
-Read the [reputation methodology](references/reputation.md) and [plain-language scoring guide](docs/scoring-explained.md).
-
----
-
-# Research and competitor workflow
-
-AevoraSEO is designed to compare businesses **only after understanding the business being audited**.
-
-The workflow establishes:
-
-1. services,
-2. customers,
-3. markets,
-4. important locations,
-5. languages,
-6. buyer phrases,
-7. customer questions,
-8. relevant pages.
-
-Candidate competitors are then inspected using comparable evidence.
-
-The output should explain:
-
-- why a candidate is relevant,
-- which pages support the comparison,
-- what differences were actually observed,
-- what remains unknown,
-- which opportunities can be acted upon.
-
-Read [discovery and competitor research](docs/discovery-and-competitors.md).
-
----
-
-# Content and answer readiness
-
-AevoraSEO treats content as an information-quality problem, not simply a keyword-density problem.
-
-Useful outputs can include:
-
-- service-page structures,
-- direct-answer sections,
-- FAQs,
-- comparison content,
-- internal-link plans,
-- entity and organization facts,
-- JSON-LD recommendations,
-- titles and descriptions,
-- supporting articles,
-- content refresh plans,
-- 30/60/90-day editorial roadmaps.
-
-The core rule is simple:
-
-> **Do not invent facts to make a page look complete.**
-
-Unsupported claims should remain flagged until the underlying fact is verified.
-
----
-
-# Reporting
-
-The report pipeline supports:
-
-- Markdown findings,
-- HTML deliverables,
-- PDF exports,
-- linked contents,
-- evidence tables,
-- source notes,
-- action roadmaps,
-- business context,
-- explicit coverage limitations.
-
-Example:
-
-```bash
-python3 scripts/run.py present \
-  --input /path/to/client/report-content.json \
-  --out /path/to/client/deliverable
-```
-
-Report design guidance is documented in [branded reports](docs/branded-reports.md).
-
----
-
-# Automated Remediation & Code Patches
-
-AevoraSEO converts diagnostic findings and optimization roadmaps into concrete, syntax-safe HTML and metadata code patches with guaranteed atomic rollback:
-
-```text
-Crawl & Audit ──► Generate Plan ──► Preview Diff ──► Apply (with Backup) ──► Verify Fix
-```
-
-### Key Capabilities
-- **Deterministic AST Patches:** Safe BeautifulSoup manipulation preserving document formatting for `<title>`, `<meta name="description">`, `<h1>`–`<h6>` hierarchy, Schema.org JSON-LD, canonical tags, and contextual internal links.
-- **Direct Answer Engineering:** Automated injection of semantic 40–60 word answer boxes and procedural lists beneath question headings for AEO/GEO engine discovery.
-- **Atomic Safety & Backups:** Automatic pre-patch byte backup to `.aevora/backups/`, cryptographic SHA-256 pre/post digests, and tamper-evident `remediation-receipt.json`.
-- **Verified Rollback:** Restore exact original file bytes with verified checksum validation (`aevoraseo remediate rollback`).
-- **SQLite Persistence:** Audit-trail tracking across `remediations.sqlite3`.
-
-```bash
-# Generate remediation plan from crawl findings targeting local site
-aevoraseo remediate generate --crawl ./crawl_output --site ./site --out ./remediation
-
-# Preview colorized unified diffs without modifying files
-aevoraseo remediate preview --plan ./remediation/remediation-plan.json
-
-# Apply patches with automatic backup and receipt creation
-aevoraseo remediate apply --plan ./remediation/remediation-plan.json
-
-# Rollback applied changes back to exact pre-patch state
-aevoraseo remediate rollback --receipt ./remediation/remediation-receipt.json
-```
-
-Detailed guides: [Remediation User Guide](docs/remediation.md) and [Methodology Reference](references/remediation-engine.md).
-
----
-
-# Assistant / Skill installation
-
-The repository contains a portable `SKILL.md` and supporting playbooks.
-
-Supported workflows include:
-
-| Environment | Starting point | Status |
+| Category | Guide | Purpose |
 |---|---|---|
-| Claude Code | [Claude Code setup](docs/agent-installation.md#claude-code) | VERIFIED |
-| Codex | [Codex setup](docs/agent-installation.md#codex) | VERIFIED |
-| Hermes Agent | [Hermes setup](docs/agent-installation.md#hermes-agent) | VERIFIED |
-| OpenClaw | [OpenClaw setup](docs/agent-installation.md#openclaw) | VERIFIED |
-| ChatGPT Work | [Work setup](docs/agent-installation.md#chatgpt-work) | DOCUMENTED |
-| aider | [Multi-agent guide](references/multi-agent-compatibility.md) | DOCUMENTED |
-| Copilot CLI | [Multi-agent guide](references/multi-agent-compatibility.md) | DOCUMENTED |
-| Gemini CLI | [Multi-agent guide](references/multi-agent-compatibility.md) | DOCUMENTED |
-| Droid / Kilocode / OpenCode / Qwen / etc. | [Multi-agent guide](references/multi-agent-compatibility.md) | NOT VERIFIED |
-| Terminal / Python | Run the native engine directly | VERIFIED |
+| **Getting Started** | [Setup Guide](docs/setup.md) | Comprehensive environment configuration and optional dependencies |
+| **Architecture** | [Architecture Reference](docs/architecture.md) | Internal subsystem designs, data schemas, and storage models |
+| **AEO & GEO** | [AEO & GEO Methodology](references/aeo-geo.md) | Answer readiness criteria, scoring formulas, and bot matrix |
+| **Entity & Authority**| [Entity Methodology](references/entity-authority.md) | Schema extraction, knowledge graph topology, and conflict rules |
+| **Search & Commercial**| [Search Intelligence](references/search-commercial.md) | Search intent taxonomy, cannibalization, and CTA friction |
+| **Remediation** | [Remediation User Guide](docs/remediation.md) | Automated patching, dry-run previews, backups, and rollback |
+| **Reputation** | [Reputation Methodology](references/reputation.md) | Evidence-based scoring, source verification, and opportunity pipeline |
+| **Multi-Agent** | [Multi-Agent Guide](references/multi-agent-compatibility.md) | Integration specs across 18 coding agent environments |
+| **Branded Reports** | [Branded Reports Guide](docs/branded-reports.md) | Designing and generating executive HTML and PDF deliverables |
+| **Index** | [Documentation Index](docs/README.md) | Complete directory of all project documentation |
 
-### Multi-Agent CLI Commands
+---
+
+## Development & Testing
+
+### Install Development Dependencies
 
 ```bash
-# Auto-detect active agent platform and workspace
-npx aevoraseo agent detect
-
-# List all 18 supported platforms and verification statuses
-npx aevoraseo agent list
-
-# Inspect detailed integration specifications
-npx aevoraseo agent inspect claude-code
-
-# Generate adapter or configuration files for a platform
-npx aevoraseo agent adapt aider
-
-# Run fixture-based compatibility verification tests
-npx aevoraseo agent verify
+python -m pip install -e ".[dev,reports]"
 ```
 
-The installer can validate and configure a supported host:
+### Run Test Suite
 
 ```bash
-python3 scripts/install_skill.py --host claude-code --setup
+python -m pytest tests/ -q
 ```
 
-Use `python3 scripts/install_skill.py --help` for host-specific options.
-
----
-
-# Example engagement
-
-A practical request might look like:
-
-```text
-Audit https://example.com.
-
-First understand the business, target customers, services and markets.
-Then crawl the site within a 50-page limit.
-
-Report:
-- technical SEO findings,
-- content and answer-readiness gaps,
-- entity/schema observations,
-- relevant competitors,
-- verified reputation evidence,
-- useful content opportunities,
-- a 30/60/90-day action plan.
-
-For every major recommendation, show:
-1. what was observed,
-2. why it matters,
-3. what to change,
-4. how to verify the change.
-
-Do not invent rankings, traffic, backlinks or AI citations.
-Clearly label anything that could not be verified.
-```
-
-The important part is not the wording of the prompt. The important part is that the workflow preserves evidence and uncertainty.
-
----
-
-# Repository structure
-
-```text
-aevoraseo/
-├── .github/
-│   ├── ISSUE_TEMPLATE/
-│   └── workflows/
-├── assets/
-│   ├── aevoraseo-logo.png
-│   ├── aevoraseo-banner.png
-│   └── README.md
-├── docs/
-│   ├── README.md
-│   ├── setup.md
-│   ├── architecture.md
-│   ├── agent-installation.md
-│   ├── discovery-and-competitors.md
-│   ├── branded-reports.md
-│   └── ...
-├── examples/
-│   ├── README.md
-│   ├── posting-profile.json
-│   └── ...
-├── playbooks/
-│   ├── audit/
-│   ├── aeo-geo/
-│   ├── backlink-system/
-│   ├── competitor-research/
-│   ├── core/
-│   ├── integrations/
-│   ├── local-seo/
-│   ├── reporting/
-│   └── strategy/
-├── references/
-├── scripts/
-├── src/
-│   └── aevoraseo/
-├── tests/
-├── CITATION.cff
-├── CHANGELOG.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── SECURITY.md
-├── SKILL.md
-├── pyproject.toml
-└── README.md
-```
-
----
-
-# Development
-
-## Install development dependencies
+### Run Release Hygiene Checks
 
 ```bash
-python3 -m pip install -e ".[dev]"
+python scripts/check_release.py
 ```
 
-## Run the test suite
+### Validate Skill Bundle Ceilings
 
 ```bash
-python3 -m pytest -q
+python scripts/validate_skill.py
 ```
 
-## Run formatting / lint checks
+### Test Node.js CLI Parity
 
 ```bash
-ruff check .
+node bin/aevoraseo.js --help
+node bin/aevoraseo.js version
 ```
 
-If a formatter is configured for the active branch, run the repository's documented formatting command before opening a pull request.
+---
 
-## Validate the skill
+## Contributing, Security & Privacy
 
-```bash
-python3 scripts/validate_skill.py
-```
+Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and adhere to our engineering rules:
 
-## Build the skill package
+* **Evidence First** — Every finding must cite observable evidence.
+* **Deterministic Core** — Identical inputs must yield reproducible results.
+* **Zero Stub Policy** — No placeholder `TODO`, `FIXME`, or `NotImplementedError` stubs in production paths.
+* **Privacy by Default** — Never commit API keys, credentials, cookies, or client datasets.
 
-```bash
-python3 scripts/build_skill.py
-```
-
-## Check release hygiene
-
-```bash
-python3 scripts/check_release.py
-```
-
-Before submitting a change, run the smallest relevant test set first, then the complete regression suite when practical.
+For security disclosures, please consult [SECURITY.md](SECURITY.md).
 
 ---
 
-# Testing philosophy
+## License
 
-AevoraSEO's tests are designed around behavior and boundaries, not just line coverage.
+AevoraSEO is open-source software licensed under the **MIT License**.
 
-Important areas include:
-
-- crawler discovery,
-- HTTP handling,
-- browser rendering,
-- metadata extraction,
-- content extraction,
-- link handling,
-- reputation logic,
-- discovery fallbacks,
-- report generation,
-- portability,
-- hosting transports,
-- installation behavior,
-- release hygiene,
-- regression cases.
-
-When adding a feature, prefer tests that prove the observable contract.
-
-When fixing a bug:
-
-1. reproduce it,
-2. add a regression test,
-3. implement the smallest correct fix,
-4. run the focused test,
-5. run the broader suite,
-6. update documentation when behavior changes.
+See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for full license texts and third-party notices.
 
 ---
 
-# Project roadmap
-
-The project is intentionally iterative.
-
-### Current foundation
-
-- Local Python crawler
-- HTTP and optional browser rendering
-- Saved crawl evidence
-- SEO/content extraction
-- AEO/GEO/entity workflows
-- Competitor research
-- Reputation and backlink workflows
-- Branded report generation
-- Portable assistant skill
-- Local/SFTP/FTPS operational workflows
-- Automated regression coverage
-
-### Next improvement tracks
-
-- Better crawl diagnostics and observability
-- Faster large-site processing
-- More structured evidence schemas
-- Stronger test fixtures
-- Better report customization
-- More explicit plugin/integration boundaries
-- Improved configuration validation
-- More deterministic research outputs
-- Clearer extension APIs
-- Better contributor tooling
-- Release automation and reproducible packaging
-
-The roadmap is evidence-driven: features should solve a real workflow problem without weakening the project's transparency.
-
----
-
-# Design principles
-
-### Evidence over assumptions
-
-If it was not observed or independently supplied, label it as unknown.
-
-### Conservative over impressive
-
-A smaller verified result is more useful than a larger invented number.
-
-### Local-first over unnecessary infrastructure
-
-Use local execution when it provides enough capability.
-
-### Modular over monolithic
-
-Crawler, reporting, reputation, playbooks and integrations should remain separable.
-
-### Reproducible over magical
-
-A future contributor should be able to understand how a result was produced.
-
-### Safe changes over blind automation
-
-Review changes before applying them to a live website, preserve backups and verify the result afterward.
-
-### Useful output over jargon
-
-A report should help someone decide what to do next.
-
----
-
-# Limitations
-
-AevoraSEO is **not**:
-
-- a complete commercial backlink index,
-- a search-engine ranking predictor,
-- a guaranteed traffic-growth system,
-- a replacement for Google Search Console or analytics data,
-- proof that a page will appear in an AI answer,
-- a universal JavaScript browser automation framework,
-- permission to crawl private or restricted systems.
-
-Search rankings, traffic, conversions, indexing and AI citations require their own measurements.
-
-A crawler can tell you what it observed. It cannot honestly manufacture what it did not observe.
-
----
-
-# Security and privacy
-
-Please do not commit:
-
-- passwords,
-- API keys,
-- cookies,
-- private client reports,
-- private crawl exports,
-- credentials,
-- production secrets,
-- personally identifying customer datasets.
-
-Use environment variables or an appropriate secret manager for runtime credentials.
-
-See [SECURITY.md](SECURITY.md) for the reporting process.
-
----
-
-# Documentation
-
-| Start here | Deep dive |
-|---|---|
-| [Setup](docs/setup.md) | [Architecture](docs/architecture.md) |
-| [Assistant installation](docs/agent-installation.md) | [Crawler reference](references/crawler.md) |
-| [Questions and examples](docs/questions.md) | [Capability map](references/capabilities.md) |
-| [Discovery and competitors](docs/discovery-and-competitors.md) | [Reputation methodology](references/reputation.md) |
-| [Operations](docs/operations.md) | [Measurement boundaries](references/measurement-boundaries.md) |
-| [Branded reports](docs/branded-reports.md) | [Deep research](docs/deep-research.md) |
-| [Backlink source catalog](docs/backlink-source-catalog.md) | [Development guide](docs/development.md) |
-
-Full index: [docs/README.md](docs/README.md)
-
----
-
-# Maintainer
+## Maintainer & Connect
 
 **Bheda Nikhilkumar**  
 Engineering Student · Software Development
 
-AevoraSEO is maintained as an independent software project focused on practical SEO engineering, transparent automation and evidence-based website analysis.
-
-### Connect
-
-The project is maintained by Bheda Nikhilkumar. Public maintainer links are listed below.
-
-- **GitHub:** https://github.com/bhedanikhilkumar-code
-- **LinkedIn:** https://www.linkedin.com/in/bhedanikhilkumar
-- **Portfolio:** https://github.com/bhedanikhilkumar-code/Bheda-Nikhilkumar-portfolio
-- **Email:** bhedanikhilkumarpro@gmail.com
-
----
-
-# License
-
-AevoraSEO is released under the **MIT License**.
-
-See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-
----
+* **GitHub:** [bhedanikhilkumar-code](https://github.com/bhedanikhilkumar-code)
+* **LinkedIn:** [Bheda Nikhilkumar](https://www.linkedin.com/in/bhedanikhilkumar)
+* **Portfolio:** [Bheda Nikhilkumar Portfolio](https://github.com/bhedanikhilkumar-code/Bheda-Nikhilkumar-portfolio)
+* **Email:** [bhedanikhilkumarpro@gmail.com](mailto:bhedanikhilkumarpro@gmail.com)
 
 <p align="center">
   <strong>AevoraSEO</strong><br>
