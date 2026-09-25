@@ -19,12 +19,62 @@
 </p>
 
 <p align="center">
+  <a href="#quick-access">Quick Access</a> ·
+  <a href="#demo-video">Demo Video</a> ·
   <a href="#quick-start">Quick Start</a> ·
   <a href="#cli-command-reference">CLI Reference</a> ·
   <a href="#automated-remediation">Automated Remediation</a> ·
   <a href="#architecture--how-it-works">Architecture</a> ·
   <a href="#documentation">Documentation</a>
 </p>
+
+---
+
+## ⚡ Quick Access
+
+**Install AevoraSEO into the CLI/agent you are using.** Choose your environment below and open the master prompt. The prompt tells the agent to inspect this repository, discover the canonical `SKILL.md`, preserve **all referenced skill files/resources**, register the skill with the host's native mechanism, and verify the final installation.
+
+> **Canonical skill repository:** `bhedanikhilkumar-code/aevoraSEO`  
+> **Skill name:** `aevoraseo`  
+> **Expected user invocation:** `/aevoraseo` where the host supports slash commands; otherwise use the host's native skill selector/invocation.
+
+| CLI / Agent | Master Prompt |
+|---|---|
+| 🌐 **Any CLI / Agent** | [Universal Master Prompt →](docs/quick-access.md#universal-master-prompt) |
+| 🧰 **GitHub CLI (`gh skill`)** | [GitHub CLI Prompt →](docs/quick-access.md#github-cli-gh-skill) |
+| 📦 **`npx skills` / Skills CLI** | [`npx skills` Prompt →](docs/quick-access.md#npx-skills--skills-cli) |
+| 🤖 **Claude Code** | [Claude Code Prompt →](docs/quick-access.md#claude-code) |
+| 🧠 **Codex** | [Codex Prompt →](docs/quick-access.md#codex) |
+| 🎨 **Cursor** | [Cursor Prompt →](docs/quick-access.md#cursor) |
+| ✨ **Gemini CLI** | [Gemini CLI Prompt →](docs/quick-access.md#gemini-cli) |
+| 🐙 **GitHub Copilot / Copilot CLI** | [Copilot Prompt →](docs/quick-access.md#github-copilot--copilot-cli) |
+| 🚀 **Antigravity / Antigravity CLI** | [Antigravity Prompt →](docs/quick-access.md#antigravity--antigravity-cli) |
+| 🔧 **Cline / OpenCode / Amp / Augment / Continue / CodeBuddy / Command Code / Cortex / Crush** | [Compatible Agents Prompt →](docs/quick-access.md#cline--opencode--amp--augment--continue--codebuddy--command-code--cortex--crush) |
+
+### What the installation prompt guarantees
+
+The prompt is designed around the repository itself rather than a hand-written list of files. The agent is instructed to:
+
+1. Inspect the GitHub repository first.
+2. Locate the canonical `SKILL.md` and resolve its referenced resources.
+3. Install the **complete skill bundle**, not only `SKILL.md`.
+4. Register the skill using the CLI/agent's supported mechanism.
+5. Refresh/reload skill discovery when required.
+6. Verify the skill appears in the host's real skill registry.
+7. Verify the bundled docs, references, playbooks, scripts and assets are present.
+8. Report the native invocation (`/aevoraseo`, `$aevoraseo`, selector, or equivalent).
+9. Keep skill registration separate from crawler/runtime readiness.
+10. Avoid crawling or changing a website during installation unless separately requested.
+
+**Full copy-paste prompts:** [Open AevoraSEO Quick Access →](docs/quick-access.md)
+
+---
+
+## 🎥 Demo Video
+
+> **Demo video placeholder:** the repository is ready for the final AevoraSEO demo recording. Add the finished MP4 as `assets/aevoraseo-demo.mp4` and this section can be converted into the native GitHub video player/embed.
+>
+> The video should demonstrate: **install skill → invoke AevoraSEO → audit a site → inspect evidence → generate report → remediation workflow → final verification**.
 
 ---
 
@@ -242,10 +292,12 @@ See [Permissions Model](docs/permissions.md) and [Crawler Reference](references/
 - `AGENT.md` — Agent operating plan and verified phase history.
 - `SKILL.md` — Portable agent instructions and playbooks.
 - `docs/` and `references/` — Detailed architecture, methodology, and scoring documentation.
+- `docs/quick-access.md` — Copy-paste master prompts for CLI/agent skill installation.
 
 | Area | Guide |
 |---|---|
 | Getting Started | [Setup Guide](docs/setup.md) |
+| Agent Installation | [Quick Access & Master Prompts](docs/quick-access.md) |
 | Architecture | [Architecture Reference](docs/architecture.md) |
 | AEO & GEO | [AEO & GEO Methodology](references/aeo-geo.md) |
 | Entity & Authority | [Entity Methodology](references/entity-authority.md) |
