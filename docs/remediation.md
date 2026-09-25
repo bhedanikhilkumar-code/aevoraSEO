@@ -134,7 +134,7 @@ aevoraseo remediate list --crawl runs/audit-01
 | `DIRECT_ANSWER` | `<section class="aevora-direct-answer">` | Injects structured 40–60 word answer boxes and procedural lists under question headings for AEO/GEO discovery. |
 | `SCHEMA_JSONLD` | `<script type="application/ld+json">` | Injects valid Schema.org JSON-LD structured data matching detected page intent. |
 | `CANONICAL_URL` | `<link rel="canonical">` | Injects or updates canonical URL reference. |
-| `INTERNAL_LINK` | `<a href="...">` | Injects contextual in-body links to eliminate orphan pages and reinforce topic clusters. |
+| `INTERNAL_LINK` | `<a href="https://example.com/target-page">` | Injects contextual in-body links to eliminate orphan pages and reinforce topic clusters. |
 
 ---
 
