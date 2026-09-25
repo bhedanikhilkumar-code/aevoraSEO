@@ -13,6 +13,16 @@ from install_skill import bundle_files
 MAX_UPLOAD_FILES = 200
 
 
+def _strip_markdown_examples(body):
+    """Remove fenced and inline code before validating documentation links.
+
+    HTML/Markdown examples such as ``<a href="...">`` are documentation, not
+    bundle references. They must not be resolved as filesystem paths.
+    """
+    body = re.sub(r"```.*?```", "", body, flags=re.S)
+    return re.sub(r"`[^`\n]*`", "", body)
+
+
 def validate(source):
     source = Path(source).resolve()
     files = bundle_files(source)
@@ -55,7 +65,7 @@ def validate(source):
     for page in files:
         if page.suffix.lower() != ".md":
             continue
-        body = re.sub(r"```.*?```", "", page.read_text(encoding="utf-8"), flags=re.S)
+        body = _strip_markdown_examples(page.read_text(encoding="utf-8"))
         links = re.findall(r"\]\(([^)]+)\)", body) + re.findall(r'(?:src|href)="([^"]+)"', body)
         for link in links:
             parsed = urlsplit(link.split(' "', 1)[0].strip("<>"))
