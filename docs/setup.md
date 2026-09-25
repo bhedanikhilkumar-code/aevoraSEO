@@ -6,12 +6,7 @@ For installation in Claude, Cowork, Claude Code, Codex, ChatGPT Work, Hermes or 
 
 ## 1. Open the project
 
-Get the source, then open a terminal in the folder containing `pyproject.toml`, `README.md` and `scripts/`:
-
-```sh
-git clone https://github.com/bhedanikhilkumar-code/aevoraseo.git
-cd aevoraseo
-```
+Open the AevoraSEO project directory in your development environment. The folder should contain `pyproject.toml`, `README.md` and `scripts/`.
 
 Confirm your Python version:
 
@@ -133,13 +128,13 @@ python -m pip install -e ".[browser,reports]"
 python -m playwright install chromium
 ```
 
-Version 2.1 adds crawl settings and output fields. Start a fresh output folder for older 2.0 snapshots; resume requires compatible settings. Retain an older checkout if you need to regenerate an older report with its original code.
+Version 2.1 adds crawl settings and output fields. Start a fresh output folder for older 2.0 snapshots; resume requires compatible settings. Retain an older project copy if you need to regenerate an older report with its original code.
 
 ## Common setup problems
 
 | Message or symptom | What to do |
 |---|---|
-| `aevoraseo: command not found` | Activate `.venv`, or use `.venv/bin/aevoraseo` / `.venv\Scripts\aevoraseo.exe` directly |
+| `aevoraseo: command not found` | Activate `.venv`, or use `.venv/bin/aevoraseo` / `.venv\\Scripts\\aevoraseo.exe` directly |
 | Optional rendering dependency missing | Install `.[browser,reports]` inside the active environment |
 | Chromium executable missing | Run `python -m playwright install chromium` with that environment's Python |
 | Chromium download times out or returns a gateway error | Keep the download error separate from skill registration. Check the host's permitted network access to the browser download URL; do not repeat downloads indefinitely. Use `--http-only` setup and `--mode http` for reachable pages while browser setup is unavailable. This does not verify JavaScript content. |
@@ -155,7 +150,7 @@ Version 2.1 adds crawl settings and output fields. Start a fresh output folder f
 
 ## Remove the local environment
 
-Close processes using the environment, deactivate it and delete the project's `.venv` directory. The repository and your saved crawl folders remain separate. Removing the browser cache is optional and can affect other local projects that use the same browser installation.
+Close processes using the environment, deactivate it and delete the project's `.venv` directory. The project and your saved crawl folders remain separate. Removing the browser cache is optional and can affect other local projects that use the same browser installation.
 
 For a designed client deliverable, follow [branded reports](branded-reports.md). `present` exports PDF and HTML locally; it needs no browser or online account. Both normal and HTTP-only setup include the free PDF renderer.
 
