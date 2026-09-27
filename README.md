@@ -1,7 +1,7 @@
 <div align="center">
 
 <p align="center">
-  <img src="assets/aevoraseo-header.svg" alt="AEVORASEO Logo" width="820" style="max-width: 100%;">
+  <img src="assets/aevoraseo-header.svg" alt="AEVORASEO Logo" width="680" style="max-width: 100%;">
 </p>
 
 
