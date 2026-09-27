@@ -1,8 +1,5 @@
 <div align="center">
 
-<p align="center">
-  <img src="assets/aevoraseo-banner.png" alt="AevoraSEO — Evidence-First SEO, AEO, GEO and Technical Intelligence" width="960" style="border-radius: 8px; max-width: 100%;">
-</p>
 
 ```text
    █████╗ ███████╗██╗   ██╗ ██████╗ ██████╗  █████╗ ███████╗███████╗ ██████╗ 
