@@ -8,14 +8,18 @@
 ### **Autonomous SEO, AEO & GEO Intelligence Platform**
 *The professional evidence-first search intelligence engine, local web crawler, and automated code remediation toolkit.*
 
-[![NPM Version](https://img.shields.io/npm/v/aevoraseo?style=for-the-badge&color=CB3837&logo=npm)](https://www.npmjs.com/package/aevoraseo)
-[![PyPI Version](https://img.shields.io/pypi/v/aevoraseo?style=for-the-badge&color=3776AB&logo=pypi&logoColor=white)](https://pypi.org/project/aevoraseo/)
-[![Release](https://img.shields.io/badge/release-1.1.0-2563EB?style=for-the-badge&logo=github)](https://github.com/bhedanikhilkumar-code/aevoraSEO/releases/tag/v1.1.0)
-[![License: MIT](https://img.shields.io/badge/License-MIT-111827?style=for-the-badge)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](pyproject.toml)
-[![Node >= 16](https://img.shields.io/badge/node-%3E%3D16.0.0-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](package.json)
-[![Tests Passed](https://img.shields.io/badge/tests-554%20passed-16A34A?style=for-the-badge&logo=pytest&logoColor=white)](#-tests--quality-assurance)
-[![Zero API Keys](https://img.shields.io/badge/API_Keys-Zero_Required-10B981?style=for-the-badge)](docs/setup.md)
+<p align="center">
+  <a href="https://github.com/bhedanikhilkumar-code/aevoraSEO/releases/tag/v1.1.0"><img src="https://img.shields.io/badge/release-v1.1.0-2563EB?style=for-the-badge&logo=github" alt="Release v1.1.0"></a>
+  <a href="#-tests--quality-assurance"><img src="https://img.shields.io/badge/tests-554%20passed-16A34A?style=for-the-badge&logo=pytest&logoColor=white" alt="Tests 554 Passed"></a>
+  <a href="docs/setup.md"><img src="https://img.shields.io/badge/api_keys-not_required-10B981?style=for-the-badge" alt="Zero API Keys Required"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-111827?style=for-the-badge" alt="MIT License"></a>
+</p>
+<p align="center">
+  <a href="pyproject.toml"><img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10+"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/node-%3E%3D16.0.0-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node >= 16"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/npm-aevoraseo-CB3837?style=for-the-badge&logo=npm&logoColor=white" alt="NPM Package"></a>
+  <a href="#-instant-run-via-node--javascript-ecosystem"><img src="https://img.shields.io/badge/bun-supported-FBF0DF?style=for-the-badge&logo=bun&logoColor=black" alt="Bun Supported"></a>
+</p>
 
 <p align="center">
   <a href="#-what-is-aevoraseo"><b>Overview</b></a> •
