@@ -176,25 +176,29 @@ aevoraseo agent list
 | **GitHub Copilot CLI** | `Agent Extension` | ![Documented](https://img.shields.io/badge/Documented-3B82F6?style=flat-square) | `@copilot` | `.github/` |
 | **Qwen / KiloCode / Droid** | `Adapter Config` | ![Documented](https://img.shields.io/badge/Documented-3B82F6?style=flat-square) | Native Invocation | Specific system paths |
 
-### 3. One-Command Skill Wiring
+### 3. One-Command Skill Installation & Wiring
 
-Generate and wire up the skill adapter for your agent in one line:
+Install the native skill package directly into your AI coding assistant from local repository or official GitHub:
 
 ```bash
-# 🟣 Claude Code
-aevoraseo agent adapt claude-code
+# ⚡ One-Command Installation for Any Agent (auto-detects or specify platform)
+aevoraseo agent install claude-code
+aevoraseo agent install gemini
+aevoraseo agent install cursor --workspace .
+aevoraseo agent install codex
 
-# 🟢 Codex / ChatGPT Work
-aevoraseo agent adapt codex
+# 📦 Intuitive skill install command
+aevoraseo skill install claude-code
+aevoraseo skill install gemini
+aevoraseo skill install cursor --workspace .
 
-# 🔵 Gemini CLI / Google Antigravity
-aevoraseo agent adapt gemini
+# 🌐 Pull & install clean skill package directly from official GitHub repository
+aevoraseo skill install claude-code --from-git
 
-# 🟠 OpenClaw
-aevoraseo agent adapt openclaw
-
-# 🟡 Cursor / Windsurf / VS Code Workspace
+# 🛠️ Generate workspace adapters & rules
 aevoraseo agent adapt cursor --workspace .
+aevoraseo agent adapt gemini
+aevoraseo agent adapt aider
 ```
 
 ### 4. Verify Platform Compatibility

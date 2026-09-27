@@ -283,8 +283,13 @@ _STRING_MAP.update({
     "chatgpt": PlatformId.AGENT,
     "work": PlatformId.AGENT,
     "gemini": PlatformId.GEMINI_CLI,
+    "antigravity": PlatformId.GEMINI_CLI,
     "openclaw": PlatformId.OPENCLAW,
     "prime": PlatformId.PRIME_AGENT,
+    "cursor": PlatformId.CODEX,
+    "windsurf": PlatformId.CODEX,
+    "vscode": PlatformId.COPILOT,
+    "github-copilot": PlatformId.COPILOT,
 })
 
 

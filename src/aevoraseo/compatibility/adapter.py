@@ -63,6 +63,17 @@ AevoraSEO is available for automated SEO, AEO, and GEO analysis.
 """
 
 
+def _cursor_rules(aevoraseo_root: str) -> str:
+    return f"""# AevoraSEO Instructions for Cursor and Agentic IDEs
+
+When working on SEO, AEO, GEO, and website optimization:
+1. Always follow the evidence-first rules in `{aevoraseo_root}/SKILL.md`.
+2. Do not invent search rankings, volume, or citations without empirical data.
+3. Run the native engine using `aevoraseo <command>` or `python {aevoraseo_root}/scripts/run.py <command>`.
+4. Check engine readiness with `aevoraseo doctor`.
+"""
+
+
 def generate_adapter(
     platform_id: PlatformId,
     workspace: Optional[str] = None,
@@ -129,6 +140,22 @@ def generate_adapter(
             files_written.append("GEMINI.md")
 
         instructions.append("Gemini CLI will read instructions from GEMINI.md in workspace root")
+
+    elif platform_id == PlatformId.CODEX:
+        target = ws_path / ".cursorrules"
+        if not dry_run:
+            if not target.exists():
+                target.write_text(_cursor_rules(aevoraseo_root), encoding="utf-8")
+                files_written.append(str(target.relative_to(ws_path)))
+            else:
+                instructions.append(f"Preserved existing {target.name}")
+        else:
+            files_written.append(".cursorrules")
+
+        instructions.append(f"To install native skill for {spec.name} / Cursor:")
+        instructions.append(f"  {spec.install_command}")
+        instructions.append(f"Skill location: {spec.skill_file_location}")
+        instructions.append(f"Invocation: {spec.invocation}")
 
     elif spec.tier == PlatformTier.FIRST_PARTY_SKILL:
         instructions.append(f"To install native skill for {spec.name}:")

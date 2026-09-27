@@ -58,8 +58,8 @@ function showHelp() {
   console.log(`  ${c.cyan}report${c.reset} <snapshot-dir>     Generate unified multi-dimensional audit report (HTML, PDF, MD, CSV)`);
   console.log(`  ${c.cyan}audit-verify${c.reset}               Verify if prior audit recommendations are resolved in new crawl`);
   console.log(`  ${c.cyan}remediate${c.reset} <action>        Automated remediation & code patch engine: generate, preview, apply, rollback, list`);
-  console.log(`  ${c.cyan}progress${c.reset}                   Track multi-snapshot score trajectory across historical crawls`);
-  console.log(`  ${c.cyan}agent${c.reset} <action>           Multi-agent platform compatibility: detect, list, inspect, adapt, verify`);
+  console.log(`  ${c.cyan}agent${c.reset} <action>           Multi-agent platform compatibility: detect, list, inspect, adapt, install, setup, verify`);
+  console.log(`  ${c.cyan}skill${c.reset} <action>           Install and configure AevoraSEO skill for AI agents from local or Git`);
   console.log(`  ${c.cyan}reputation${c.reset} <domain>      Calculate Aevora Reputation & Entity score`);
   console.log(`  ${c.cyan}backlinks${c.reset} <domain>       Discover and score high-authority backlink sources`);
   console.log(`  ${c.cyan}crawl${c.reset} <target-url>        Crawl website structure and discover search links`);

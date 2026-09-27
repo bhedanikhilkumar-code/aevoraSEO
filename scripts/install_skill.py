@@ -70,12 +70,18 @@ def host_destination(host, workspace=None, profile_home=None):
     if workspace:
         roots = {
             "claude-code": ".claude/skills",
+            "claude": ".claude/skills",
             "codex": ".agents/skills",
             "openclaw": "skills",
             "agent": ".agents/skills",
+            "chatgpt": ".agents/skills",
+            "cursor": ".agents/skills",
+            "windsurf": ".agents/skills",
             "aider": ".aider/skills",
             "copilot": ".github/skills",
+            "vscode": ".github/skills",
             "gemini": ".gemini/skills",
+            "antigravity": ".gemini/skills",
             "droid": ".factory/skills",
             "kilocode": ".kilocode/skills",
             "opencode": ".opencode/skills",
@@ -83,6 +89,7 @@ def host_destination(host, workspace=None, profile_home=None):
             "jcode": ".jcode/skills",
             "juni": ".juni/skills",
             "prime-agent": ".prime/skills",
+            "prime": ".prime/skills",
             "cai": ".cai/skills",
             "kiro": ".kiro/skills",
         }
@@ -90,9 +97,9 @@ def host_destination(host, workspace=None, profile_home=None):
             raise ValueError("Use --profile-home for a Hermes profile, not --workspace.")
         return Path(workspace).expanduser().absolute() / roots[host] / "aevoraseo"
     home = Path.home()
-    if host == "claude-code":
+    if host in ("claude-code", "claude"):
         return home / ".claude/skills/aevoraseo"
-    if host in ("codex", "agent"):
+    if host in ("codex", "agent", "cursor", "windsurf", "chatgpt"):
         return home / ".agents/skills/aevoraseo"
     if host == "openclaw":
         return (
@@ -117,16 +124,16 @@ def host_destination(host, workspace=None, profile_home=None):
                     "directory, or run this command from its terminal with HERMES_HOME set."
                 )
         return base / "skills/aevoraseo"
-    if host == "gemini":
+    if host in ("gemini", "antigravity"):
         return home / ".gemini/skills/aevoraseo"
-    if host == "copilot":
+    if host in ("copilot", "vscode"):
         return home / ".copilot/skills/aevoraseo"
     if host == "opencode":
         return (
             Path(os.getenv("XDG_CONFIG_HOME") or home / ".config").expanduser()
             / "opencode/skills/aevoraseo"
         )
-    if host in ("droid", "kilocode", "qwen", "jcode", "juni", "prime-agent", "cai", "kiro", "aider"):
+    if host in ("droid", "kilocode", "qwen", "jcode", "juni", "prime-agent", "prime", "cai", "kiro", "aider"):
         prefix = f".{host}" if host != "droid" else ".factory"
         return home / f"{prefix}/skills/aevoraseo"
     raise ValueError(f"Unknown host: {host}. Choose a supported platform or use --dest.")
@@ -245,13 +252,19 @@ def main():
         "--host",
         choices=[
             "claude-code",
+            "claude",
             "codex",
+            "cursor",
+            "windsurf",
             "hermes",
             "openclaw",
             "agent",
+            "chatgpt",
             "aider",
             "copilot",
+            "vscode",
             "gemini",
+            "antigravity",
             "droid",
             "kilocode",
             "opencode",
@@ -259,12 +272,19 @@ def main():
             "jcode",
             "juni",
             "prime-agent",
+            "prime",
             "cai",
             "kiro",
         ],
     )
     parser.add_argument("--workspace", type=Path, help="Project/workspace root for a local host.")
     parser.add_argument("--profile-home", type=Path, help="Exact Hermes profile directory.")
+    parser.add_argument(
+        "--from-git",
+        action="store_true",
+        help="Pull clean skill package directly from official GitHub repository.",
+    )
+    parser.add_argument("--git", default=None, help="Custom git repository URL.")
     parser.add_argument(
         "--update",
         action="store_true",
@@ -286,6 +306,7 @@ def main():
             2,
             "Crawler setup needs Python 3.10+. Run this command with Python 3.12 (py -3.12 on Windows).\n",
         )
+    cleanup = None
     try:
         from validate_skill import validate
 
@@ -293,14 +314,28 @@ def main():
             raise ValueError("Use --workspace / --profile-home with --host, or use --dest alone.")
         if (args.http_only or args.runtime) and not args.setup:
             raise ValueError("--http-only and --runtime require --setup.")
-        source = Path(__file__).resolve().parents[1]
+        if args.from_git:
+            git_url = args.git or "https://github.com/bhedanikhilkumar-code/aevoraSEO.git"
+            temp_dir = tempfile.mkdtemp(prefix="aevoraseo-git-")
+            proc = subprocess.run(["git", "clone", "--depth", "1", git_url, temp_dir], capture_output=True, text=True)
+            if proc.returncode != 0:
+                raise ValueError(f"Failed to clone from {git_url}: {proc.stderr}")
+            source = Path(temp_dir)
+            cleanup = lambda: shutil.rmtree(temp_dir, ignore_errors=True)
+        else:
+            source = Path(__file__).resolve().parents[1]
         validate(source)
         destination = args.dest or host_destination(args.host, args.workspace, args.profile_home)
         if destination.name != "aevoraseo":
             raise ValueError("Name the destination folder aevoraseo so it matches SKILL.md.")
         result = install(source, destination, args.dry_run, args.update)
     except (OSError, ValueError) as error:
+        if cleanup:
+            cleanup()
         parser.exit(2, f"Installation stopped: {error}\n")
+    finally:
+        if cleanup:
+            cleanup()
     print(json.dumps(result, indent=2))
     if not args.dry_run:
         destination = Path(result["destination"])

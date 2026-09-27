@@ -498,9 +498,37 @@ def parser():
         help="Output presentation format.",
     )
     p = agent_sub.add_parser("adapt", help="Generate adapter/config files for a platform.")
-    p.add_argument("host", help="Platform name (e.g. aider, copilot, gemini).")
+    p.add_argument("host", help="Platform name (e.g. aider, copilot, gemini, cursor).")
     p.add_argument("--workspace", type=Path, default=None, help="Target workspace directory.")
     p.add_argument("--dry-run", action="store_true", help="Preview without writing files.")
+    p.add_argument("--install", action="store_true", help="Also install the native skill files into the host agent directory.")
+    p = agent_sub.add_parser("install", help="Install AevoraSEO skill for an agent platform from local repo or git.")
+    p.add_argument("host", nargs="?", default=None, help="Target agent host (e.g. claude-code, gemini, codex, cursor, etc.). If omitted, auto-detects.")
+    p.add_argument("--workspace", type=Path, default=None, help="Target workspace directory for local agent installation.")
+    p.add_argument("--dest", type=Path, default=None, help="Exact destination folder to install the skill package into.")
+    p.add_argument("--profile-home", type=Path, default=None, help="Exact Hermes profile directory.")
+    p.add_argument("--source", type=Path, default=None, help="Path to local AevoraSEO skill source directory.")
+    p.add_argument("--from-git", action="store_true", help="Fetch the clean skill package directly from official GitHub repository.")
+    p.add_argument("--git", default=None, help="Custom git repository URL to pull skill from.")
+    p.add_argument("--setup", action="store_true", help="Also install Python runtime dependencies inside the installed skill.")
+    p.add_argument("--http-only", action="store_true", help="With --setup, skip browser/Chromium.")
+    p.add_argument("--runtime", type=Path, default=None, help="With --setup, use a host-approved external virtualenv folder.")
+    p.add_argument("--update", action="store_true", help="Update existing installation, preserving unmodified prior files with backup.")
+    p.add_argument("--dry-run", action="store_true", help="Check and describe installation without writing files.")
+    p.add_argument("--format", choices=["terminal", "json", "markdown"], default="terminal")
+    p = agent_sub.add_parser("setup", help="Alias for agent install with --setup enabled.")
+    p.add_argument("host", nargs="?", default=None, help="Target agent host (e.g. claude-code, gemini, codex, cursor, etc.).")
+    p.add_argument("--workspace", type=Path, default=None, help="Target workspace directory.")
+    p.add_argument("--dest", type=Path, default=None, help="Exact destination folder.")
+    p.add_argument("--profile-home", type=Path, default=None, help="Exact Hermes profile directory.")
+    p.add_argument("--source", type=Path, default=None, help="Path to local AevoraSEO skill source directory.")
+    p.add_argument("--from-git", action="store_true", help="Fetch clean skill directly from official GitHub repository.")
+    p.add_argument("--git", default=None, help="Custom git repository URL.")
+    p.add_argument("--http-only", action="store_true", help="Skip browser/Chromium.")
+    p.add_argument("--runtime", type=Path, default=None, help="External virtualenv folder.")
+    p.add_argument("--update", action="store_true", help="Update existing installation.")
+    p.add_argument("--dry-run", action="store_true", help="Check and describe without writing files.")
+    p.add_argument("--format", choices=["terminal", "json", "markdown"], default="terminal")
     p = agent_sub.add_parser("verify", help="Run fixture-based compatibility verification.")
     p.add_argument("--host", default=None, help="Verify specific platform; omit for all.")
     p.add_argument(
@@ -509,6 +537,25 @@ def parser():
         default="terminal",
         help="Output presentation format.",
     )
+    skill_p = sub.add_parser("skill", help="AevoraSEO AI agent skill manager: install, setup, list.")
+    skill_sub = skill_p.add_subparsers(dest="skill_action", required=True)
+    for s_act in ("install", "setup"):
+        sp = skill_sub.add_parser(s_act, help=f"{s_act.capitalize()} skill in an AI agent from local checkout or Git.")
+        sp.add_argument("host", nargs="?", default=None, help="Agent platform (claude-code, gemini, codex, cursor, etc.).")
+        sp.add_argument("--workspace", type=Path, default=None, help="Workspace directory.")
+        sp.add_argument("--dest", type=Path, default=None, help="Exact destination folder.")
+        sp.add_argument("--profile-home", type=Path, default=None, help="Hermes profile directory.")
+        sp.add_argument("--source", type=Path, default=None, help="Local skill source folder.")
+        sp.add_argument("--from-git", action="store_true", help="Pull skill package directly from GitHub.")
+        sp.add_argument("--git", default=None, help="Custom git repository URL.")
+        sp.add_argument("--setup", action="store_true", help="Install runtime dependencies.")
+        sp.add_argument("--http-only", action="store_true", help="Skip browser/Chromium.")
+        sp.add_argument("--runtime", type=Path, default=None, help="External virtualenv folder.")
+        sp.add_argument("--update", action="store_true", help="Update existing installation with backup.")
+        sp.add_argument("--dry-run", action="store_true", help="Describe without writing files.")
+        sp.add_argument("--format", choices=["terminal", "json", "markdown"], default="terminal")
+    sp = skill_sub.add_parser("list", help="List supported agent skill targets.")
+    sp.add_argument("--format", choices=["terminal", "json", "markdown"], default="terminal")
     # Remediate subparser (Phase K)
     rem_p = sub.add_parser("remediate", help="Automated SEO/AEO/GEO remediation and code patch engine.")
     rem_sub = rem_p.add_subparsers(dest="action", required=True)
@@ -638,6 +685,7 @@ def main(argv=None):
             "search-plan",
             "search-import",
             "agent",
+            "skill",
             "report",
             "audit-verify",
             "progress",
@@ -1231,6 +1279,58 @@ def main(argv=None):
                     data = asdict(result)
                     data["platform"] = result.platform.value
                     print(json.dumps(data, ensure_ascii=False, indent=2))
+                    if getattr(args, "install", False) and not args.dry_run:
+                        from .compatibility.installer import install_skill
+                        install_skill(host=args.host, workspace=args.workspace)
+                    return 0
+
+                elif args.agent_action in ("install", "setup"):
+                    from .compatibility.installer import install_skill
+                    host = args.host
+                    if not host and not getattr(args, "dest", None):
+                        insp = detect_environment(workspace=str(args.workspace) if getattr(args, "workspace", None) else None)
+                        host = insp.detected_platform or "gemini"
+
+                    is_setup = getattr(args, "setup", False) or args.agent_action == "setup"
+                    try:
+                        res = install_skill(
+                            source=args.source if getattr(args, "source", None) else None,
+                            host=host,
+                            dest=args.dest if getattr(args, "dest", None) else None,
+                            workspace=args.workspace if getattr(args, "workspace", None) else None,
+                            profile_home=args.profile_home if getattr(args, "profile_home", None) else None,
+                            setup=is_setup,
+                            http_only=getattr(args, "http_only", False),
+                            runtime=getattr(args, "runtime", None),
+                            dry_run=getattr(args, "dry_run", False),
+                            update=getattr(args, "update", False),
+                            from_git=getattr(args, "from_git", False),
+                            git_url=getattr(args, "git", None),
+                        )
+                    except Exception as err:
+                        print(f"Skill installation error: {err}", file=sys.stderr)
+                        return 1
+
+                    if fmt == "json":
+                        print(json.dumps(res, ensure_ascii=False, indent=2))
+                    elif fmt == "markdown":
+                        print("# AevoraSEO Skill Installation\n")
+                        print(f"- **Status:** `{res.get('status')}`")
+                        print(f"- **Destination:** `{res.get('destination')}`")
+                        print(f"- **Files:** `{res.get('files')}`")
+                        print(f"- **Host:** `{res.get('host')}`")
+                        if res.get('source'):
+                            print(f"- **Source:** `{res.get('source')}`")
+                    else:
+                        print(f"Status:       {res.get('status')}")
+                        print(f"Destination:  {res.get('destination')}")
+                        print(f"Files:        {res.get('files')}")
+                        print(f"Host:         {res.get('host')}")
+                        if res.get('source'):
+                            print(f"Source:       {res.get('source')}")
+                        if res.get('workspace_rule_file'):
+                            print(f"Rules:        {res.get('workspace_rule_file')}")
+                        print("\nSkill is ready for your AI agent. Check your assistant's skills list.")
                     return 0
 
                 elif args.agent_action == "verify":
@@ -1265,6 +1365,84 @@ def main(argv=None):
                         total_p = sum(r.passed for r in results)
                         total_f = sum(r.failed for r in results)
                         print(f"\nTotal: {total_p} passed, {total_f} failed across {len(results)} platforms")
+                    return 0
+            elif args.command == "skill":
+                from .compatibility.installer import install_skill
+                from .compatibility.detector import detect_environment
+                from .compatibility.registry import get_all_platforms
+                fmt = getattr(args, "format", "terminal")
+
+                if args.skill_action in ("install", "setup"):
+                    host = args.host
+                    if not host and not getattr(args, "dest", None):
+                        insp = detect_environment(workspace=str(args.workspace) if getattr(args, "workspace", None) else None)
+                        host = insp.detected_platform or "gemini"
+
+                    is_setup = getattr(args, "setup", False) or args.skill_action == "setup"
+                    try:
+                        res = install_skill(
+                            source=args.source if getattr(args, "source", None) else None,
+                            host=host,
+                            dest=args.dest if getattr(args, "dest", None) else None,
+                            workspace=args.workspace if getattr(args, "workspace", None) else None,
+                            profile_home=args.profile_home if getattr(args, "profile_home", None) else None,
+                            setup=is_setup,
+                            http_only=getattr(args, "http_only", False),
+                            runtime=getattr(args, "runtime", None),
+                            dry_run=getattr(args, "dry_run", False),
+                            update=getattr(args, "update", False),
+                            from_git=getattr(args, "from_git", False),
+                            git_url=getattr(args, "git", None),
+                        )
+                    except Exception as err:
+                        print(f"Skill installation error: {err}", file=sys.stderr)
+                        return 1
+
+                    if fmt == "json":
+                        print(json.dumps(res, ensure_ascii=False, indent=2))
+                    elif fmt == "markdown":
+                        print("# AevoraSEO Skill Installation\n")
+                        print(f"- **Status:** `{res.get('status')}`")
+                        print(f"- **Destination:** `{res.get('destination')}`")
+                        print(f"- **Files:** `{res.get('files')}`")
+                        print(f"- **Host:** `{res.get('host')}`")
+                    else:
+                        print(f"Status:       {res.get('status')}")
+                        print(f"Destination:  {res.get('destination')}")
+                        print(f"Files:        {res.get('files')}")
+                        print(f"Host:         {res.get('host')}")
+                        if res.get('source'):
+                            print(f"Source:       {res.get('source')}")
+                        if res.get('workspace_rule_file'):
+                            print(f"Rules:        {res.get('workspace_rule_file')}")
+                        print("\nSkill is ready for your AI agent. Check your assistant's skills list.")
+                    return 0
+
+                elif args.skill_action == "list":
+                    platforms = get_all_platforms()
+                    if fmt == "json":
+                        rows = [
+                            {
+                                "id": p.id.value,
+                                "name": p.name,
+                                "tier": p.tier.value,
+                                "status": p.status.value,
+                                "install": p.install_command,
+                            }
+                            for p in platforms
+                        ]
+                        print(json.dumps(rows, ensure_ascii=False, indent=2))
+                    elif fmt == "markdown":
+                        print("# Supported Agent Platforms\n")
+                        print("| Platform | Tier | Status | Install |")
+                        print("|---|---|---|---|")
+                        for p in platforms:
+                            print(f"| {p.name} | {p.tier.value} | {p.status.value} | `{p.install_command}` |")
+                    else:
+                        print(f"{'Platform':<25} {'Tier':<22} {'Status':<15}")
+                        print("-" * 62)
+                        for p in platforms:
+                            print(f"{p.name:<25} {p.tier.value:<22} {p.status.value:<15}")
                     return 0
             elif args.command == "report":
                 from .unified_report import (

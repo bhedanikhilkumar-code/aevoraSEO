@@ -25,6 +25,7 @@ from .validator import (
 )
 from .adapter import generate_adapter
 from .verifier import verify_platform, verify_all_platforms
+from .installer import install_skill, bundle_files, host_destination, resolve_source
 
 __all__ = [
     "PlatformId",
@@ -47,4 +48,8 @@ __all__ = [
     "generate_adapter",
     "verify_platform",
     "verify_all_platforms",
+    "install_skill",
+    "bundle_files",
+    "host_destination",
+    "resolve_source",
 ]
