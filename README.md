@@ -1,14 +1,9 @@
 <div align="center">
 
+<p align="center">
+  <img src="assets/aevoraseo-header.svg" alt="AEVORASEO Logo" width="820" style="max-width: 100%;">
+</p>
 
-```text
-   █████╗ ███████╗██╗   ██╗ ██████╗ ██████╗  █████╗ ███████╗███████╗ ██████╗ 
-  ██╔══██╗██╔════╝██║   ██║██╔═══██╗██╔══██╗██╔══██╗██╔════╝██╔════╝██╔═══██╗
-  ███████║█████╗  ██║   ██║██║   ██║██████╔╝███████║███████╗█████╗  ██║   ██║
-  ██╔══██║██╔══╝  ╚██╗ ██╔╝██║   ██║██╔══██╗██╔══██║╚════██║██╔══╝  ██║   ██║
-  ██║  ██║███████╗ ╚████╔╝ ╚██████╔╝██║  ██║██║  ██║███████║███████╗╚██████╔╝
-  ╚═╝  ╚═╝╚══════╝  ╚═══╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ 
-```
 
 ### **Autonomous SEO, AEO & GEO Intelligence Platform**
 *The professional evidence-first search intelligence engine, local web crawler, and automated code remediation toolkit.*
@@ -48,12 +43,10 @@ Traditional SEO platforms hide their formulas behind proprietary black-boxes and
 * 🔍 **Observable Ground-Truth Evidence** — Analyzes exact HTTP headers, robots directives, HTML AST, Schema.org entities, and live backlink source pages.
 * 🛠️ **Closed-Loop Engineering** — Crawl ➔ Capture Evidence ➔ Diagnose ➔ Generate Patches ➔ Preview Unified Diffs ➔ Apply with Atomic Backup ➔ Verify Fix.
 
-```text
- ┌──────────────┐      ┌──────────────────┐      ┌─────────────────┐      ┌────────────────────┐      ┌─────────────────┐
- │ 🌐 Crawl     │ ───► │ 📦 Raw Evidence  │ ───► │ 🧠 Diagnosis    │ ───► │ 🛠️ Code Patching   │ ───► │ ✅ Verification │
- │ Target Site  │      │ Headers, DOM, LD │      │ SEO, AEO, GEO   │      │ Plan, Diff, Backup │      │ Zero Regression │
- └──────────────┘      └──────────────────┘      └─────────────────┘      └────────────────────┘      └─────────────────┘
-```
+| 🌐 Crawl Target | 📦 Raw Evidence | 🧠 Diagnosis (SEO/AEO/GEO) | 🛠️ Code Patching | ✅ Verification |
+|:---:|:---:|:---:|:---:|:---:|
+| Multi-profile engine | Headers, DOM & Schema | 7-Pillar analysis | Deterministic AST patches | Zero regressions |
+
 
 ---
 
@@ -217,23 +210,14 @@ aevoraseo agent verify --host claude-code
 
 ## 🏛️ The 7 Pillars of Modern Search Intelligence
 
-```text
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                          AevoraSEO Intelligence Suite                           │
-├─────────────────┬─────────────────┬──────────────────┬──────────────────────────┤
-│ 1. SEO          │ 2. AEO          │ 3. GEO           │ 4. Entity & Authority    │
-│ Technical crawl,│ Direct answers, │ Factual density, │ Schema knowledge graph,  │
-│ status codes,   │ question intent,│ citation readiness, sameAs footprint,       │
-│ metadata, links │ bot access      │ extractability   │ consistency audits       │
-├─────────────────┴─────────────────┼──────────────────┴──────────────────────────┤
-│ 5. Reputation & Backlinks         │ 6. Search & Commercial Intelligence         │
-│ Verified sources, anchor context, │ Intent taxonomy, keyword cannibalization,   │
-│ conservative evidence scoring     │ local NAP visibility, CTA friction audits   │
-├───────────────────────────────────┴─────────────────────────────────────────────┤
-│ 7. Automated Code Remediation (Phase K)                                         │
-│ Deterministic AST/HTML code patches, unified diffs, atomic backups & rollback   │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+| 1. ⚙️ Technical SEO | 2. 💬 AEO (Answer Engines) | 3. 🧠 GEO (Generative Discovery) | 4. 🌐 Entity & Authority |
+|:---|:---|:---|:---|
+| Technical crawl, status codes, canonicals, metadata, link topology | Direct 40–60w answers, question intent, 10 AI bots accessibility | Factual density, citation readiness, knowledge extractability | Schema knowledge graph, sameAs footprint, consistency audits |
+
+| 5. 🔗 Reputation & Backlinks | 6. 🎯 Search & Commercial | 7. 🛠️ Automated Code Remediation |
+|:---|:---|:---|
+| Verified sources, anchor context, evidence-first scoring | Intent taxonomy, keyword cannibalization, CTA audits | Deterministic AST/HTML code patches, atomic backups & rollback |
+
 
 ### 1. ⚙️ Traditional Technical SEO
 Inspects crawlability, HTTP status codes, canonicals, redirect chains, `robots.txt`, XML sitemaps, title tags, meta descriptions, OpenGraph tags, and link topology (including orphan page detection).
@@ -339,13 +323,10 @@ aevoraseo search ./runs/site-baseline --format terminal
 
 AevoraSEO does not just give you a checklist of issues — it **fixes them directly in your codebase** with deterministic precision.
 
-```text
- ┌───────────────┐     ┌───────────────┐     ┌───────────────┐     ┌────────────────┐     ┌──────────────┐
- │ Crawl Audit   │ ──► │ Generate Plan │ ──► │ Preview Diff  │ ──► │ Apply (Backup) │ ──► │ Verify Fix   │
- └───────────────┘     └───────────────┘     └───────────────┘     └────────────────┘     └──────────────┘
-                                                                           │
-                                                                           └──► 1-Click Rollback
-```
+| 1. Crawl Audit | 2. Generate Plan | 3. Preview Diff | 4. Apply Patches | 5. Verify Resolution |
+|:---:|:---:|:---:|:---:|:---:|
+| Run crawl & diagnose findings | Compile targeted patch plan | Colorized unified diffs | Atomic backup & SHA-256 | Re-crawl & verify zero regressions |
+
 
 ### Remediation CLI Workflow
 
