@@ -1,5 +1,9 @@
 <div align="center">
 
+<p align="center">
+  <img src="assets/aevoraseo-banner.png" alt="AevoraSEO — Evidence-First SEO, AEO, GEO and Technical Intelligence" width="960" style="border-radius: 8px; max-width: 100%;">
+</p>
+
 ```text
    █████╗ ███████╗██╗   ██╗ ██████╗ ██████╗  █████╗ ███████╗███████╗ ██████╗ 
   ██╔══██╗██╔════╝██║   ██║██╔═══██╗██╔══██╗██╔══██╗██╔════╝██╔════╝██╔═══██╗
@@ -18,196 +22,203 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-111827?style=for-the-badge)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](pyproject.toml)
 [![Node >= 16](https://img.shields.io/badge/node-%3E%3D16.0.0-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](package.json)
-[![Tests Passed](https://img.shields.io/badge/tests-554%20passed-16A34A?style=for-the-badge&logo=pytest&logoColor=white)](#tests--quality-assurance)
-[![Zero API Keys](https://img.shields.io/badge/API_Keys-Zero_Required-16A34A?style=for-the-badge)](docs/setup.md)
+[![Tests Passed](https://img.shields.io/badge/tests-554%20passed-16A34A?style=for-the-badge&logo=pytest&logoColor=white)](#-tests--quality-assurance)
+[![Zero API Keys](https://img.shields.io/badge/API_Keys-Zero_Required-10B981?style=for-the-badge)](docs/setup.md)
 
 <p align="center">
-  <a href="#-quick-start-zero-setup">Quick Start</a> •
-  <a href="#-installation-matrix">Installation</a> •
-  <a href="#-add-to-ai-agents--clis-skill-setup">AI Agent & CLI Skill</a> •
-  <a href="#-core-intelligence-pillars">7 Pillars</a> •
-  <a href="#-step-by-step-workflows">Workflows</a> •
-  <a href="#-automated-code-remediation-phase-k">Remediation</a> •
-  <a href="#-full-cli-command-reference">CLI Reference</a> •
-  <a href="#-documentation-hub">Docs</a>
+  <a href="#-what-is-aevoraseo"><b>Overview</b></a> •
+  <a href="#-quick-start-zero-setup-runners"><b>Quick Start</b></a> •
+  <a href="#-global-cli-installation"><b>Installation</b></a> •
+  <a href="#-terminal-first-ai-agent--cli-skill-hub"><b>AI Agent Skill Hub</b></a> •
+  <a href="#-the-7-pillars-of-modern-search-intelligence"><b>7 Pillars</b></a> •
+  <a href="#-step-by-step-production-workflows"><b>Workflows</b></a> •
+  <a href="#-automated-code-remediation-phase-k"><b>Auto-Remediation</b></a> •
+  <a href="#-full-cli-command-reference-36-commands"><b>CLI Reference</b></a> •
+  <a href="#-documentation-hub"><b>Docs</b></a>
 </p>
 
 ---
 
 </div>
 
-## 🌐 Overview
+## 🌐 What is AevoraSEO?
 
-**AevoraSEO** is a developer-first, local-first search intelligence engine designed for modern web architects, growth engineers, and AI coding agents. It unifies **traditional technical SEO**, **Answer Engine Optimization (AEO)**, **Generative Engine Optimization (GEO)**, and **deterministic code patching** into a single autonomous workflow.
+**AevoraSEO** is a developer-first, local-first search intelligence engine built for web engineers, growth teams, and autonomous AI coding agents. It converges **traditional technical SEO**, **Answer Engine Optimization (AEO)**, **Generative Engine Optimization (GEO)**, and **deterministic code patching** into one transparent, inspectable loop.
 
-Unlike cloud-based SEO platforms that hide their calculations behind proprietary black-boxes and charge hundreds of dollars per month, AevoraSEO runs **directly on your machine**:
-* **100% Free & Open Source (MIT)** — Zero subscriptions, zero third-party API keys required.
-* **Direct Observable Evidence** — Inspects real HTTP response headers, robots directives, HTML AST, Schema.org entities, and backlink source pages.
-* **Closed-Loop Execution** — Crawl ➔ Diagnose ➔ Generate Code Patches ➔ Preview Unified Diffs ➔ Apply with Atomic Backup ➔ Verify Resolution.
+Traditional SEO platforms hide their formulas behind proprietary black-boxes and charge exorbitant monthly subscriptions. AevoraSEO runs **100% locally on your machine**:
+
+* 🟢 **Free & Open Source (MIT License)** — No subscriptions, no cloud vendor lock-in, and zero third-party API keys required.
+* 🔍 **Observable Ground-Truth Evidence** — Analyzes exact HTTP headers, robots directives, HTML AST, Schema.org entities, and live backlink source pages.
+* 🛠️ **Closed-Loop Engineering** — Crawl ➔ Capture Evidence ➔ Diagnose ➔ Generate Patches ➔ Preview Unified Diffs ➔ Apply with Atomic Backup ➔ Verify Fix.
 
 ```text
- ┌──────────┐     ┌───────────┐     ┌─────────────┐     ┌────────────┐     ┌────────────┐
- │  Crawl   │ ──► │  Capture  │ ──► │  Diagnose   │ ──► │ Code Patch │ ──► │   Verify   │
- │ Target   │     │ Evidence  │     │ SEO/AEO/GEO │     │  (Phase K) │     │ Resolution │
- └──────────┘     └───────────┘     └─────────────┘     └────────────┘     └────────────┘
+ ┌──────────────┐      ┌──────────────────┐      ┌─────────────────┐      ┌────────────────────┐      ┌─────────────────┐
+ │ 🌐 Crawl     │ ───► │ 📦 Raw Evidence  │ ───► │ 🧠 Diagnosis    │ ───► │ 🛠️ Code Patching   │ ───► │ ✅ Verification │
+ │ Target Site  │      │ Headers, DOM, LD │      │ SEO, AEO, GEO   │      │ Plan, Diff, Backup │      │ Zero Regression │
+ └──────────────┘      └──────────────────┘      └─────────────────┘      └────────────────────┘      └─────────────────┘
 ```
 
 ---
 
-## ⚡ Quick Start (Zero Setup)
+## ⚡ Quick Start (Zero-Setup Runners)
 
-You do **not** need to clone the repository or manually manage dependencies. Run AevoraSEO instantly from your terminal using your preferred package runner:
+[![NPX](https://img.shields.io/badge/NPX-Node.js-339933?style=flat-square&logo=node.js&logoColor=white)](#-instant-run-via-node--javascript-ecosystem)
+[![Bun](https://img.shields.io/badge/Bunx-Instant_Speed-FBF0DF?style=flat-square&logo=bun&logoColor=black)](#-instant-run-via-node--javascript-ecosystem)
+[![PNPM](https://img.shields.io/badge/PNPM_dlx-Fast-F69220?style=flat-square&logo=pnpm&logoColor=white)](#-instant-run-via-node--javascript-ecosystem)
+[![UVX](https://img.shields.io/badge/UVX-Astral_Python-DE5FE9?style=flat-square&logo=python&logoColor=white)](#-instant-run-via-python-ecosystem)
+
+> [!TIP]
+> **No repository cloning required.** Run AevoraSEO on any machine or CI pipeline without downloading source repositories or polluting your local disk with tests and playbooks.
 
 ### 🚀 Instant Run via Node / JavaScript Ecosystem
 
 ```bash
-# Using NPX (npm runner - built into Node.js)
+# 🟢 Using NPX (Built into Node.js — zero setup)
 npx aevoraseo doctor
 npx aevoraseo crawl https://example.com --profile quick --out ./runs/audit1
 npx aevoraseo report ./runs/audit1 --format terminal
 
-# Using Bun (instant start, ultra fast)
+# ⚡ Using Bun (Instant start, ultra-low latency)
 bunx aevoraseo doctor
 bunx aevoraseo crawl https://example.com --profile quick --out ./runs/audit1
 
-# Using PNPM
+# 📦 Using PNPM
 pnpm dlx aevoraseo doctor
 
-# Using Yarn
+# 🧶 Using Yarn
 yarn dlx aevoraseo doctor
 ```
 
 ### 🐍 Instant Run via Python Ecosystem
 
 ```bash
-# Using uvx (Astral UV runner - blazing fast)
+# ⚡ Using UVX (Astral UV runner — blazing fast execution)
 uvx aevoraseo doctor
 uvx aevoraseo crawl https://example.com --profile quick --out ./runs/audit1
 
-# Using pipx (isolated application runner)
+# 🛡️ Using pipx (Isolated application environment)
 pipx run aevoraseo doctor
 ```
 
 ---
 
-## 📦 Installation Matrix
+## 📦 Global CLI Installation
 
-Install AevoraSEO globally to use the `aevoraseo` command everywhere in any terminal, script, or CI pipeline:
+Install AevoraSEO globally to execute the `aevoraseo` command everywhere in your terminal, shell scripts, and build pipelines:
 
-### Option 1: Global Package Managers (NPM / PNPM / Bun / Yarn)
-
-Choose your tool of choice:
+### 🟡 JavaScript & TypeScript Package Managers
 
 ```bash
-# NPM
+# NPM (Global)
 npm install -g aevoraseo
 
-# PNPM
+# PNPM (Global)
 pnpm add -g aevoraseo
 
-# Bun
+# Bun (Global)
 bun add -g aevoraseo
 
-# Yarn
+# Yarn (Global)
 yarn global add aevoraseo
 ```
 
-Verify your installation:
+### 🔵 Python Package Managers
+
+```bash
+# Modern UV tool (Recommended for Python users)
+uv tool install aevoraseo
+
+# Isolated pipx
+pipx install aevoraseo
+
+# Standard pip
+pip install aevoraseo
+```
+
+Check your installed CLI version:
 ```bash
 aevoraseo --version
 aevoraseo doctor
 ```
 
-### Option 2: Python Package Managers (pip / pipx / uv)
-
-```bash
-# Modern UV tool install (Recommended for Python users)
-uv tool install aevoraseo
-
-# Isolated pipx install
-pipx install aevoraseo
-
-# Standard pip install
-pip install aevoraseo
-```
-
 ---
 
-## 🤖 Add to AI Agents & CLIs (Skill Setup)
+## 🤖 Terminal-First AI Agent & CLI Skill Hub
 
-AevoraSEO is built from the ground up to empower **AI Coding Agents**, **terminal assistants**, and **agentic IDEs**. You can register AevoraSEO as a native skill right from your terminal without editing complex JSON files.
+[![Multi-Agent Hub](https://img.shields.io/badge/Agents-18_Platforms_Supported-8B5CF6?style=flat-square)](docs/agent-installation.md)
+[![Quick Access](https://img.shields.io/badge/Skill-Universal_Master_Prompt-059669?style=flat-square)](docs/quick-access.md)
+[![Verification](https://img.shields.io/badge/Compatibility-Fixture_Verified-10B981?style=flat-square)](#4-verify-platform-compatibility)
 
-For prompt-based installation across all environments, see the [Quick Access Installation Hub](docs/quick-access.md).
+AevoraSEO is designed specifically for **AI Coding Assistants**, **terminal agents**, and **agentic IDEs**. You can wire AevoraSEO as a native skill directly from your command line.
+
+> [!NOTE]
+> For universal master prompts and copy-paste skill instructions, read the [Quick Access Installation Hub](docs/quick-access.md).
 
 ### 1. Auto-Detect Your Active Environment
 
-AevoraSEO inspects your active workspace, config directories, and running shells to detect supported platforms:
+AevoraSEO inspects your active workspace, parent processes, and environment markers:
 
 ```bash
-npx aevoraseo agent detect
-# or
 aevoraseo agent detect
+# or via npx
+npx aevoraseo agent detect
 ```
 
-### 2. List Supported Platforms
-
-AevoraSEO natively supports **18 AI agent & CLI platforms**:
+### 2. Supported Platforms Registry (18 Targets)
 
 ```bash
 aevoraseo agent list
 ```
 
-| Platform | Tier | Invocation | Config Path |
-|---|---|---|---|
-| **Claude Code** | First-Party Skill | `/aevoraseo` | `~/.claude/skills/aevoraseo/` |
-| **Cursor / Windsurf** | Agent Rules & Tools | Terminal / Rules | `.agents/` or workspace rules |
-| **Codex** | First-Party Skill | `$aevoraseo` | `~/.agents/skills/aevoraseo/` |
-| **Gemini CLI / Antigravity** | Agent Skill | Terminal / Skill | `~/.gemini/skills/aevoraseo/` |
-| **OpenClaw** | Workspace Tool | Prompt / Tool | `~/.openclaw/skills/aevoraseo/` |
-| **Hermes** | Profile Skill | Profile / Skill | `~/.hermes/skills/aevoraseo/` |
-| **Aider** | Command-Line | Terminal / Repo map | `.aider/` |
-| **GitHub Copilot CLI** | Agent Integration | `@copilot` | `.github/` |
-| **Qwen / KiloCode / Droid** | Native Adapters | CLI / Skill | Custom toolpaths |
+| Platform | Tier | Status | Invocation | Config Location |
+|:---|:---:|:---:|:---|:---|
+| **Claude Code** | `First-Party Skill` | ![Verified](https://img.shields.io/badge/Verified-10B981?style=flat-square) | `/aevoraseo` | `~/.claude/skills/aevoraseo/` |
+| **Cursor / Windsurf** | `Workspace Rules` | ![Verified](https://img.shields.io/badge/Verified-10B981?style=flat-square) | Terminal / Rules | `.agents/skills/` or `.cursor/` |
+| **Codex** | `First-Party Skill` | ![Verified](https://img.shields.io/badge/Verified-10B981?style=flat-square) | `$aevoraseo` | `~/.agents/skills/aevoraseo/` |
+| **Gemini CLI / Antigravity** | `Agent Skill` | ![Verified](https://img.shields.io/badge/Verified-10B981?style=flat-square) | Terminal / Skill | `~/.gemini/skills/aevoraseo/` |
+| **OpenClaw** | `Workspace Tool` | ![Verified](https://img.shields.io/badge/Verified-10B981?style=flat-square) | Prompt / Tool | `~/.openclaw/skills/aevoraseo/` |
+| **Hermes** | `Profile Skill` | ![Verified](https://img.shields.io/badge/Verified-10B981?style=flat-square) | Profile / Skill | `~/.hermes/skills/aevoraseo/` |
+| **Aider** | `CLI Integration` | ![Documented](https://img.shields.io/badge/Documented-3B82F6?style=flat-square) | Terminal / Map | `.aider/` |
+| **GitHub Copilot CLI** | `Agent Extension` | ![Documented](https://img.shields.io/badge/Documented-3B82F6?style=flat-square) | `@copilot` | `.github/` |
+| **Qwen / KiloCode / Droid** | `Adapter Config` | ![Documented](https://img.shields.io/badge/Documented-3B82F6?style=flat-square) | Native Invocation | Specific system paths |
 
-### 3. Setup Skill in One Terminal Command
+### 3. One-Command Skill Wiring
 
-Automatically generate and wire up the skill adapter for your target platform:
+Generate and wire up the skill adapter for your agent in one line:
 
 ```bash
-# For Claude Code
+# 🟣 Claude Code
 aevoraseo agent adapt claude-code
 
-# For Codex / ChatGPT Work
+# 🟢 Codex / ChatGPT Work
 aevoraseo agent adapt codex
 
-# For Gemini / Antigravity IDE
+# 🔵 Gemini CLI / Google Antigravity
 aevoraseo agent adapt gemini
 
-# For OpenClaw
+# 🟠 OpenClaw
 aevoraseo agent adapt openclaw
 
-# For Cursor / VS Code (Current Project Workspace)
+# 🟡 Cursor / Windsurf / VS Code Workspace
 aevoraseo agent adapt cursor --workspace .
 ```
 
 ### 4. Verify Platform Compatibility
 
-Run fixture-based verification to ensure the agent environment can execute crawls and read evidence:
+Run fixture-based testing to verify that your agent can invoke commands and parse JSON evidence:
 
 ```bash
 aevoraseo agent verify --host claude-code
 ```
 
-> [!TIP]
-> Once installed as a skill, you can tell your AI assistant:
-> *"Audit this website for AEO answer readiness and fix missing meta tags."*
-> The agent will leverage AevoraSEO CLI commands, inspect the JSON output, and apply verified code patches autonomously.
+> [!IMPORTANT]
+> Once installed, you can command your AI coding assistant:  
+> *"Audit this website for AEO answer readiness and fix missing meta tags."*  
+> The agent automatically executes AevoraSEO, inspects structured findings, generates AST code patches, and validates the fix!
 
 ---
 
-## 🏛️ Core Intelligence Pillars
-
-AevoraSEO evaluates websites across seven interconnected dimensions:
+## 🏛️ The 7 Pillars of Modern Search Intelligence
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -222,83 +233,83 @@ AevoraSEO evaluates websites across seven interconnected dimensions:
 │ Verified sources, anchor context, │ Intent taxonomy, keyword cannibalization,   │
 │ conservative evidence scoring     │ local NAP visibility, CTA friction audits   │
 ├───────────────────────────────────┴─────────────────────────────────────────────┤
-│ 7. Automated Remediation (Phase K)                                              │
+│ 7. Automated Code Remediation (Phase K)                                         │
 │ Deterministic AST/HTML code patches, unified diffs, atomic backups & rollback   │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 1. Traditional Technical SEO
-Deep-crawls link topology, HTTP status codes, redirects, canonical tags, `robots.txt`, XML sitemaps, title tags, meta descriptions, image alt attributes, and detects orphan pages.
+### 1. ⚙️ Traditional Technical SEO
+Inspects crawlability, HTTP status codes, canonicals, redirect chains, `robots.txt`, XML sitemaps, title tags, meta descriptions, OpenGraph tags, and link topology (including orphan page detection).
 
-### 2. AEO (Answer Engine Optimization)
-Evaluates whether your content directly answers user questions in conversational search. Audits 40–60 word answer boxes, question headings (`H2`/`H3`), procedural step-lists, and crawler permissions across **10 major AI bots** (GPTBot, ClaudeBot, PerplexityBot, Applebot-Extended, Google-Extended, etc.).
+### 2. 💬 AEO — Answer Engine Optimization
+Audits content readiness for conversational question-answering engines. Identifies 40–60 word direct-answer definitions, procedural step lists, question heading coverage (`H2`/`H3`), and evaluates crawler accessibility across **10 tracked AI bots** (GPTBot, ClaudeBot, PerplexityBot, Applebot-Extended, Google-Extended, etc.).
 
-### 3. GEO (Generative Engine Optimization)
-Measures factual density, citation extractability, authoritative author bylines, publication timestamps, and structured knowledge representations that AI search models (SearchGPT, Perplexity, Gemini, Google SGE) require to reference your site as a primary source.
+### 3. 🧠 GEO — Generative Engine Optimization
+Measures factual density, citation extractability, authoritative author bylines, publication timestamps, and structured knowledge representations that AI search models (SearchGPT, Perplexity, Gemini, Google SGE) prioritize when synthesizing citations.
 
-### 4. Entity & Knowledge Graph Intelligence
-Extracts Schema.org models (`Organization`, `Person`, `Product`, `LocalBusiness`, `Article`), analyzes `sameAs` authority links (Wikidata, Wikipedia, LinkedIn, Crunchbase), and flags cross-page entity conflicts (conflicting telephone numbers, mismatched business names, broken social footprints).
+### 4. 🌐 Entity & Knowledge Graph Intelligence
+Parses typed Schema.org models (`Organization`, `Person`, `Product`, `LocalBusiness`, `Article`), resolves external `sameAs` authority links (Wikidata, Wikipedia, LinkedIn, Crunchbase), and detects cross-page consistency conflicts (name contradictions, telephone mismatches, broken profiles).
 
-### 5. Reputation & Backlinks
-Verifies backlinks through direct source-page inspection. Evaluates anchor text, link rels (`dofollow`, `nofollow`, `ugc`, `sponsored`), and surrounding 160-character sentence context. Separates owned web profiles from genuine third-party editorial citations.
+### 5. 🔗 Reputation & Backlinks
+Verifies backlinks through direct source-page inspection. Evaluates anchor text, `rel` attributes (dofollow, nofollow, ugc, sponsored), and surrounding 160-character sentence context. Separates owned platforms from independent third-party editorial citations.
 
-### 6. Search Intent & Commercial Friction
-Classifies query intent (Informational, Commercial, Transactional, Navigational, Local), detects internal keyword cannibalization via token similarity algorithms, validates local NAP consistency, and audits conversion CTA visibility.
+### 6. 🎯 Search Intent & Commercial Visibility
+Classifies search intent (Informational, Commercial Investigation, Transactional, Navigational, Local), extracts primary target queries, detects internal keyword cannibalization via token similarity, validates local NAP consistency, and audits commercial conversion paths.
 
-### 7. Automated Remediation Engine (Phase K)
-Translates audit findings into deterministic, syntax-safe HTML and metadata code patches with unified diff previews, pre-flight safety checks, atomic backups, and instant rollback.
+### 7. 🛠️ Automated Remediation Engine (Phase K)
+Bridges the gap between auditing and engineering by compiling findings into deterministic, syntax-safe HTML patches with colorized diff previews, automatic pre-patch backups, and instant rollback.
 
 ---
 
-## 🚀 Step-by-Step Workflows
+## 🚀 Step-by-Step Production Workflows
 
-### Step 1: Run a Technical Crawl
+### Step 1: Execute a Diagnostic Crawl
 
-Collect full diagnostic evidence from a target website:
+Collect technical evidence from a target website:
 
 ```bash
-# Fast crawl (25 pages, standard rate limits)
+# Quick crawl (25 pages, standard rate limits)
 aevoraseo crawl https://example.com --profile quick --out ./runs/site-baseline
 
-# Full crawl with subdomains & deep link discovery
+# Deep crawl (Subdomains, sitemaps & max link discovery)
 aevoraseo crawl https://example.com --profile deep --include-www --out ./runs/site-deep
 ```
 
-*What happens:* AevoraSEO respects `robots.txt`, captures exact HTTP headers, saves full HTML snapshots, builds a link graph, and stores results in `./runs/site-baseline/crawl.sqlite3` and `pages.jsonl`.
+*What happens:* AevoraSEO respects `robots.txt`, captures raw HTTP response headers, saves full HTML snapshots, builds an internal link graph, and persists observations in `./runs/site-baseline/crawl.sqlite3` and `pages.jsonl`.
 
 ---
 
-### Step 2: Generate Unified Client Audit
+### Step 2: Generate the Unified Client Audit
 
-Synthesize technical, content, entity, AEO, and GEO findings into a scored report:
+Synthesize technical, content, entity, AEO, and GEO findings into a scored scorecard:
 
 ```bash
-# Colorized terminal summary
+# 📟 Colorized terminal summary
 aevoraseo report ./runs/site-baseline --format terminal
 
-# Export an executive branded HTML report
+# 📄 Standalone executive branded HTML presentation
 aevoraseo report ./runs/site-baseline --format html --out ./deliverables
 
-# Export machine-readable JSON for CI/CD
+# 📊 Machine-readable JSON for CI/CD gates
 aevoraseo report ./runs/site-baseline --format json --out ./deliverables
 ```
 
-Inspect `./deliverables/audit-report.html` in your browser for interactive scorecards, issue severity breakdown (P0 / P1 / P2), and prioritized action items.
+Open `./deliverables/audit-report.html` in any browser to inspect interactive health scores (0–100), critical P0 blockers, high-impact P1 opportunities, and P2 maintenance items.
 
 ---
 
-### Step 3: Analyze AEO & AI Bot Readiness
+### Step 3: Audit AEO & AI Crawler Accessibility
 
-Check how answer engines perceive your content:
+Inspect answer box feasibility and generative discovery signals:
 
 ```bash
 aevoraseo aeo ./runs/site-baseline --format terminal
 ```
 
-*Outputs:*
-* AI Bot Accessibility Matrix (which LLMs are blocked in `robots.txt` vs allowed)
-* Answer Box Candidate Coverage (percentage of questions with clear 40–60 word answer paragraphs)
-* Heading Question Ratio (`H2`/`H3` query-matching percentage)
+*Key findings:*
+* **AI Bot Matrix:** Verifies if GPTBot, ClaudeBot, PerplexityBot, and Google-Extended are blocked or allowed in `robots.txt`.
+* **Answer Readiness:** Measures coverage of 40–60 word answer boxes beneath question headings.
+* **Heading Questions:** Scans `H2` and `H3` tags for question syntax (`what`, `how`, `why`, `where`, `can`).
 
 ---
 
@@ -308,10 +319,10 @@ aevoraseo aeo ./runs/site-baseline --format terminal
 aevoraseo entity ./runs/site-baseline --brand "My Brand" --format terminal
 ```
 
-*Outputs:*
-* Extracted typed Schema.org entities (`Organization`, `WebSite`, `FAQPage`, etc.)
-* Detected cross-page schema discrepancies
-* `sameAs` entity footprint verification
+*Key findings:*
+* Discovers typed entities (`Organization`, `LocalBusiness`, `FAQPage`, etc.) across JSON-LD, Microdata, and OpenGraph.
+* Verifies `sameAs` entity links (Wikidata, Wikipedia, LinkedIn).
+* Detects cross-page schema discrepancies (e.g., conflicting phone numbers or business names).
 
 ---
 
@@ -321,29 +332,31 @@ aevoraseo entity ./runs/site-baseline --brand "My Brand" --format terminal
 aevoraseo search ./runs/site-baseline --format terminal
 ```
 
-*Outputs:*
-* Page intent classification table
-* Keyword conflict warnings where multiple URLs compete for identical search intents
+*Key findings:*
+* Analyzes query intent taxonomy (Informational, Transactional, Commercial).
+* Flags internal cannibalization conflicts where multiple URLs compete for identical search intents.
 
 ---
 
 ## 🛠️ Automated Code Remediation (Phase K)
 
-AevoraSEO does not just give you a checklist of problems — it can **fix them directly in your codebase** with military-grade safety.
+AevoraSEO does not just give you a checklist of issues — it **fixes them directly in your codebase** with deterministic precision.
 
 ```text
-Audit Findings ──► Generate Plan ──► Preview Diff ──► Dry Run ──► Apply (Atomic Backup) ──► Verify
-                                                                        │
-                                                                        └──► Rollback (1-Click)
+ ┌───────────────┐     ┌───────────────┐     ┌───────────────┐     ┌────────────────┐     ┌──────────────┐
+ │ Crawl Audit   │ ──► │ Generate Plan │ ──► │ Preview Diff  │ ──► │ Apply (Backup) │ ──► │ Verify Fix   │
+ └───────────────┘     └───────────────┘     └───────────────┘     └────────────────┘     └──────────────┘
+                                                                           │
+                                                                           └──► 1-Click Rollback
 ```
 
-### Remediation Workflow
+### Remediation CLI Workflow
 
 ```bash
-# 1. Generate code patch plan from crawl evidence targeting your local site folder
+# 1. Generate code patch plan from crawl evidence targeting your local website directory
 aevoraseo remediate generate --crawl ./runs/site-baseline --site ./my-website-code --out ./remediation
 
-# 2. Preview colorized unified diffs (inspect exact changes before applying)
+# 2. Preview colorized unified diffs (inspect exact code changes before applying)
 aevoraseo remediate preview --plan ./remediation/plan_*.json
 
 # 3. Dry-run test (simulates patch application without touching disk)
@@ -356,86 +369,79 @@ aevoraseo remediate apply --plan ./remediation/plan_*.json
 aevoraseo remediate rollback --receipt ./remediation/receipt_*.json
 ```
 
-### Safety Guarantees
-* **Deterministic AST HTML Transformations** — Powered by BeautifulSoup parser; never corrupts unclosed tags or attributes.
-* **Cryptographic Digests** — SHA-256 hashes recorded for every file pre- and post-patch in `receipt.json`.
-* **Atomic Pre-Patch Backups** — Original byte copies saved to `.aevora/backups/` before any write operation.
-* **Instant Rollback** — Guaranteed restoration to the exact pre-patch byte state.
+### Safety Architecture
+* 🛡️ **Deterministic AST HTML Patching** — Uses BeautifulSoup DOM parsing to guarantee valid tag structure and syntax.
+* 🔐 **Cryptographic Digests** — Computes pre- and post-patch SHA-256 digests for every touched file in `receipt.json`.
+* 💾 **Atomic Pre-Patch Backups** — Saves exact byte-level copies to `.aevora/backups/` before performing any modifications.
+* ⏪ **Verified Rollback** — Restores the exact pre-patch byte state with verified checksum matching.
 
 ---
 
-## 📋 Full CLI Command Reference
-
-AevoraSEO provides 36 public commands and subcommands:
+## 📋 Full CLI Command Reference (36 Commands)
 
 | Command | Category | Description | Example Syntax |
 |---|---|---|---|
-| `crawl` | Crawler | Crawl website structure and capture raw evidence | `aevoraseo crawl <url> --out <dir> [--profile quick\|deep]` |
-| `scrape` | Crawler | Inspect and capture a single web page | `aevoraseo scrape <url> --out <dir> [--mode browser]` |
-| `watch` | Monitoring | Bounded change observation and re-crawling | `aevoraseo watch <url> --out <dir> --interval 3600` |
-| `compare` | Crawler | Diff two crawl snapshots (added, changed, removed) | `aevoraseo compare --before <dir1> --after <dir2>` |
-| `report` | Reporting | Generate unified audit report (Terminal, HTML, JSON, CSV) | `aevoraseo report <crawl-dir> --format html --out <dir>` |
-| `aeo` | AEO / GEO | Analyze answer readiness and AI bot access matrix | `aevoraseo aeo <crawl-dir> --format terminal` |
-| `aeo-compare` | AEO / GEO | Track AEO score progression between snapshots | `aevoraseo aeo-compare --before <d1> --after <d2>` |
-| `entity` | Entity Graph | Extract Schema.org entities and authority graph | `aevoraseo entity <crawl-dir> --format terminal` |
-| `entity-compare`| Entity Graph | Compare entity evolution and resolved conflicts | `aevoraseo entity-compare --before <d1> --after <d2>` |
-| `search` | Commercial | Analyze query intent, cannibalization & CTA friction | `aevoraseo search <crawl-dir> --format terminal` |
-| `commercial` | Commercial | Alias for `search` | `aevoraseo commercial <crawl-dir>` |
-| `search-compare`| Commercial | Compare search intent shifts across crawls | `aevoraseo search-compare --before <d1> --after <d2>` |
-| `optimize` | Content | Content quality, titles, headings, and answer boxes | `aevoraseo optimize <crawl-dir> --format terminal` |
-| `content` | Content | Alias for `optimize` | `aevoraseo content <crawl-dir>` |
-| `optimize-compare`| Content | Compare content scores and resolved deficiencies | `aevoraseo optimize-compare --before <d1> --after <d2>` |
-| `remediate` | Remediation | Automated code patching: generate, preview, apply, rollback | `aevoraseo remediate generate --crawl <c> --site <s>` |
-| `audit-verify` | Verification| Verify if audit recommendations were fixed in new crawl | `aevoraseo audit-verify --audit <a.json> --crawl <dir>` |
-| `progress` | Trajectory | Multi-snapshot score tracking over historical crawls | `aevoraseo progress --crawls <s1> <s2> <s3>` |
-| `backlinks` | Reputation | Inspect source pages for backlinks and anchor context | `aevoraseo backlinks <domain> --sources <file.csv>` |
-| `reputation` | Reputation | Calculate evidence-based reputation score (0–100) | `aevoraseo reputation <domain> --sources <file.csv>` |
-| `reputation-compare`| Reputation | Compare reputation snapshots for gained/lost links | `aevoraseo reputation-compare --before <r1> --after <r2>` |
-| `present` | Deliverables| Export standalone branded client deliverables | `aevoraseo present --input <report.json> --format html` |
-| `agent` | Multi-Agent | Platform integration: `detect`, `list`, `inspect`, `adapt`, `verify` | `aevoraseo agent detect`, `aevoraseo agent adapt <host>` |
-| `doctor` | Diagnostics | Validate local runtime, Playwright & network health | `aevoraseo doctor [--target <url>]` |
-| `browser-setup`| Diagnostics | Download & configure Playwright Chromium browser | `aevoraseo browser-setup` |
-| `version` | Info | Print current CLI version | `aevoraseo version` |
+| `crawl` | ![Crawler](https://img.shields.io/badge/-Crawler-2563EB?style=flat-square) | Crawl website structure and capture raw evidence | `aevoraseo crawl <url> --out <dir> [--profile quick\|deep]` |
+| `scrape` | ![Crawler](https://img.shields.io/badge/-Crawler-2563EB?style=flat-square) | Inspect and capture a single web page | `aevoraseo scrape <url> --out <dir> [--mode browser]` |
+| `watch` | ![Crawler](https://img.shields.io/badge/-Crawler-2563EB?style=flat-square) | Bounded change observation and re-crawling | `aevoraseo watch <url> --out <dir> --interval 3600` |
+| `compare` | ![Crawler](https://img.shields.io/badge/-Crawler-2563EB?style=flat-square) | Diff two crawl snapshots (added, changed, removed) | `aevoraseo compare --before <dir1> --after <dir2>` |
+| `report` | ![Reporting](https://img.shields.io/badge/-Reporting-4F46E5?style=flat-square) | Generate unified audit report (Terminal, HTML, JSON, CSV) | `aevoraseo report <crawl-dir> --format html --out <dir>` |
+| `aeo` | ![AEO/GEO](https://img.shields.io/badge/-AEO%2FGEO-7C3AED?style=flat-square) | Analyze answer readiness and AI bot access matrix | `aevoraseo aeo <crawl-dir> --format terminal` |
+| `aeo-compare` | ![AEO/GEO](https://img.shields.io/badge/-AEO%2FGEO-7C3AED?style=flat-square) | Track AEO score progression between snapshots | `aevoraseo aeo-compare --before <d1> --after <d2>` |
+| `entity` | ![Entity](https://img.shields.io/badge/-Entity_Graph-059669?style=flat-square) | Extract Schema.org entities and authority graph | `aevoraseo entity <crawl-dir> --format terminal` |
+| `entity-compare`| ![Entity](https://img.shields.io/badge/-Entity_Graph-059669?style=flat-square) | Compare entity evolution and resolved conflicts | `aevoraseo entity-compare --before <d1> --after <d2>` |
+| `search` | ![Commercial](https://img.shields.io/badge/-Commercial-D97706?style=flat-square) | Analyze query intent, cannibalization & CTA friction | `aevoraseo search <crawl-dir> --format terminal` |
+| `commercial` | ![Commercial](https://img.shields.io/badge/-Commercial-D97706?style=flat-square) | Alias for `search` | `aevoraseo commercial <crawl-dir>` |
+| `search-compare`| ![Commercial](https://img.shields.io/badge/-Commercial-D97706?style=flat-square) | Compare search intent shifts across crawls | `aevoraseo search-compare --before <d1> --after <d2>` |
+| `optimize` | ![Content](https://img.shields.io/badge/-Content-0891B2?style=flat-square) | Content quality, titles, headings, and answer boxes | `aevoraseo optimize <crawl-dir> --format terminal` |
+| `content` | ![Content](https://img.shields.io/badge/-Content-0891B2?style=flat-square) | Alias for `optimize` | `aevoraseo content <crawl-dir>` |
+| `optimize-compare`| ![Content](https://img.shields.io/badge/-Content-0891B2?style=flat-square) | Compare content scores and resolved deficiencies | `aevoraseo optimize-compare --before <d1> --after <d2>` |
+| `remediate` | ![Remediation](https://img.shields.io/badge/-Remediation-DC2626?style=flat-square) | Automated code patching: generate, preview, apply, rollback | `aevoraseo remediate generate --crawl <c> --site <s>` |
+| `audit-verify` | ![Verification](https://img.shields.io/badge/-Verification-16A34A?style=flat-square) | Verify if audit recommendations were fixed in new crawl | `aevoraseo audit-verify --audit <a.json> --crawl <dir>` |
+| `progress` | ![Trajectory](https://img.shields.io/badge/-Trajectory-9333EA?style=flat-square) | Multi-snapshot score tracking over historical crawls | `aevoraseo progress --crawls <s1> <s2> <s3>` |
+| `backlinks` | ![Reputation](https://img.shields.io/badge/-Reputation-EA580C?style=flat-square) | Inspect source pages for backlinks and anchor context | `aevoraseo backlinks <domain> --sources <file.csv>` |
+| `reputation` | ![Reputation](https://img.shields.io/badge/-Reputation-EA580C?style=flat-square) | Calculate evidence-based reputation score (0–100) | `aevoraseo reputation <domain> --sources <file.csv>` |
+| `reputation-compare`| ![Reputation](https://img.shields.io/badge/-Reputation-EA580C?style=flat-square) | Compare reputation snapshots for gained/lost links | `aevoraseo reputation-compare --before <r1> --after <r2>` |
+| `present` | ![Reporting](https://img.shields.io/badge/-Reporting-4F46E5?style=flat-square) | Export standalone branded client deliverables | `aevoraseo present --input <report.json> --format html` |
+| `agent` | ![Multi-Agent](https://img.shields.io/badge/-Multi--Agent-0284C7?style=flat-square) | Platform integration: `detect`, `list`, `inspect`, `adapt`, `verify` | `aevoraseo agent detect`, `aevoraseo agent adapt <host>` |
+| `doctor` | ![Diagnostics](https://img.shields.io/badge/-Diagnostics-64748B?style=flat-square) | Validate local runtime, Playwright & network health | `aevoraseo doctor [--target <url>]` |
+| `browser-setup`| ![Diagnostics](https://img.shields.io/badge/-Diagnostics-64748B?style=flat-square) | Download & configure Playwright Chromium browser | `aevoraseo browser-setup` |
+| `version` | ![Info](https://img.shields.io/badge/-Info-6B7280?style=flat-square) | Print current CLI version | `aevoraseo version` |
 
 ---
 
-## 📊 Output Formats & Deliverables
+## 📊 Multi-Format Reporting & Executive Deliverables
 
-Every major command supports multiple output formats via `--format <type>`:
+Export your findings across five distinct formats tailored for different audiences:
 
-* **Terminal (`--format terminal`)** — Interactive, colorized tables with clear status indicators (`PASS`, `WARN`, `FAIL`).
-* **HTML (`--format html`)** — Executive-ready, standalone, mobile-responsive client presentation with interactive filtering.
-* **JSON (`--format json`)** — Strict schema contracts designed for CI/CD pipelines and automated agent parsing.
-* **Markdown (`--format markdown`)** — Formatted markdown summaries ready for GitHub PR descriptions or documentation.
-* **CSV (`--format csv`)** — Spreadsheets protected with formula injection defenses against `=`, `+`, `-`, `@`, `\t`, and `\r` vectors.
+* 📟 **Terminal (`--format terminal`)** — Interactive, colorized tables with clear status indicators (`PASS`, `WARN`, `FAIL`).
+* 📄 **HTML (`--format html`)** — Executive-ready, standalone, mobile-responsive client presentation with interactive filtering.
+* 💾 **JSON (`--format json`)** — Strict schema contracts designed for CI/CD pipelines and automated agent parsing.
+* 📝 **Markdown (`--format markdown`)** — Formatted markdown summaries ready for GitHub PR descriptions or documentation.
+* 📊 **CSV (`--format csv`)** — Spreadsheets fortified with formula injection defenses against `=`, `+`, `-`, `@`, `\t`, and `\r` vectors.
 
 ---
 
-## 🛡️ Security, Privacy & Guardrails
+## 🛡️ Enterprise Security & Guardrails
 
-AevoraSEO is built for enterprise safety:
-
-* **SSRF & Private Network Defense** — Rejects loopback (`127.0.0.1`), link-local (`169.254.x.x`), and private RFC 1918 subnets (`10.0.0.0/8`, `192.168.0.0/16`, `172.16.0.0/12`) by default.
-* **Strict Host Boundaries** — Crawler never leaves target domain boundaries unless explicitly allowed via `--allow-host`.
-* **Robots Directives Respect** — Respects `robots.txt` disallow rules and crawl delays by default.
-* **Spreadsheet Formula Sanitization** — All exported CSVs are sanitized against formula execution vulnerabilities.
-* **Resource Quotas** — 5 MB response size limits, request timeouts, and maximum page ceilings prevent memory exhaustion.
-* **Zero Telemetry / Privacy by Default** — AevoraSEO never transmits your crawled data, audit findings, or codebase back to any remote analytics server.
+* 🚫 **SSRF & Private Network Defense** — Blocks loopback (`127.0.0.1`), link-local (`169.254.x.x`), and private RFC 1918 subnets (`10.0.0.0/8`, `192.168.0.0/16`, `172.16.0.0/12`) by default.
+* 🌐 **Strict Host Boundaries** — Crawler never leaves target domain boundaries unless explicitly allowed via `--allow-host`.
+* 🤖 **Robots Directives Respect** — Respects `robots.txt` disallow rules and crawl delays by default.
+* 🔒 **Spreadsheet Formula Sanitization** — All exported CSVs are sanitized against formula execution vulnerabilities.
+* ⏱️ **Resource Quotas** — 5 MB response size limits, request timeouts, and maximum page ceilings prevent memory exhaustion.
+* 🔏 **Zero Telemetry / Privacy by Default** — AevoraSEO never transmits your crawled data, audit findings, or codebase back to any remote analytics server.
 
 ---
 
 ## 🧪 Tests & Quality Assurance
 
-AevoraSEO maintains an uncompromising standard for engineering stability:
-
-* **554 Passed Tests**, 2 skipped, 22 subtests across unit, integration, and adversarial suites.
-* **Deterministic Core** — Identical inputs yield identical outputs.
-* **Zero Stub Policy** — No placeholder `TODO`, `FIXME`, or `NotImplementedError` stubs in production paths.
+* 🟢 **554 Passed Tests**, 2 skipped, 22 subtests across unit, integration, and adversarial suites.
+* 🔁 **Deterministic Core** — Identical inputs yield identical outputs.
+* 🛡️ **Zero Stub Policy** — No placeholder `TODO`, `FIXME`, or `NotImplementedError` stubs in production paths.
 
 To run the local test suite:
 
 ```bash
-# Run pytest test suite
 python -m pytest tests/ -q
 ```
 
@@ -445,23 +451,23 @@ python -m pytest tests/ -q
 
 Explore deep architectural guides and methodology references:
 
-| Guide | Link | Description |
+| Category | Guide | Description |
 |---|---|---|
-| **Quick Access Skill Hub** | [docs/quick-access.md](docs/quick-access.md) | Universal master prompts and copy-paste skill installation |
-| **Environment Setup** | [docs/setup.md](docs/setup.md) | Python, Node.js, and optional Chromium setup |
-| **Agent Installation** | [docs/agent-installation.md](docs/agent-installation.md) | Wiring AevoraSEO into 18 AI coding agents |
-| **AEO & GEO Methodology** | [references/aeo-geo.md](references/aeo-geo.md) | Answer readiness criteria, scoring formulas & bot matrix |
+| **Skill Hub** | [docs/quick-access.md](docs/quick-access.md) | Universal master prompts & copy-paste skill installation |
+| **Setup** | [docs/setup.md](docs/setup.md) | Environment configuration, Python, Node.js & Playwright |
+| **Agent Integration** | [docs/agent-installation.md](docs/agent-installation.md) | Wiring AevoraSEO into 18 AI coding agents |
+| **AEO & GEO** | [references/aeo-geo.md](references/aeo-geo.md) | Answer readiness criteria, scoring formulas & bot matrix |
 | **Entity & Authority** | [references/entity-authority.md](references/entity-authority.md) | Knowledge graph parsing & conflict resolution |
-| **Search Intelligence** | [references/search-commercial.md](references/search-commercial.md) | Intent taxonomy, query extraction & cannibalization |
-| **Remediation Guide** | [docs/remediation.md](docs/remediation.md) | Automated code patching, diffs & rollback |
+| **Search Intelligence**| [references/search-commercial.md](references/search-commercial.md) | Intent taxonomy, query extraction & cannibalization |
+| **Code Remediation** | [docs/remediation.md](docs/remediation.md) | Automated code patching, diffs & rollback |
 | **Reputation Scoring** | [references/reputation.md](references/reputation.md) | Evidence-based reputation calculation |
-| **Permissions Model** | [docs/permissions.md](docs/permissions.md) | Security constraints, SSRF & network boundaries |
+| **Security & Permissions**| [docs/permissions.md](docs/permissions.md) | Security constraints, SSRF & network boundaries |
 | **Branded Reports** | [docs/branded-reports.md](docs/branded-reports.md) | Customizing executive HTML/PDF client deliverables |
-| **Documentation Index**| [docs/README.md](docs/README.md) | Complete documentation directory |
+| **Full Index** | [docs/README.md](docs/README.md) | Complete documentation directory |
 
 ---
 
-## 🤝 Contributing
+## 🤝 Contributing, Security & Community
 
 Contributions are warmly welcomed! Please read [CONTRIBUTING.md](CONTRIBUTING.md) and review [SECURITY.md](SECURITY.md) before submitting a pull request.
 
@@ -473,15 +479,15 @@ AevoraSEO is open-source software licensed under the **MIT License**. See [LICEN
 
 ---
 
-## 👤 Maintainer
+## 👤 Author & Maintainer
 
 **Bheda Nikhilkumar**  
 *Software Engineer & Creator of AevoraSEO*
 
-* **GitHub:** [@bhedanikhilkumar-code](https://github.com/bhedanikhilkumar-code)
-* **LinkedIn:** [Bheda Nikhilkumar](https://www.linkedin.com/in/bhedanikhilkumar)
-* **Portfolio:** [bhedanikhilkumar-portfolio](https://github.com/bhedanikhilkumar-code/Bheda-Nikhilkumar-portfolio)
-* **Contact:** [bhedanikhilkumarpro@gmail.com](mailto:bhedanikhilkumarpro@gmail.com)
+* 🐙 **GitHub:** [@bhedanikhilkumar-code](https://github.com/bhedanikhilkumar-code)
+* 💼 **LinkedIn:** [Bheda Nikhilkumar](https://www.linkedin.com/in/bhedanikhilkumar)
+* 🌐 **Portfolio:** [bhedanikhilkumar-portfolio](https://github.com/bhedanikhilkumar-code/Bheda-Nikhilkumar-portfolio)
+* ✉️ **Contact:** [bhedanikhilkumarpro@gmail.com](mailto:bhedanikhilkumarpro@gmail.com)
 
 <div align="center">
   <sub>Built with precision for the modern search and answer era. Evidence first. Clear reasoning. Better websites.</sub>
