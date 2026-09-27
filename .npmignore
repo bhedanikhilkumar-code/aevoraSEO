@@ -1,5 +1,4 @@
-# NPM Ignore — Only bin, README, LICENSE, package.json are published to NPM
-src/
+# NPM Ignore — Exclude dev, test, cache and temporary files from package
 scripts/
 tests/
 api/
@@ -9,14 +8,21 @@ playbooks/
 assets/
 examples/
 .github/
-pyproject.toml
-CHANGELOG.md
-CITATION.cff
-SECURITY.md
-SKILL.md
-THIRD_PARTY_NOTICES.md
-*.py
-*.pyc
-*.env*
+runs/
+output/
+storage/
 .venv/
+venv/
 .pyinstaller_build/
+__pycache__
+**/__pycache__
+*.pyc
+**/*.pyc
+*.pyo
+**/*.pyo
+.pytest_cache/
+.ruff_cache/
+.coverage
+uv.lock
+*.sqlite3*
+.env*

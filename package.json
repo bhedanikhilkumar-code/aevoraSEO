@@ -6,6 +6,12 @@
     "aevoraseo": "./bin/aevoraseo.js"
   },
   "main": "./bin/aevoraseo.js",
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "start": "node ./bin/aevoraseo.js",
     "test": "node ./bin/aevoraseo.js --help",
