@@ -1,10 +1,6 @@
-# NPM Ignore — Exclude dev, test, cache and temporary files from package
-scripts/
+# NPM Ignore — Exclude dev, test, cache, native binaries and temporary files from package
 tests/
 api/
-docs/
-references/
-playbooks/
 assets/
 examples/
 .github/
@@ -14,15 +10,19 @@ storage/
 .venv/
 venv/
 .pyinstaller_build/
-__pycache__
-**/__pycache__
+__pycache__/
+**/__pycache__/
 *.pyc
 **/*.pyc
 *.pyo
 **/*.pyo
+*.egg-info/
+**/*.egg-info/
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
 .coverage
-uv.lock
 *.sqlite3*
 .env*
+bin/runner/
+*.exe

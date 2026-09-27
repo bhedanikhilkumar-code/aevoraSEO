@@ -7,8 +7,17 @@
   },
   "main": "./bin/aevoraseo.js",
   "files": [
-    "bin",
+    "bin/aevoraseo.js",
     "src",
+    "!**/__pycache__/**",
+    "!**/*.pyc",
+    "!**/*.pyo",
+    "scripts",
+    "references",
+    "playbooks",
+    "docs",
+    "SKILL.md",
+    "pyproject.toml",
     "README.md",
     "LICENSE"
   ],

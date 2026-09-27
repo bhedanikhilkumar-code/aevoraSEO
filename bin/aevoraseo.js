@@ -9,7 +9,7 @@
  * License: MIT
  */
 
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
@@ -87,12 +87,10 @@ function showHelp() {
   console.log(`  $ npx aevoraseo remediate generate --site ./my-site --crawl ./crawl1`);
   console.log(`  $ npx aevoraseo remediate preview --plan ./crawl1/plan_12345678.json`);
   console.log(`  $ npx aevoraseo remediate apply --plan ./crawl1/plan_12345678.json --dry-run`);
-  console.log(`  $ npx aevoraseo audit-verify --audit ./audit.json --crawl ./crawl2`);
-  console.log(`  $ npx aevoraseo progress --crawls ./crawl1 ./crawl2 ./crawl3`);
+  console.log(`  $ npx aevoraseo skill setup claude-code`);
+  console.log(`  $ npx aevoraseo skill setup cursor --from-git`);
   console.log(`  $ npx aevoraseo agent list`);
   console.log(`  $ npx aevoraseo agent detect`);
-  console.log(`  $ npx aevoraseo agent inspect claude-code`);
-  console.log(`  $ npx aevoraseo agent verify --host claude-code`);
   console.log(`  $ npx aevoraseo compare --before ./crawl1 --after ./crawl2 --out ./diff`);
   console.log(`  $ npx aevoraseo reputation example.com`);
   console.log(`  $ npx aevoraseo doctor\n`);
@@ -103,6 +101,12 @@ const args = process.argv.slice(2);
 // Handle version flag
 if (args.includes('-v') || args.includes('--version') || args[0] === 'version') {
   console.log(`aevoraseo v${pkg.version}`);
+  process.exit(0);
+}
+
+// Handle top-level help flag or empty invocation
+if (args.length === 0 || (args.length === 1 && (args[0] === '--help' || args[0] === '-h' || args[0] === 'help'))) {
+  showHelp();
   process.exit(0);
 }
 
@@ -119,18 +123,14 @@ if (process.platform === 'win32') {
 }
 
 function runNativeBinary(binPath) {
-  if (args.length === 0) {
-    banner();
-  }
-
   const child = spawn(binPath, args, {
     stdio: 'inherit',
     windowsHide: true,
   });
 
   child.on('error', (err) => {
-    console.error(`${c.red}Failed to execute native runner:${c.reset}`, err.message);
-    process.exit(1);
+    // If native binary fails to launch, seamlessly fall back to python engine
+    runPythonEngine();
   });
 
   child.on('exit', (code) => {
@@ -141,38 +141,78 @@ function runNativeBinary(binPath) {
   });
 }
 
+function findPythonCandidate() {
+  if (process.env.AEVORASEO_PYTHON) {
+    return { cmd: process.env.AEVORASEO_PYTHON, prefixArgs: [] };
+  }
+
+  // Check local or parent virtual environments
+  const candidateVenvs = [
+    path.join(__dirname, '..', '.venv'),
+    path.join(process.cwd(), '.venv'),
+    path.join(__dirname, '..', 'venv'),
+    path.join(process.cwd(), 'venv'),
+  ];
+
+  for (const venv of candidateVenvs) {
+    const venvPythonWin = path.join(venv, 'Scripts', 'python.exe');
+    const venvPythonUnix = path.join(venv, 'bin', 'python');
+    if (process.platform === 'win32' && fs.existsSync(venvPythonWin)) {
+      return { cmd: venvPythonWin, prefixArgs: [] };
+    }
+    if (fs.existsSync(venvPythonUnix)) {
+      return { cmd: venvPythonUnix, prefixArgs: [] };
+    }
+  }
+
+  // Probe system candidates
+  const candidates = process.platform === 'win32'
+    ? [
+        { cmd: 'python', prefixArgs: [] },
+        { cmd: 'py', prefixArgs: ['-3'] },
+        { cmd: 'python3', prefixArgs: [] },
+      ]
+    : [
+        { cmd: 'python3', prefixArgs: [] },
+        { cmd: 'python', prefixArgs: [] },
+      ];
+
+  for (const candidate of candidates) {
+    try {
+      const probe = spawnSync(candidate.cmd, [...candidate.prefixArgs, '-c', 'import sys; sys.exit(0)'], {
+        windowsHide: true,
+        stdio: 'ignore',
+        timeout: 2000,
+      });
+      if (probe.status === 0) {
+        return candidate;
+      }
+    } catch (_) {
+      // Continue to next candidate
+    }
+  }
+
+  return null;
+}
+
 function runPythonEngine() {
-  const venvPythonWin = path.join(__dirname, '..', '.venv', 'Scripts', 'python.exe');
-  const venvPythonUnix = path.join(__dirname, '..', '.venv', 'bin', 'python');
-  
-  let pythonCmd = '';
-  let pythonArgs = [];
+  const pythonCandidate = findPythonCandidate();
 
-  if (process.platform === 'win32' && fs.existsSync(venvPythonWin)) {
-    pythonCmd = venvPythonWin;
-  } else if (fs.existsSync(venvPythonUnix)) {
-    pythonCmd = venvPythonUnix;
-  } else {
-    pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+  if (!pythonCandidate) {
+    showMissingEngineNotice();
+    return;
   }
 
-  // Always launch the package module instead of executing cli.py directly.
-  // Direct script execution breaks relative imports (e.g. "from . import __version__")
-  // on Unix/macOS fallback runners. Keep src/ on PYTHONPATH so a source checkout
-  // works even when the package has not been installed yet.
-  pythonArgs = ['-m', 'aevoraseo', ...args];
-
-  if (args.length === 0) {
-    banner();
-  }
+  const pythonArgs = [...pythonCandidate.prefixArgs, '-m', 'aevoraseo', ...args];
 
   const sourceRoot = path.join(__dirname, '..', 'src');
+  const packageRoot = path.join(__dirname, '..');
   const env = {
     ...process.env,
-    PYTHONPATH: [sourceRoot, process.env.PYTHONPATH].filter(Boolean).join(path.delimiter),
+    PYTHONPATH: [sourceRoot, packageRoot, process.env.PYTHONPATH].filter(Boolean).join(path.delimiter),
   };
 
-  const child = spawn(pythonCmd, pythonArgs, {
+  const child = spawn(pythonCandidate.cmd, pythonArgs, {
     stdio: 'inherit',
     windowsHide: true,
     env,
@@ -188,22 +228,25 @@ function runPythonEngine() {
 }
 
 function showMissingEngineNotice() {
-  if (args.length === 0 || args.includes('-h') || args.includes('--help') || args[0] === 'help') {
-    showHelp();
-    process.exit(0);
-  }
-
   banner();
-  console.log(`${c.yellow}AevoraSEO runtime not found.${c.reset}`);
-  console.log(`\nTo run AevoraSEO via Python:`);
-  console.log(`  ${c.green}pip install aevoraseo${c.reset}  OR  ${c.green}pip install -e .${c.reset}`);
-  console.log(`\nTo build the standalone native runner:`);
-  console.log(`  ${c.green}python scripts/release.py${c.reset}`);
-  console.log(`\nVisit: ${c.cyan}https://github.com/bhedanikhilkumar-code/aevoraSEO${c.reset}\n`);
+  console.log(`${c.yellow}${c.bold}AevoraSEO Python runtime not found.${c.reset}`);
+  console.log(`\nAevoraSEO requires Python 3.9+ to execute its SEO and agent algorithms.`);
+  console.log(`\n${c.bold}Quick Installation:${c.reset}`);
+  if (process.platform === 'win32') {
+    console.log(`  ${c.cyan}winget install Python.Python.3.12${c.reset}  or download from  ${c.cyan}https://python.org${c.reset}`);
+  } else if (process.platform === 'darwin') {
+    console.log(`  ${c.cyan}brew install python${c.reset}`);
+  } else {
+    console.log(`  ${c.cyan}sudo apt update && sudo apt install python3 python3-pip${c.reset}`);
+  }
+  console.log(`\nAfter installing Python, run:`);
+  console.log(`  ${c.green}pip install aevoraseo${c.reset}  or  ${c.green}aevoraseo doctor${c.reset}`);
+  console.log(`\nRepository & Documentation: ${c.cyan}https://github.com/bhedanikhilkumar-code/aevoraSEO${c.reset}\n`);
   process.exit(1);
 }
 
-if (fs.existsSync(binaryPath)) {
+const forcePython = process.env.AEVORASEO_ENGINE === 'python';
+if (!forcePython && fs.existsSync(binaryPath)) {
   runNativeBinary(binaryPath);
 } else {
   runPythonEngine();
