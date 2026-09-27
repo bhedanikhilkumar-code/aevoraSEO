@@ -11,7 +11,7 @@ import os
 app = FastAPI(
     title="AevoraSEO Cloud API",
     description="Autonomous SEO & AEO intelligence engine API",
-    version="1.0.0"
+    version="1.1.0"
 )
 
 app.add_middleware(
@@ -27,7 +27,7 @@ def health_check():
     return {
         "status": "online",
         "service": "AevoraSEO Engine",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "docs": "/docs"
     }
 

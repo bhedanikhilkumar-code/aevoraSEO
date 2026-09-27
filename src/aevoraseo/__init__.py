@@ -1,6 +1,6 @@
 """AevoraSEO — website crawling, readable content and SEO evidence."""
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __all__ = [
     "Config",
     "Crawler",
